@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>图标库 · icons.svg</title>
+  <style>
+    :root { --ink:#1b1b1f; --muted:#8d8880; --line:#e8e1d7; --paper:#fffdfa; --orange:#f79533; --coral:#ef4e7b; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 34px 20px 70px;
+      color: var(--ink); background: #f2ede5;
+      font: 15px/1.7 "Segoe UI", "Microsoft YaHei", sans-serif;
+    }
+    .wrap { max-width: 1040px; margin: 0 auto; }
+    .top { display:flex; align-items:flex-end; justify-content:space-between; gap:20px; margin-bottom:10px; }
+    h1 { margin:0; font-family: Georgia, "Songti SC", serif; font-size:28px; letter-spacing:.5px; }
+    .back { color:#9b6a48; text-decoration:none; font-size:12px; border-bottom:1px solid #d8bda7; }
+    .back:hover { color:var(--coral); }
+    .note {
+      margin: 14px 0 22px; padding: 12px 15px;
+      color:#6d6258; background: var(--paper); border:1px solid var(--line);
+      border-left:3px solid var(--orange); border-radius:3px;
+      font-size:12px; line-height:1.9;
+    }
+    .note code { padding:1px 5px; color:#b14b64; background:#f6eee5; border-radius:3px; font-family:Consolas, monospace; }
+    .bar { display:flex; gap:10px; align-items:center; margin-bottom:20px; }
+    .bar input {
+      flex:1; padding:9px 12px; color:#3d3a41; background:var(--paper);
+      border:1px solid var(--line); border-radius:4px; outline:0;
+      font:13px/1.6 inherit;
+    }
+    .bar input:focus { border-color:#d9a98b; box-shadow:0 0 0 3px rgba(247,149,51,.12); }
+    .count { color:var(--muted); font-size:11px; white-space:nowrap; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(118px, 1fr)); gap:10px; }
+    .card {
+      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:9px;
+      min-height:120px; padding:14px 8px 11px;
+      background:var(--paper); border:1px solid var(--line); border-radius:5px;
+      cursor:pointer; transition: transform .18s, box-shadow .18s, border-color .18s;
+    }
+    .card:hover { transform:translateY(-3px); border-color:#d9a98b; box-shadow:0 12px 25px -18px #8f6b51; }
+    .card svg { width:42px; height:42px; color:#3e3a41; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+    .card code { max-width:100%; overflow:hidden; color:#8e8378; font-family:Consolas, monospace; font-size:9.5px; text-overflow:ellipsis; white-space:nowrap; }
+    .card.is-logo { background:#fffaf2; border-color:#efc49f; }
+    .card.is-logo svg { width:54px; height:54px; }
+    .card.is-logo code { color:#c26e3d; }
+    .empty { padding:30px; color:var(--muted); text-align:center; font-size:12px; }
+    .foot { margin-top:28px; color:#a49a8e; font-size:10.5px; line-height:1.9; }
+    .toast {
+      position:fixed; left:50%; bottom:24px; transform:translate(-50%,8px);
+      padding:7px 14px; color:#fff; background:#1b1b1f; border-radius:999px;
+      font-size:11px; opacity:0; visibility:hidden; transition:.2s;
+    }
+    .toast.show { opacity:1; visibility:visible; transform:translate(-50%,0); }
+    @media (max-width: 520px) {
+      body { padding:22px 12px 60px; }
+      h1 { font-size:23px; }
+      .top { align-items:flex-start; flex-direction:column; gap:5px; }
+      .grid { grid-template-columns:repeat(auto-fill, minmax(96px, 1fr)); gap:8px; }
+      .card { min-height:104px; }
+      .card svg { width:36px; height:36px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <h1>图标库</h1>
+        <div style="color:#9d948a;font-size:11px;margin-top:3px;">theme/assets/icons.svg · SVG sprite</div>
+      </div>
+      <a class="back" href="/">← 回到博客</a>
+    </div>
+
+    <div class="note">
+      <strong>直接打开 <code>icons.svg</code> 看到空白是正常的。</strong>
+      这个文件是 SVG sprite，里面全是 <code>&lt;symbol&gt;</code> 定义，根节点还设置了 <code>display:none</code>。
+      直接预览不会画出来，必须通过页面的 <code>&lt;use href="#id"&gt;</code> 引用。
+      下面就是全部图标的真实预览。点击任意图标可复制它的 id。
+    </div>
+
+    <div class="bar">
+      <input id="search" type="search" placeholder="搜索图标，例如 logo、cat、search…" autocomplete="off">
+      <span class="count" id="count">加载中…</span>
+    </div>
+
+    <div class="grid" id="grid"></div>
+    <p class="empty" id="empty" hidden>没有找到这个图标。</p>
+
+    <p class="foot">
+      修改图标：用 VS Code / 记事本打开 <code>theme/assets/icons.svg</code>，搜索对应的 <code>id</code>。
+      页面里用 <code>&lt;svg&gt;&lt;use href="/assets/icons.svg#i-logo"&gt;&lt;/use&gt;&lt;/svg&gt;</code> 引用。
+    </p>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <div id="sprite-holder" style="display:none"></div>
+
+  <script>
+    const toast = document.getElementById('toast');
+    const grid = document.getElementById('grid');
+    const empty = document.getElementById('empty');
+    const count = document.getElementById('count');
+    const search = document.getElementById('search');
+    let icons = [];
+
+    const showToast = (text) => {
+      toast.textContent = text;
+      toast.classList.add('show');
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => toast.classList.remove('show'), 1600);
+    };
+
+    const copy = async (text) => {
+      try {
+        if (navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(text);
+        else {
+          const area = document.createElement('textarea');
+          area.value = text;
+          area.style.cssText = 'position:fixed;opacity:0';
+          document.body.appendChild(area);
+          area.select();
+          document.execCommand('copy');
+          area.remove();
+        }
+        showToast('已复制 ' + text);
+      } catch (error) {
+        showToast('复制失败，请手动选中');
+      }
+    };
+
+    const render = (query = '') => {
+      const q = query.trim().toLowerCase();
+      const visible = icons.filter((icon) => icon.id.toLowerCase().includes(q));
+      grid.innerHTML = visible.map((icon) => `
+        <button class="card${icon.id === 'i-logo' ? ' is-logo' : ''}" type="button" data-id="${icon.id}" title="点击复制 #${icon.id}">
+          <svg viewBox="${icon.viewBox}"><use href="#${icon.id}"></use></svg>
+          <code>#${icon.id}</code>
+        </button>`).join('');
+      empty.hidden = visible.length > 0;
+      count.textContent = visible.length + ' / ' + icons.length;
+    };
+
+    fetch('/assets/icons.svg')
+      .then((response) => response.text())
+      .then((text) => {
+        document.getElementById('sprite-holder').innerHTML = text;
+        const doc = new DOMParser().parseFromString(text, 'image/svg+xml');
+        icons = Array.from(doc.querySelectorAll('symbol')).map((symbol) => ({
+          id: symbol.getAttribute('id'),
+          viewBox: symbol.getAttribute('viewBox') || '0 0 24 24'
+        }));
+        render();
+      })
+      .catch(() => {
+        count.textContent = '加载失败';
+        empty.hidden = false;
+        empty.textContent = 'icons.svg 没有加载出来，请确认本地服务器还在运行。';
+      });
+
+    search.addEventListener('input', () => render(search.value));
+    grid.addEventListener('click', (event) => {
+      const card = event.target.closest('[data-id]');
+      if (!card) return;
+      copy('#' + card.dataset.id);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+# Generated output. GitHub Actions builds it from source.
+public/
+
+# Local tooling
+node_modules/
+.npm-cache/
+.DS_Store
+Thumbs.db
+*.log

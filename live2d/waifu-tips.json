@@ -1,0 +1,80 @@
+{
+  "mouseover": [
+    {
+      "selector": ".post-title-link",
+      "text": ["要读读《{text}》吗？", "这篇文章我趴在旁边看过。", "点进去，慢慢看。"]
+    },
+    {
+      "selector": ".menu-item a",
+      "text": ["去「{text}」看看。", "这里我也去过。", "走吧，我带你路。"]
+    },
+    {
+      "selector": ".tag-cloud a",
+      "text": ["想看看和「{text}」有关的东西吗？", "这个标签下有几篇文章。"]
+    },
+    {
+      "selector": ".site-author-image",
+      "text": ["这是我家主人。", "他写字的时候，我就在旁边。"]
+    },
+    {
+      "selector": "#back-to-top",
+      "text": ["要回到上面去吗？", "我跳一下就能到顶。"]
+    },
+    {
+      "selector": ".post-body pre",
+      "text": ["这段代码可以复制。", "右上角有个复制按钮。"]
+    },
+    {
+      "selector": ".search-trigger",
+      "text": ["找点什么？按 Ctrl + K 也行。", "想找哪篇文章？"]
+    },
+    {
+      "selector": ".post-body img",
+      "text": ["点一下可以放大。", "这张拍得还不错吧。"]
+    }
+  ],
+  "click": [],
+  "seasons": [],
+  "time": [],
+  "message": {
+    "default": [
+      "欢迎来到晚风小筑。随便坐，猫不咬人。",
+      "今天的风很适合写点什么。",
+      "喵。",
+      "你敲键盘的声音，让我想起下雨。",
+      "如果找不到想看的，试试右上角的搜索。",
+      "不要一直盯着屏幕，看看窗外。"
+    ],
+    "console": "你打开控制台啦。里面没有什么秘密，只有一只猫。",
+    "copy": "复制可以，记得标注一下出处。",
+    "visibilitychange": "你回来啦。茶还热着。",
+    "changeSuccess": "这件也好看。",
+    "changeFail": "我只有这一件衣服。",
+    "photo": "拍好了吗？记得给我看一眼。",
+    "goodbye": "下次再来。",
+    "hitokoto": "这句话来自 $1。",
+    "welcome": "欢迎阅读《$1》。",
+    "referrer": "从 $1 来的朋友，你好。",
+    "hoverBody": [
+      "别摸尾巴。",
+      "喵？",
+      "再摸就收费了。",
+      "我在工作。",
+      "轻轻的，可以。"
+    ],
+    "tapBody": [
+      "有事吗？",
+      "摸头可以，要轻轻的。",
+      "再点一下我就跳走。",
+      "今天的猫粮呢？",
+      "喵呜。"
+    ]
+  },
+  "models": [
+    {
+      "name": "tororo",
+      "paths": ["/live2d/tororo/tororo.model.json"],
+      "message": "一只叫 Tororo 的白猫"
+    }
+  ]
+}

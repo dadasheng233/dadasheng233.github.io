@@ -1,0 +1,25 @@
+{
+  "title": "欢迎来到我们的世界",
+  "subtitle": "代码、生活，以及一些无用之美",
+  "author": "dadasheng",
+  "description": "一个写代码、拍照、读书，也养了一只白猫的个人博客。",
+  "url": "http://127.0.0.1:4200",
+  "avatar": "/assets/img/avatar.svg",
+  "favicon": "/assets/img/favicon.svg",
+  "since": "2026-08-08",
+  "email": "hello@example.com",
+  "github": "https://github.com/",
+  "rss": "/atom.xml",
+  "footer": "技术即生活，生活即技术",
+  "keywords": "个人博客,前端,生活,摄影,阅读,Live2D",
+  "links": [
+    { "name": "GitHub", "url": "https://github.com/", "icon": "i-github" },
+    { "name": "邮箱", "url": "mailto:hello@example.com", "icon": "i-mail" },
+    { "name": "RSS", "url": "/atom.xml", "icon": "i-rss" }
+  ],
+  "blogroll": [
+    { "name": "Live2D Widget", "url": "https://github.com/stevenjoezhang/live2d-widget" },
+    { "name": "Live2D Cubism", "url": "https://www.live2d.com/" },
+    { "name": "MDN Web Docs", "url": "https://developer.mozilla.org/zh-CN/" }
+  ]
+}

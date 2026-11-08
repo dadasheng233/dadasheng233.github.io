@@ -1,0 +1,117 @@
+<!--meta
+{
+  "slug": "static-blog",
+  "title": "不装框架，也能有一个很酷的博客",
+  "subtitle": "用原生 HTML、CSS 和一个两百行的生成器，搭一个能写十年的地方",
+  "date": "2026-09-18",
+  "updated": "2026-09-26",
+  "category": "技术",
+  "tags": ["前端", "博客", "静态站点", "CSS"],
+  "cover": "/assets/img/cover-grid.svg",
+  "coverAlt": "网格纸上的浏览器窗口线框与彩色渐变",
+  "excerpt": "每次想写点东西，都先花一个周末折腾博客系统，这大概是一种病。这一次我决定反过来：先写内容，再让工具小到几乎不存在。",
+  "featured": false,
+  "views": "5.8k",
+  "reading": 7
+}
+-->
+<p>每次想写点东西，都先花一个周末折腾博客系统，这大概是一种病。装主题、调字体、研究插件，最后文章一个字没写，博客倒是换了三次皮肤。</p>
+
+<p>这一次我决定反过来：先写内容，再让工具小到几乎不存在。没有数据库，没有后台，没有构建框架，只有一个 Node 脚本、一个 CSS 文件，和一堆可以直接读的 HTML。</p>
+
+<h2 id="why">为什么是静态站点</h2>
+
+<p>博客的核心需求其实很少：</p>
+
+<ul>
+  <li>把文章按时间排好；</li>
+  <li>有分类和标签可以翻；</li>
+  <li>能搜索；</li>
+  <li>打开够快，十年后还能打开。</li>
+</ul>
+
+<p>这些都不需要服务端。静态文件的寿命比大多数框架长，部署也简单：把生成的文件夹丢到任何静态托管上就行。</p>
+
+<p>更重要的是，它逼你把内容当成文件来管理。每篇文章就是一个带 front matter 的 HTML 文件，改错了可以回滚，换电脑可以复制，平台挂了也还在。</p>
+
+<h2 id="structure">目录长什么样</h2>
+
+<pre><code class="language-text">blog/
+├─ content/
+│  ├─ site.json          # 站点信息
+│  └─ posts/*.html       # 文章 + front matter
+├─ theme/
+│  ├─ assets/css        # 样式
+│  ├─ assets/js         # 交互
+│  └─ layout.mjs        # 页面骨架
+├─ build.mjs             # 生成器
+└─ public/               # 生成结果</code></pre>
+
+<p>生成器只做四件事：读文章、算阅读时间、生成目录、套模板。没有任何依赖，<code>node build.mjs</code> 一秒跑完。</p>
+
+<h2 id="frontmatter">文章就是一封带元数据的信</h2>
+
+<p>每篇文章开头放一段 JSON，正文是可以直接阅读的 HTML。这样既不用学新的标记语法，也不会把内容锁在某个编辑器里。</p>
+
+<pre><code class="language-html">&lt;!--meta
+{
+  "slug": "hello-world",
+  "title": "第一篇文章",
+  "date": "2026-09-18",
+  "category": "随笔",
+  "tags": ["开始"]
+}
+--&gt;
+&lt;p&gt;正文从这里开始。&lt;/p&gt;</code></pre>
+
+<p>JSON 放在 HTML 注释里，浏览器会忽略它，生成器会读它。即使没有构建脚本，直接用浏览器打开源文件也能看到正文。</p>
+
+<h2 id="css">CSS 是设计的全部</h2>
+
+<p>这个站没有 UI 框架。所有东西都写在不到一千行的 CSS 里：变量、网格、卡片、导航、响应式断点、动效。</p>
+
+<p>先定义颜色和节奏：</p>
+
+<pre><code class="language-css">:root {
+  --ink: #1a1a1c;
+  --paper: #ffffff;
+  --muted: #8a8a90;
+  --rainbow: linear-gradient(
+    90deg,
+    #f79533, #f37055, #ef4e7b, #a166ab,
+    #5073b8, #1098ad, #07b39b, #6dba82
+  );
+}</code></pre>
+
+<p>然后用它们搭页面。颜色只出现两种地方：需要被注意的细节，以及需要被区分的内容。剩下的交给留白。</p>
+
+<h2 id="motion">动效的三个原则</h2>
+
+<h3>1. 只动一次</h3>
+
+<p>入场动画只负责把内容送到位，不循环、不闪烁、不抢注意力。用户第一次看到时觉得舒服，第十次看到时最好忘记它的存在。</p>
+
+<h3>2. 用 CSS，不用 JS</h3>
+
+<p>过渡和关键帧交给 CSS，JavaScript 只在元素进入视口时加一个 class。这样脚本出错时页面依然完整。</p>
+
+<h3>3. 尊重系统设置</h3>
+
+<p><code>prefers-reduced-motion</code> 不是可选项。对前庭功能敏感的人来说，大幅度的位移和缩放会造成真实的不适。</p>
+
+<pre><code class="language-css">@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}</code></pre>
+
+<h2 id="publish">发布，然后忘掉它</h2>
+
+<p>站点生成之后，部署就是复制文件。可以用 GitHub Pages、Cloudflare Pages，或者一台最便宜的 VPS。没有数据库要备份，没有缓存要清，也没有插件需要升级。</p>
+
+<p>我终于可以把「维护博客」的时间，重新花在「写博客」上。工具最好的状态，大概就是让你忘记它的存在。</p>
+
+<blockquote>
+  <p>不要为了一个可能写十年的博客，选一个只能活三年的技术栈。</p>
+</blockquote>

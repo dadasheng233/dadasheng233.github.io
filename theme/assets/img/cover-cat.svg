@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-label="一只白猫坐在发光的笔记本电脑前">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b0d18"/>
+      <stop offset=".52" stop-color="#171a2b"/>
+      <stop offset="1" stop-color="#242033"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#51d6d1" stop-opacity=".38"/>
+      <stop offset=".45" stop-color="#5073b8" stop-opacity=".17"/>
+      <stop offset="1" stop-color="#5073b8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="warm" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#f79533" stop-opacity=".25"/>
+      <stop offset="1" stop-color="#f79533" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="screen" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#142b3a"/>
+      <stop offset="1" stop-color="#0a1722"/>
+    </linearGradient>
+    <linearGradient id="rainbow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#f79533"/><stop offset=".16" stop-color="#f37055"/>
+      <stop offset=".32" stop-color="#ef4e7b"/><stop offset=".48" stop-color="#a166ab"/>
+      <stop offset=".64" stop-color="#5073b8"/><stop offset=".8" stop-color="#1098ad"/>
+      <stop offset="1" stop-color="#07b39b"/>
+    </linearGradient>
+    <linearGradient id="fur" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset=".72" stop-color="#f1eee9"/>
+      <stop offset="1" stop-color="#d9d2cb"/>
+    </linearGradient>
+    <filter id="blur"><feGaussianBlur stdDeviation="28"/></filter>
+    <filter id="blur2"><feGaussianBlur stdDeviation="6"/></filter>
+    <filter id="noise">
+      <feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="linear" slope=".045"/></feComponentTransfer>
+    </filter>
+    <clipPath id="frame"><rect width="1200" height="675" rx="0"/></clipPath>
+  </defs>
+  <g clip-path="url(#frame)">
+    <rect width="1200" height="675" fill="url(#bg)"/>
+    <circle cx="600" cy="440" r="330" fill="url(#glow)"/>
+    <circle cx="1035" cy="120" r="220" fill="url(#warm)"/>
+    <path d="M0 84h1200" stroke="url(#rainbow)" stroke-width="2" opacity=".7"/>
+    <g opacity=".32" fill="#fff">
+      <circle cx="160" cy="150" r="1.5"/><circle cx="280" cy="105" r="1.1"/><circle cx="420" cy="180" r="1.8"/>
+      <circle cx="760" cy="112" r="1.2"/><circle cx="930" cy="210" r="1.5"/><circle cx="1100" cy="160" r="1"/>
+      <circle cx="1020" cy="300" r="1.3"/><circle cx="220" cy="300" r="1"/>
+      <path d="m700 78 3 8 8 3-8 3-3 8-3-8-8-3 8-3Z" opacity=".8"/>
+      <path d="m350 230 2.2 6 6 2.2-6 2.2-2.2 6-2.2-6-6-2.2 6-2.2Z" opacity=".7"/>
+      <path d="m1120 350 2.5 6.8 6.8 2.5-6.8 2.5-2.5 6.8-2.5-6.8-6.8-2.5 6.8-2.5Z" opacity=".6"/>
+    </g>
+    <g opacity=".4" stroke="#8fa3c8" fill="none" stroke-width="1">
+      <path d="M0 520c150-18 240 14 360 0s190-30 300-10 210 34 330 16 150-22 210-12"/>
+      <path d="M0 548c120-12 230 12 350 0s210-24 320-6 220 26 330 10 140-16 200-8"/>
+    </g>
+    <path d="M240 556h720l34 54H206Z" fill="#0a0c12"/>
+    <path d="M240 556h720l10 16H230Z" fill="#2b3143" opacity=".7"/>
+    <path d="M333 256h534l46 284H287Z" fill="#05070c"/>
+    <path d="M348 268h504l40 258H308Z" fill="url(#screen)" stroke="#3d6b7a" stroke-width="1.5"/>
+    <g font-family="Consolas, monospace" font-size="17" fill="#9fe7df" opacity=".9">
+      <text x="372" y="320" fill="#f79533">const</text><text x="432" y="320" fill="#e8e8ef"> cat =</text><text x="510" y="320" fill="#f37055"> await</text><text x="580" y="320" fill="#e8e8ef"> live(</text><text x="650" y="320" fill="#87d6a5">'tororo'</text><text x="738" y="320" fill="#e8e8ef">);</text>
+      <text x="372" y="354" fill="#7c8db5">// 让页面有呼吸</text>
+      <text x="372" y="388" fill="#e8e8ef">cat.</text><text x="422" y="388" fill="#87b7f0">on</text><text x="450" y="388" fill="#e8e8ef">(</text><text x="462" y="388" fill="#87d6a5">'idle'</text><text x="520" y="388" fill="#e8e8ef">, () =&gt; {</text>
+      <text x="396" y="422" fill="#e8e8ef">page.</text><text x="462" y="422" fill="#87b7f0">breathe</text><text x="548" y="422" fill="#e8e8ef">();</text>
+      <text x="372" y="456" fill="#e8e8ef">});</text>
+      <text x="372" y="492" fill="#ef4e7b">▍</text>
+    </g>
+    <g opacity=".45" fill="#7be0d7">
+      <rect x="690" y="342" width="130" height="6" rx="3"/><rect x="690" y="362" width="96" height="6" rx="3"/>
+      <rect x="690" y="382" width="112" height="6" rx="3"/><rect x="690" y="402" width="72" height="6" rx="3"/>
+    </g>
+    <g transform="translate(930 330)">
+      <path d="M-93 42c-46 40-88 84-105 132-8 22 2 44 25 44 22 0 38-18 49-42 13-28 29-55 50-75Z" fill="url(#fur)" opacity=".95"/>
+      <path d="M-38 106c-62 24-101 80-84 128 11 31 44 44 74 30 25-12 37-36 51-60Z" fill="url(#fur)"/>
+      <path d="M-48 22c-62 0-94 48-94 108 0 47 22 88 58 112 14 9 28 14 42 14 26 0 45-14 58-35 11-18 18-43 18-74 0-72-38-125-82-125Z" fill="url(#fur)"/>
+      <path d="m-79 49-12-59 47 31Z" fill="url(#fur)"/>
+      <path d="m-82 34 4-30 22 20Z" fill="#efb6b6"/>
+      <path d="m3 49 12-59-47 31Z" fill="url(#fur)"/>
+      <path d="m6 34-4-30-22 20Z" fill="#efb6b6"/>
+      <ellipse cx="-52" cy="118" rx="11" ry="13" fill="#6fb9bc"/>
+      <ellipse cx="-8" cy="118" rx="11" ry="13" fill="#6fb9bc"/>
+      <ellipse cx="-52" cy="119" rx="5" ry="10" fill="#15161b"/>
+      <ellipse cx="-8" cy="119" rx="5" ry="10" fill="#15161b"/>
+      <circle cx="-50" cy="115" r="2.5" fill="#fff"/><circle cx="-6" cy="115" r="2.5" fill="#fff"/>
+      <path d="M-34 139c3 0 6 1.5 6 4 0 3-3 5-6 5s-6-2-6-5c0-2.5 3-4 6-4Z" fill="#e79b9b"/>
+      <path d="M-34 148v5M-34 153c-3 4-7 5-10 2M-34 153c3 4 7 5 10 2" fill="none" stroke="#7c6a64" stroke-width="2" stroke-linecap="round"/>
+      <path d="M-62 207c12-10 24-14 38-14s26 4 38 14l-7 20h-62Z" fill="#f79533"/>
+      <path d="M-43 224h18v32c-6 4-12 4-18 0Z" fill="#e4643f"/>
+      <path d="M-84 178c-8 30-16 62-10 92 5 23 30 28 42 10l14-22Z" fill="url(#fur)"/>
+      <path d="M-53 114c-10 5-19 13-25 23M-53 114c10 5 19 13 25 23" stroke="#d9cfc7" stroke-width="2" opacity=".55" fill="none"/>
+    </g>
+    <circle cx="930" cy="550" r="120" fill="#0a0c12" opacity=".4" filter="url(#blur2)"/>
+    <rect width="1200" height="675" filter="url(#noise)" opacity=".55"/>
+    <rect x="20" y="20" width="1160" height="635" fill="none" stroke="#ffffff" stroke-opacity=".08"/>
+  </g>
+</svg>
