@@ -224,7 +224,7 @@ const renderPostPage = (post, context) => {
 
 const renderHome = (pagePosts, current, total, site, stats) => {
   const content = `
-  ${current === 1 ? `<a class="home-word-card reveal" href="/words.html">
+  ${current === 0 ? `<a class="home-word-card reveal" href="/words.html">
     <span class="home-word-icon">${icon('i-book')}</span>
     <span class="home-word-copy">
       <span class="home-word-kicker">CET-4 VOCABULARY</span>

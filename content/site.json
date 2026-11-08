@@ -11,10 +11,10 @@
   "github": "https://github.com/",
   "rss": "/atom.xml",
   "footer": "技术即生活，生活即技术",
-  "keywords": "个人博客,前端,生活,摄影,阅读,Live2D",
+  "keywords": "个人博客,前端,生活,摄影,阅读",
   "links": [
     { "name": "GitHub", "url": "https://github.com/", "icon": "i-github" },
-    { "name": "邮箱", "url": "mailto:hello@example.com", "icon": "i-mail" },
+    { "name": "邮箱", "url": "mailto:1468057394@qq.com", "icon": "i-mail" },
     { "name": "RSS", "url": "/atom.xml", "icon": "i-rss" }
   ],
   "blogroll": [
