@@ -382,6 +382,7 @@ const renderWords = (site, stats, words) => {
   const first = words[0] || { word: '—', meaning: '还没有单词数据', tags: [] };
   const firstDay = (first.tags || []).find((tag) => /^DAY/i.test(tag)) || 'DAY 1';
   const firstChapter = (first.tags || []).find((tag) => /^第/.test(tag)) || '第一章';
+  const dayCount = new Set(words.flatMap((item) => (item.tags || []).filter((tag) => /^DAY/i.test(tag)))).size;
   const letters = [...new Set(words.map((item) => String(item.word || '').charAt(0).toUpperCase()).filter(Boolean))].sort();
   const letterOptions = letters.map((letter) => `<option value="${escapeHtml(letter)}">${escapeHtml(letter)}</option>`).join('');
 
@@ -390,7 +391,7 @@ const renderWords = (site, stats, words) => {
     <div class="page-header words-header">
       <p class="page-kicker">VOCABULARY</p>
       <h1 class="page-title">CET-4 单词本</h1>
-      <p class="page-subtitle">${escapeHtml(firstChapter)} · ${escapeHtml(firstDay)} · 共 ${total} 个词 · 进度只保存在当前浏览器</p>
+      <p class="page-subtitle">${escapeHtml(firstChapter)} · ${dayCount} 个 DAY · 共 ${total} 个词 · 进度只保存在当前浏览器</p>
     </div>
 
     <div class="word-stats" aria-label="单词统计">

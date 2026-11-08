@@ -2671,6 +2671,15 @@ body.page-leaving .container { animation: page-out .2s ease both; }
 .word-pager button:hover { color: #fff; background: var(--violet); border-color: var(--violet); }
 .word-pager button.is-current { color: #fff; background: var(--ink); border-color: var(--ink); }
 .word-pager button:disabled { opacity: .35; pointer-events: none; }
+.word-page-info {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 5px;
+  color: #9d968e;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: .4px;
+}
 
 /* Quiz */
 .quiz-start, .quiz-result {

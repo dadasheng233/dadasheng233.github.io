@@ -192,9 +192,7 @@
     const pageButtons = [];
     if (pages > 1) {
       pageButtons.push(`<button type="button" data-word-page="${listPage - 1}" ${listPage === 1 ? 'disabled' : ''}>上一页</button>`);
-      for (let page = 1; page <= pages; page++) {
-        pageButtons.push(`<button type="button" data-word-page="${page}" class="${page === listPage ? 'is-current' : ''}">${page}</button>`);
-      }
+      pageButtons.push(`<span class="word-page-info">${listPage} / ${pages}</span>`);
       pageButtons.push(`<button type="button" data-word-page="${listPage + 1}" ${listPage === pages ? 'disabled' : ''}>下一页</button>`);
     }
     pager.innerHTML = pageButtons.join('');

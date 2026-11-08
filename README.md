@@ -293,7 +293,7 @@ npm run dev     # 先构建再启动
 构建输出示例：
 
 ```text
-7 posts / 5 categories / 19 tags / 43 vocabulary words
+7 posts / 5 categories / 19 tags / 1742 vocabulary words
 2 home page(s), 6.5k words
 ```
 
