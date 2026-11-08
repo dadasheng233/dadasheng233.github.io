@@ -2889,6 +2889,7 @@ body.page-leaving .container { animation: page-out .2s ease both; }
   transition: transform .25s var(--ease), box-shadow .25s, background .25s;
 }
 .paper-card:hover { transform: translateY(-2px); background: #fff; box-shadow: 0 15px 30px -24px rgba(0,0,0,.5); }
+.paper-card[hidden], .paper-empty[hidden] { display: none !important; }
 .paper-card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .paper-date {
   color: var(--coral);
