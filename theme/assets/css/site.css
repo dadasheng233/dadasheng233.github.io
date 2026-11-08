@@ -359,6 +359,80 @@ body.nav-open .nav-toggle-line:nth-child(3) { transform: translateY(-7px) rotate
   gap: 46px;
 }
 
+.home-word-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  margin: 0 0 46px;
+  padding: 18px 24px;
+  color: var(--ink);
+  background:
+    radial-gradient(500px 160px at 0% 0%, rgba(247, 149, 51, .14), transparent 70%),
+    var(--paper);
+  border: 1px solid rgba(255, 255, 255, .2);
+  border-top: 3px solid transparent;
+  border-image: var(--rainbow) 1;
+  box-shadow: var(--shadow);
+  transition: transform .4s var(--ease), box-shadow .4s var(--ease);
+}
+.home-word-card:hover {
+  color: var(--ink);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lift);
+}
+.home-word-icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  flex: none;
+  color: #fff;
+  background: linear-gradient(135deg, var(--orange), var(--coral));
+  border-radius: 50%;
+  box-shadow: 0 8px 18px -10px rgba(239, 78, 123, .8);
+}
+.home-word-icon .icon { width: 20px; height: 20px; }
+.home-word-copy {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+.home-word-kicker {
+  color: var(--coral);
+  font-family: var(--sans);
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 2.4px;
+}
+.home-word-copy strong {
+  color: #2d2930;
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.5;
+}
+.home-word-copy > span:last-child {
+  color: #999189;
+  font-family: var(--sans);
+  font-size: 10.5px;
+  line-height: 1.7;
+}
+.home-word-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex: none;
+  color: #a06b4e;
+  font-family: var(--sans);
+  font-size: 11px;
+  white-space: nowrap;
+  transition: color .2s, gap .2s;
+}
+.home-word-action .icon { width: 14px; height: 14px; }
+.home-word-card:hover .home-word-action { color: var(--coral); gap: 9px; }
+
 .post {
   position: relative;
   padding: 45px 44px 38px;
@@ -2809,6 +2883,11 @@ body.page-leaving .container { animation: page-out .2s ease both; }
 
   .main { padding: 6px 5px 0; }
   .posts-expand { gap: 10px; }
+  .home-word-card { gap: 12px; margin-bottom: 10px; padding: 14px 16px; }
+  .home-word-icon { width: 40px; height: 40px; }
+  .home-word-copy strong { font-size: 15.5px; }
+  .home-word-copy > span:last-child { font-size: 9.5px; }
+  .home-word-action { display: none; }
   .post, .post-detail, .page-card { padding: 25px 20px 24px; }
   .post-detail { padding-top: 28px; }
   .post:hover { transform: none; box-shadow: var(--shadow); }

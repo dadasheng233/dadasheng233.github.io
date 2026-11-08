@@ -224,6 +224,15 @@ const renderPostPage = (post, context) => {
 
 const renderHome = (pagePosts, current, total, site, stats) => {
   const content = `
+  ${current === 1 ? `<a class="home-word-card reveal" href="/words.html">
+    <span class="home-word-icon">${icon('i-book')}</span>
+    <span class="home-word-copy">
+      <span class="home-word-kicker">CET-4 VOCABULARY</span>
+      <strong>大学英语四级高频词汇</strong>
+      <span>${stats.vocabulary} 个词 · ${stats.vocabularyDays} 个 DAY · 卡片 / 词表 / 测验</span>
+    </span>
+    <span class="home-word-action">开始背词 ${icon('i-arrow-right')}</span>
+  </a>` : ''}
   <div class="posts-expand">
     ${pagePosts.map(renderPostCard).join('\n')}
   </div>
@@ -709,6 +718,8 @@ const main = async () => {
     tags: tags.length,
     words: totalWords,
     reading: totalReading,
+    vocabulary: wordList.length,
+    vocabularyDays: new Set(wordList.flatMap((item) => (item.tags || []).filter((tag) => /^DAY/i.test(tag)))).size,
     wordsLabel: totalWords >= 1000 ? (totalWords / 1000).toFixed(1).replace(/\.0$/, '') + 'k' : String(totalWords),
     timeLabel: totalReading >= 60
       ? `${Math.floor(totalReading / 60)} 小时 ${totalReading % 60} 分`
