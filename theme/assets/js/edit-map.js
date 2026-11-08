@@ -134,6 +134,12 @@
       selectors: ['.words-page']
     },
     {
+      id: 'home-word-card', group: '文章内容', label: '首页 CET-4 卡片',
+      file: 'build.mjs', field: 'renderHome() 里的 .home-word-card',
+      note: '只在首页第 1 页出现；显示总词数和 DAY 数',
+      selectors: ['.home-word-card']
+    },
+    {
       id: 'auto-pages', group: '文章内容', label: '归档、分类、标签',
       file: 'build.mjs', field: '自动生成',
       note: '根据文章 front matter 自动汇总，不用手写',

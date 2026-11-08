@@ -52,6 +52,7 @@ public/       生成结果，不要手改
 | 关于页 | `content/about.html` |
 | 四级单词 | `content/words.json` |
 | 单词页面交互 | `theme/assets/js/words.js` |
+| 首页 CET-4 入口卡片 | `build.mjs → renderHome()` + `.home-word-card` |
 | 头像、封面、照片 | `theme/assets/img/` |
 | 颜色、宽度、字体 | `theme/assets/css/site.css` 的 `:root` |
 | 小猫台词 | `live2d/waifu-tips.json` |
@@ -288,6 +289,7 @@ CET-4 单词本的数据。数组，每个元素：
 2. 清洗字段
 3. 复制成 `public/words.json`
 4. 生成 `/words.html`
+5. 在首页第 1 页插入 `.home-word-card` 入口，显示总词数和 DAY 数
 
 学习进度不写回这个文件，只存在浏览器 localStorage。
 
@@ -391,7 +393,7 @@ node build.mjs
 | `pageFile(n)` | 页码 | string | 输出文件路径 |
 | `renderPagination(current,total)` | 页码 | HTML | 分页 |
 | `renderPostPage(post,ctx)` | Post/上下文 | HTML | 文章页 |
-| `renderHome(posts,current,total,site,stats)` | 文章切片 | HTML | 首页 |
+| `renderHome(posts,current,total,site,stats)` | 文章切片 | HTML | 首页 + 第 1 页 CET 卡片 + 分页 |
 | `renderArchives(posts,site,stats)` | 全部文章 | HTML | 归档页 |
 | `renderCategories(categories,site,stats)` | 分类 | HTML | 分类页 |
 | `renderTags(tags,posts,site,stats)` | 标签 | HTML | 标签页 |
@@ -675,6 +677,8 @@ wanfeng:words:wrong         错词数组
 | 标签 | `build.mjs` | `renderTags()` |
 | 单词数据 | `content/words.json` | `word` / `meaning` / `example` |
 | 单词本页面 | `build.mjs` + `theme/assets/js/words.js` | `renderWords()` / 卡片 / 词表 / 测验 |
+| 首页 CET 卡片 | `build.mjs → renderHome()` | `.home-word-card`，仅第 1 页 |
+| 首页 CET 文案/颜色 | `theme/assets/css/site.css` | `.home-word-card` / `.home-word-*` |
 | RSS | `build.mjs` | `renderAtom()` |
 | 站点地图 | `build.mjs` | `renderSitemap()` |
 | 搜索 | `theme/assets/js/site.js` | `search` 段 + `layout.mjs → searchModal()` |
@@ -688,6 +692,7 @@ wanfeng:words:wrong         错词数组
 | 小猫大小 | `theme/assets/css/site.css` | `#waifu` / `#live2d` |
 | 颜色 | `theme/assets/css/site.css` | `:root` |
 | 卡片样式 | `theme/assets/css/site.css` | `.post` / `.post-cover` |
+| 首页 CET 卡片 | `theme/assets/css/site.css` | `.home-word-card` / `.home-word-icon` / `.home-word-action` |
 | 正文排版 | `theme/assets/css/site.css` | `.post-body` |
 | 图标 | `theme/assets/icons.svg` | `<symbol id="...">` |
 | 图标预览 | `theme/assets/icons.html` | 打开看全部 |
@@ -727,6 +732,15 @@ theme/layout.mjs → 如果有写死的文案
 "cover": "/assets/img/my-cover.png",
 "coverAlt": "封面描述"
 ```
+
+### 改首页 CET 卡片
+
+卡片只出现在首页第 1 页，位置在文章列表上方。
+
+- 文案 / 链接：`build.mjs → renderHome()` 里的 `.home-word-card`
+- 总词数 / DAY 数：来自 `stats.vocabulary` 和 `stats.vocabularyDays`
+- 样式：`theme/assets/css/site.css` 的 `.home-word-card` / `.home-word-*`
+- 不想显示：删掉 `renderHome()` 里的 `current === 1 ? ...` 整段
 
 ### 改主色
 
