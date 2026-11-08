@@ -4,6 +4,8 @@
 
 视觉参考了 Hexo NexT 的 Muse 主题和[黑果小兵的博客](https://blog.daliansky.net/)，但 HTML、CSS、JavaScript、文章和插画都是重新写的。小猫使用 Tororo 模型，加载器是开源的 [live2d-widget](https://github.com/stevenjoezhang/live2d-widget)。
 
+> 不知道代码在哪里？先看 **[REFERENCE.md](REFERENCE.md)**：里面有路由表、数据字段、构建函数、CSS 变量和「想改 X 去哪里找代码」的对照表。
+
 ## 直接看
 
 ```text
