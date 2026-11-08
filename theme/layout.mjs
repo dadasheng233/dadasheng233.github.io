@@ -10,6 +10,7 @@ const NAV = [
   { key: 'archives', label: '归档', href: '/archives.html', icon: 'i-archive' },
   { key: 'categories', label: '分类', href: '/categories.html', icon: 'i-grid' },
   { key: 'tags', label: '标签', href: '/tags.html', icon: 'i-tag' },
+  { key: 'words', label: '单词', href: '/words.html', icon: 'i-book' },
   { key: 'about', label: '关于', href: '/about.html', icon: 'i-user' }
 ];
 
@@ -228,6 +229,7 @@ export function renderPage({ site, page, content, stats }) {
 
   <script src="/assets/js/site.js" defer></script>
   <script src="/assets/js/edit-map.js" defer></script>
+  <script src="/assets/js/words.js" defer></script>
   <script type="module" src="/assets/js/cat.js"></script>
 </body>
 </html>`;

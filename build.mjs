@@ -377,6 +377,121 @@ const renderTags = (tags, posts, site, stats) => {
   });
 };
 
+const renderWords = (site, stats, words) => {
+  const total = words.length;
+  const first = words[0] || { word: '—', meaning: '还没有单词数据', tags: [] };
+  const firstDay = (first.tags || []).find((tag) => /^DAY/i.test(tag)) || 'DAY 1';
+  const firstChapter = (first.tags || []).find((tag) => /^第/.test(tag)) || '第一章';
+  const letters = [...new Set(words.map((item) => String(item.word || '').charAt(0).toUpperCase()).filter(Boolean))].sort();
+  const letterOptions = letters.map((letter) => `<option value="${escapeHtml(letter)}">${escapeHtml(letter)}</option>`).join('');
+
+  const content = `
+  <div class="words-page" id="words-app" data-total="${total}">
+    <div class="page-header words-header">
+      <p class="page-kicker">VOCABULARY</p>
+      <h1 class="page-title">CET-4 单词本</h1>
+      <p class="page-subtitle">${escapeHtml(firstChapter)} · ${escapeHtml(firstDay)} · 共 ${total} 个词 · 进度只保存在当前浏览器</p>
+    </div>
+
+    <div class="word-stats" aria-label="单词统计">
+      <div class="word-stat"><strong id="word-stat-total">${total}</strong><span>总词数</span></div>
+      <div class="word-stat"><strong id="word-stat-known">0</strong><span>已掌握</span></div>
+      <div class="word-stat"><strong id="word-stat-review">0</strong><span>待复习</span></div>
+      <div class="word-stat"><strong id="word-stat-rate">0%</strong><span>完成度</span></div>
+    </div>
+
+    <div class="word-tabs" role="tablist" aria-label="单词模式">
+      <button class="word-tab is-active" type="button" role="tab" aria-selected="true" data-word-tab="cards">${icon('i-book')} 卡片记忆</button>
+      <button class="word-tab" type="button" role="tab" aria-selected="false" data-word-tab="list">${icon('i-search')} 词表</button>
+      <button class="word-tab" type="button" role="tab" aria-selected="false" data-word-tab="quiz">${icon('i-sparkle')} 小测验</button>
+    </div>
+
+    <section class="word-panel" data-word-panel="cards" role="tabpanel">
+      <div class="word-stage">
+        <button class="word-card" id="word-card" type="button" aria-label="翻转单词卡片">
+          <span class="word-face word-front">
+            <span class="word-eyebrow" id="word-position">${escapeHtml(firstDay)} · 01 / ${total}</span>
+            <strong class="word-front-text" id="word-front">${escapeHtml(first.word)}</strong>
+            <span class="word-phonetic" id="word-phonetic"></span>
+            <span class="word-hint">点击翻面 · 空格</span>
+          </span>
+          <span class="word-face word-back">
+            <span class="word-eyebrow">MEANING</span>
+            <span class="word-meaning" id="word-meaning">${escapeHtml(first.meaning || '')}</span>
+            <span class="word-example" id="word-example"></span>
+          </span>
+        </button>
+
+        <div class="word-actions" aria-label="记忆程度">
+          <button class="word-mark is-unknown" type="button" data-word-mark="unknown">不认识 <kbd>1</kbd></button>
+          <button class="word-mark is-fuzzy" type="button" data-word-mark="fuzzy">模糊 <kbd>2</kbd></button>
+          <button class="word-mark is-known" type="button" data-word-mark="known">认识 <kbd>3</kbd></button>
+        </div>
+
+        <div class="word-stage-tools">
+          <button type="button" id="word-audio">${icon('i-music')} 发音</button>
+          <button type="button" id="word-shuffle">${icon('i-sparkle')} 随机</button>
+          <button type="button" id="word-prev">${icon('i-chevron-left')} 上一个</button>
+          <button type="button" id="word-next">下一个 ${icon('i-chevron-right')}</button>
+        </div>
+
+        <div class="word-progress-line" aria-hidden="true"><span id="word-progress"></span></div>
+      </div>
+    </section>
+
+    <section class="word-panel" data-word-panel="list" role="tabpanel" hidden>
+      <div class="word-toolbar">
+        <label class="word-search">
+          ${icon('i-search')}
+          <input id="word-search" type="search" placeholder="搜索英文或中文释义…" autocomplete="off">
+        </label>
+        <select id="word-letter" aria-label="按首字母筛选">
+          <option value="all">全部字母</option>
+          ${letterOptions}
+        </select>
+        <select id="word-status" aria-label="按学习状态筛选">
+          <option value="all">全部状态</option>
+          <option value="new">未学</option>
+          <option value="unknown">不认识</option>
+          <option value="fuzzy">模糊</option>
+          <option value="known">已掌握</option>
+        </select>
+      </div>
+      <div class="word-list-head">
+        <span id="word-list-count">共 ${total} 个词</span>
+        <span>点击任意一行回到卡片</span>
+      </div>
+      <div class="word-list" id="word-list"></div>
+      <div class="word-pager" id="word-pager"></div>
+    </section>
+
+    <section class="word-panel" data-word-panel="quiz" role="tabpanel" hidden>
+      <div class="word-quiz" id="word-quiz">
+        <div class="quiz-start">
+          <p class="quiz-kicker">QUICK QUIZ</p>
+          <h2>四选一 · 10 题</h2>
+          <p>看英文，选中文。答错的词会进入错词本。</p>
+          <button class="btn-read" type="button" id="quiz-start">开始测验 ${icon('i-arrow-right')}</button>
+        </div>
+      </div>
+    </section>
+  </div>`;
+
+  return renderPage({
+    site,
+    stats,
+    page: {
+      title: '单词本',
+      description: '大学英语四级高频词汇卡片、词表和测验。',
+      active: 'words',
+      path: '/words.html',
+      image: toAbsolute(site.url, '/assets/img/cover-book.svg'),
+      canonical: toAbsolute(site.url, '/words.html')
+    },
+    content
+  });
+};
+
 const renderAbout = async (site, stats) => {
   const aboutBody = await readFile(join(contentDir, 'about.html'), 'utf8');
   const content = `
@@ -490,6 +605,26 @@ const main = async () => {
   if (process.env.SITE_URL) {
     site.url = process.env.SITE_URL.replace(/\/+$/, '');
   }
+
+  let words = [];
+  try {
+    words = await readJson(join(contentDir, 'words.json'));
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error;
+  }
+  if (!Array.isArray(words)) throw new Error('content/words.json must be an array');
+  const wordList = words
+    .map((item) => ({
+      word: String(item.word || '').trim(),
+      phonetic: String(item.phonetic || '').trim(),
+      pos: String(item.pos || '').trim(),
+      meaning: String(item.meaning || '').trim(),
+      example: String(item.example || '').trim(),
+      translation: String(item.translation || '').trim(),
+      tags: Array.isArray(item.tags) ? item.tags.map(String) : []
+    }))
+    .filter((item) => item.word);
+
   const postFiles = (await readdir(join(contentDir, 'posts'))).filter((file) => file.endsWith('.html'));
 
   const rawPosts = [];
@@ -600,8 +735,11 @@ const main = async () => {
   await writePage('archives.html', renderArchives(posts, site, stats));
   await writePage('categories.html', renderCategories(categories, site, stats));
   await writePage('tags.html', renderTags(tags, posts, site, stats));
+  await writePage('words.html', renderWords(site, stats, wordList));
   await writePage('about.html', await renderAbout(site, stats));
   await writePage('404.html', render404(site, stats));
+
+  await writeFile(join(outDir, 'words.json'), JSON.stringify(wordList), 'utf8');
 
   const searchIndex = posts.map((post) => ({
     title: post.title,
@@ -615,14 +753,14 @@ const main = async () => {
   await writeFile(join(outDir, 'search.json'), JSON.stringify(searchIndex), 'utf8');
   await writeFile(join(outDir, 'atom.xml'), renderAtom(posts, site), 'utf8');
 
-  const sitemapPages = ['/', ...Array.from({ length: Math.max(0, totalPages - 1) }, (_, i) => `/page/${i + 2}/`), ...posts.map((post) => post.path), '/archives.html', '/categories.html', '/tags.html', '/about.html'];
+  const sitemapPages = ['/', ...Array.from({ length: Math.max(0, totalPages - 1) }, (_, i) => `/page/${i + 2}/`), ...posts.map((post) => post.path), '/archives.html', '/categories.html', '/tags.html', '/words.html', '/about.html'];
   await writeFile(join(outDir, 'sitemap.xml'), renderSitemap(site, sitemapPages), 'utf8');
   await writeFile(join(outDir, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${site.url}/sitemap.xml\n`, 'utf8');
   await writeFile(join(outDir, '.nojekyll'), '', 'utf8');
 
   console.log('');
   console.log('  晚风小筑 · build complete');
-  console.log(`  ${posts.length} posts / ${categories.length} categories / ${tags.length} tags`);
+  console.log(`  ${posts.length} posts / ${categories.length} categories / ${tags.length} tags / ${wordList.length} vocabulary words`);
   console.log(`  ${totalPages} home page(s), ${stats.wordsLabel} words`);
   console.log(`  output: ${relative(process.cwd(), outDir) || outDir}`);
   console.log('');

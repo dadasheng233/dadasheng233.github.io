@@ -29,6 +29,7 @@ npm start
 
 - 首页文章流 + 分页
 - 文章详情页：目录、代码复制、图片灯箱、标签、版权、前后篇
+- CET-4 单词本：翻卡记忆、词表搜索、四选一测验、本地学习进度
 - 归档、分类、标签、关于、404
 - 全站搜索（标题 / 标签 / 分类 / 正文）
 - RSS Atom、`sitemap.xml`、`robots.txt`
@@ -61,6 +62,7 @@ npm start
 blog/
 ├─ content/
 │  ├─ site.json               站点名、作者、邮箱、链接
+│  ├─ words.json              CET-4 单词数据
 │  ├─ about.html              关于页正文
 │  └─ posts/*.html            文章 + front matter
 ├─ theme/
@@ -70,6 +72,7 @@ blog/
 │     ├─ css/site.css         全部样式与动效
 │     ├─ js/site.js           搜索、灯箱、留言、标签筛选、转场
 │     ├─ js/cat.js            Live2D 启动与静态猫兜底
+│     ├─ js/words.js          单词卡、词表、测验
 │     ├─ icons.svg            SVG 图标 sprite
 │     └─ img/*.svg            头像、封面、favicon
 ├─ live2d/                    Tororo 模型与台词配置
@@ -112,6 +115,36 @@ blog/
 - 构建：`npm run build`
 
 摘要、分类、标签、搜索索引、RSS、归档和分页都会自动重新生成。
+
+## 单词本
+
+单词数据在 `content/words.json`，页面地址：
+
+```text
+http://127.0.0.1:4200/words.html
+```
+
+每个词：
+
+```json
+{
+  "word": "nuisance",
+  "phonetic": "",
+  "pos": "",
+  "meaning": "令人讨厌的东西，讨厌的人",
+  "example": "",
+  "translation": "",
+  "tags": ["DAY 1", "第一章"]
+}
+```
+
+页面有三种模式：
+
+- 卡片：翻面看释义，按 `1/2/3` 标记不认识/模糊/认识
+- 词表：按字母、状态、关键词筛选
+- 测验：10 题四选一，错词会记录
+
+进度只存在浏览器 `localStorage`，换设备不同步。
 
 ## 改成你的
 
@@ -260,7 +293,7 @@ npm run dev     # 先构建再启动
 构建输出示例：
 
 ```text
-6 posts / 5 categories / 18 tags
+7 posts / 5 categories / 19 tags / 43 vocabulary words
 2 home page(s), 6.5k words
 ```
 

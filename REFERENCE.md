@@ -50,6 +50,8 @@ public/       生成结果，不要手改
 | 站名、作者、邮箱、GitHub、页脚 | `content/site.json` |
 | 文章 | `content/posts/*.html` |
 | 关于页 | `content/about.html` |
+| 四级单词 | `content/words.json` |
+| 单词页面交互 | `theme/assets/js/words.js` |
 | 头像、封面、照片 | `theme/assets/img/` |
 | 颜色、宽度、字体 | `theme/assets/css/site.css` 的 `:root` |
 | 小猫台词 | `live2d/waifu-tips.json` |
@@ -74,6 +76,7 @@ public/       生成结果，不要手改
 blog/
 ├─ content/                        输入：内容
 │  ├─ site.json                    站点配置
+│  ├─ words.json                   CET-4 单词数据
 │  ├─ about.html                   关于页正文
 │  └─ posts/                       文章
 │     ├─ hello-live2d.html
@@ -88,6 +91,7 @@ blog/
 │     ├─ js/site.js                全站交互
 │     ├─ js/cat.js                 Live2D 启动/兜底
 │     ├─ js/edit-map.js            配置地图
+│     ├─ js/words.js               单词本交互
 │     ├─ icons.svg                 SVG 图标 sprite
 │     ├─ icons.html                图标预览页
 │     └─ img/                      头像、封面、照片
@@ -252,6 +256,41 @@ npm run check     # 检查内部链接和资源
 
 修改文章的分类/标签后，重新构建即可。
 
+### 3.5 `content/words.json`
+
+CET-4 单词本的数据。数组，每个元素：
+
+| 字段 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+| `word` | string | 是 | 英文单词，也是进度记录的 key |
+| `phonetic` | string | 否 | 音标 |
+| `pos` | string | 否 | 词性，如 `v.` |
+| `meaning` | string | 是 | 中文释义 |
+| `example` | string | 否 | 英文例句 |
+| `translation` | string | 否 | 例句翻译 |
+| `tags` | string[] | 否 | `DAY 1`、`第一章`、`高频` 等 |
+
+```json
+{
+  "word": "nuisance",
+  "phonetic": "",
+  "pos": "",
+  "meaning": "令人讨厌的东西，讨厌的人",
+  "example": "",
+  "translation": "",
+  "tags": ["DAY 1", "第一章", "高频"]
+}
+```
+
+构建时会：
+
+1. 读取 `content/words.json`
+2. 清洗字段
+3. 复制成 `public/words.json`
+4. 生成 `/words.html`
+
+学习进度不写回这个文件，只存在浏览器 localStorage。
+
 ---
 
 ## 4. 路由 / 页面接口
@@ -266,6 +305,8 @@ npm run check     # 检查内部链接和资源
 | GET | `/archives.html` | 归档 | `build.mjs → renderArchives()` |
 | GET | `/categories.html` | 分类 | `build.mjs → renderCategories()` |
 | GET | `/tags.html` | 标签 | `build.mjs → renderTags()` |
+| GET | `/words.html` | CET-4 单词本 | `build.mjs → renderWords()` + `words.js` |
+| GET | `/words.json` | 单词数据 | `content/words.json` |
 | GET | `/about.html` | 关于 | `build.mjs → renderAbout()` |
 | GET | `/404.html` | 404 页面 | `build.mjs → render404()` |
 | GET | `/search.json` | 搜索索引 | `build.mjs → main()` |
@@ -276,6 +317,8 @@ npm run check     # 检查内部链接和资源
 | GET | `/live2d/*` | 小猫模型和台词 | `live2d/` |
 | GET | `/vendor/live2d/*` | Live2D 运行时 | `vendor/live2d/` |
 | GET | `/?edit-map=1` | 首页 + 自动打开配置地图 | `theme/assets/js/edit-map.js` |
+| GET | `/words.html?tab=list` | 单词本直接打开词表 | `theme/assets/js/words.js` |
+| GET | `/words.html?tab=quiz` | 单词本直接打开测验 | `theme/assets/js/words.js` |
 
 没有 POST / PUT / DELETE。搜索、留言、标签筛选都在浏览器里完成。
 
@@ -521,6 +564,31 @@ edit-map-open               配置地图是否打开
 - 悬停时按 `C` 复制路径
 - 配置地图只读，不修改文件
 
+### 7.4 `words.js`
+
+单词本页面的全部交互：
+
+| 功能 | 关键选择器/键 | 说明 |
+|---|---|---|
+| 读取单词 | `/words.json` | 页面加载后 fetch |
+| 翻卡 | `#word-card`、`Space` | 点击或空格翻面 |
+| 记忆程度 | `[data-word-mark]`、`1/2/3` | 不认识/模糊/认识 |
+| 发音 | `#word-audio` | Web Speech API |
+| 随机/前后 | `#word-shuffle`、`#word-prev`、`#word-next` | 卡片切换 |
+| 词表 | `#word-list`、`#word-search`、`#word-letter`、`#word-status` | 搜索、字母、状态筛选 |
+| 分页 | `#word-pager` | 每页 15 条 |
+| 测验 | `#word-quiz` | 10 题四选一 |
+| 页面 tab | `?tab=cards/list/quiz` | 可直接打开指定模式 |
+
+localStorage：
+
+```text
+wanfeng:words:progress      { "word": "known" | "fuzzy" | "unknown" }
+wanfeng:words:wrong         错词数组
+```
+
+单词数据不写回，换设备不会同步。
+
 ---
 
 ## 8. CSS 参考
@@ -605,6 +673,8 @@ edit-map-open               配置地图是否打开
 | 归档 | `build.mjs` | `renderArchives()` |
 | 分类 | `build.mjs` | `renderCategories()` |
 | 标签 | `build.mjs` | `renderTags()` |
+| 单词数据 | `content/words.json` | `word` / `meaning` / `example` |
+| 单词本页面 | `build.mjs` + `theme/assets/js/words.js` | `renderWords()` / 卡片 / 词表 / 测验 |
 | RSS | `build.mjs` | `renderAtom()` |
 | 站点地图 | `build.mjs` | `renderSitemap()` |
 | 搜索 | `theme/assets/js/site.js` | `search` 段 + `layout.mjs → searchModal()` |

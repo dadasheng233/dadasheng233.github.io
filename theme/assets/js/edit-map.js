@@ -128,6 +128,12 @@
       selectors: ['.about-card']
     },
     {
+      id: 'words', group: '文章内容', label: '四级单词本',
+      file: 'content/words.json', field: 'word / meaning / example',
+      note: '卡片、词表、测验都读取这个文件；页面逻辑在 words.js',
+      selectors: ['.words-page']
+    },
+    {
       id: 'auto-pages', group: '文章内容', label: '归档、分类、标签',
       file: 'build.mjs', field: '自动生成',
       note: '根据文章 front matter 自动汇总，不用手写',
