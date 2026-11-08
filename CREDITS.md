@@ -20,6 +20,11 @@
 - `theme/assets/icons.svg`、`theme/assets/img/*.svg`：为本项目手写的 SVG。
 - 卡通白猫头像与静态兜底猫图由参考图整理生成，仅作演示。
 
+## PDF 阅读器与真题
+
+- **[PDF.js](https://mozilla.github.io/pdf.js/)**：`theme/assets/vendor/pdfjs/`，版本 4.10.38，Apache-2.0。许可证见 `theme/assets/vendor/pdfjs/LICENSE`。
+- **四级真题 PDF**：`theme/assets/papers/`，由站主提供的本地资料，仅用于个人学习。试题和解析版权属于原出版方；公开部署前请确认授权。
+
 ## 字体
 
 不打包字体，使用系统字体栈：

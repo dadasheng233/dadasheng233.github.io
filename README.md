@@ -31,6 +31,7 @@ npm start
 - 首页 CET-4 单词卡片入口，显示总词数和 DAY 数
 - 文章详情页：目录、代码复制、图片灯箱、标签、版权、前后篇
 - CET-4 单词本：翻卡记忆、词表搜索、四选一测验、本地学习进度
+- CET-4 真题库：2024–2025 试卷 + 解析，PDF.js 在线阅读
 - 归档、分类、标签、关于、404
 - 全站搜索（标题 / 标签 / 分类 / 正文）
 - RSS Atom、`sitemap.xml`、`robots.txt`
@@ -190,6 +191,32 @@ http://127.0.0.1:4200/?edit-map=1
 - 点页面元素只会提示路径，不会跳转；按 `C` 可以复制路径
 - 它只是阅读辅助，**不会修改任何文件**
 
+## 真题库
+
+2024–2025 四级真题和解析，列表页：
+
+```text
+http://127.0.0.1:4200/papers.html
+```
+
+阅读器：
+
+```text
+http://127.0.0.1:4200/paper.html?file=/assets/papers/2024-06/set1-paper.pdf
+```
+
+- 9 套真题，18 份 PDF，约 336MB
+- PDF 文件在 `theme/assets/papers/`
+- 索引在 `content/papers.json`
+- 阅读器用本地 PDF.js，支持翻页、缩放、适合宽度、全屏、下载
+- 听力音频暂未导入，因为音频总量约 1GB，加上 PDF 会超过 GitHub Pages 上限
+
+增加试卷：
+
+1. 把 PDF 放进 `theme/assets/papers/<年份-月份>/`
+2. 在 `content/papers.json` 加一条
+3. `npm run build`
+
 ## 部署到 GitHub Pages
 
 这个项目已经带好 GitHub Actions 配置：`.github/workflows/pages.yml`。推送到 `main` 后会自动构建 `public/` 并部署。
@@ -296,8 +323,8 @@ npm run dev     # 先构建再启动
 构建输出示例：
 
 ```text
-7 posts / 5 categories / 19 tags / 1742 vocabulary words
-2 home page(s), 6.5k words
+2 posts / 2 categories / 6 tags / 1742 vocabulary words / 9 paper sets
+1 home page(s), 2k words
 ```
 
 ## 已知取舍
@@ -305,6 +332,9 @@ npm run dev     # 先构建再启动
 - 文章是 HTML，不是 Markdown。这样不用装 Markdown 解析器，也方便直接塞入复杂组件；写纯文字时稍微啰嗦一点。
 - 小猫的 8 段随机动作来自模型自身，不做额外编排。
 - 免费静态托管通常没有服务端，留言和阅读量都是演示数据；阅读量在 front matter 里手写。
+- 真题 PDF 目前只导入 2024–2025 的 9 套，共约 336MB；听力音频约 1GB，和 PDF 一起会超过 GitHub Pages 上限，暂未导入。
+- 真题 PDF 由你提供，默认按个人学习用途使用；公开部署前请确认资料版权。
+- PDF 阅读器使用 PDF.js，许可证在 `theme/assets/vendor/pdfjs/LICENSE`。
 - 插画是 SVG 手绘的抽象场景，不是照片。想换成自己的照片，直接替换 cover 文件即可。
 
 ---

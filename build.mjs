@@ -502,6 +502,101 @@ const renderWords = (site, stats, words) => {
   });
 };
 
+const renderPapers = (papers, site, stats) => {
+  const years = [...new Set(papers.map((paper) => paper.year))].sort((a, b) => b - a);
+  const filters = years.map((year) => `<button class="paper-filter" type="button" data-paper-filter="${year}">${year}</button>`).join('');
+  const cards = papers.map((paper) => {
+    const paperUrl = `/paper.html?file=${encodeURIComponent(paper.paper)}&title=${encodeURIComponent(paper.label + ' · 试卷')}&back=${encodeURIComponent('/papers.html')}`;
+    const answerUrl = `/paper.html?file=${encodeURIComponent(paper.answer)}&title=${encodeURIComponent(paper.label + ' · 解析')}&back=${encodeURIComponent('/papers.html')}`;
+    return `<article class="paper-card" data-paper-year="${paper.year}">
+      <div class="paper-card-top">
+        <span class="paper-date">${paper.year}.${String(paper.month).padStart(2, '0')}</span>
+        <span class="paper-set">第 ${paper.set} 套</span>
+      </div>
+      <h2>${escapeHtml(paper.label)}</h2>
+      <p>试卷 ${escapeHtml(paper.paperSize)} · 解析 ${escapeHtml(paper.answerSize)}</p>
+      <div class="paper-actions">
+        <a class="paper-btn is-primary" href="${paperUrl.replace(/&/g, '&amp;')}">打开试卷 ${icon('i-arrow-right')}</a>
+        <a class="paper-btn" href="${answerUrl.replace(/&/g, '&amp;')}">查看解析</a>
+      </div>
+    </article>`;
+  }).join('');
+
+  const content = `
+  <div class="papers-page" id="papers-app">
+    <div class="page-header">
+      <p class="page-kicker">CET-4 PAPERS</p>
+      <h1 class="page-title">四级真题库</h1>
+      <p class="page-subtitle">2024–2025 · ${papers.length} 套 · 试卷和解析都在本地，打开就能读</p>
+    </div>
+
+    <div class="paper-toolbar">
+      <div class="paper-filters" id="paper-filters">
+        <button class="paper-filter is-active" type="button" data-paper-filter="all">全部</button>
+        ${filters}
+      </div>
+      <span class="paper-count" id="paper-count">${papers.length} 套</span>
+    </div>
+
+    <div class="paper-list" id="paper-list">${cards}</div>
+    <p class="paper-empty" id="paper-empty" hidden>这个年份还没有试卷。</p>
+  </div>`;
+
+  return renderPage({
+    site,
+    stats,
+    page: {
+      title: '四级真题库',
+      description: '2024-2025 大学英语四级真题 PDF 和解析，在线阅读。',
+      active: 'papers',
+      path: '/papers.html',
+      image: toAbsolute(site.url, '/assets/img/cover-book.svg'),
+      canonical: toAbsolute(site.url, '/papers.html')
+    },
+    content
+  });
+};
+
+const renderPaperReader = (site, stats) => {
+  const content = `
+  <div class="pdf-reader-page" id="pdf-reader">
+    <div class="pdf-toolbar">
+      <a class="pdf-back" href="/papers.html">← 真题库</a>
+      <span class="pdf-title" id="pdf-title">PDF 阅读器</span>
+      <div class="pdf-controls">
+        <button type="button" data-pdf-prev title="上一页">←</button>
+        <span class="pdf-page-info" id="pdf-page-info">— / —</span>
+        <button type="button" data-pdf-next title="下一页">→</button>
+        <span class="pdf-sep"></span>
+        <button type="button" data-pdf-zoom-out title="缩小">−</button>
+        <span class="pdf-zoom" id="pdf-zoom">100%</span>
+        <button type="button" data-pdf-zoom-in title="放大">＋</button>
+        <button type="button" data-pdf-fit title="适合宽度">适合宽度</button>
+        <button type="button" data-pdf-fullscreen title="全屏">全屏</button>
+        <a class="pdf-download" id="pdf-download" href="#" download>下载</a>
+      </div>
+    </div>
+    <div class="pdf-stage" id="pdf-stage">
+      <canvas id="pdf-canvas"></canvas>
+      <div class="pdf-status" id="pdf-status">正在加载 PDF…</div>
+    </div>
+  </div>`;
+
+  return renderPage({
+    site,
+    stats,
+    page: {
+      title: 'PDF 阅读器',
+      description: '在线查看四级真题 PDF。',
+      active: 'papers',
+      bodyClass: 'page-pdf-reader',
+      path: '/paper.html',
+      canonical: toAbsolute(site.url, '/papers.html')
+    },
+    content
+  });
+};
+
 const renderAbout = async (site, stats) => {
   const aboutBody = await readFile(join(contentDir, 'about.html'), 'utf8');
   const content = `
@@ -635,6 +730,14 @@ const main = async () => {
     }))
     .filter((item) => item.word);
 
+  let papers = [];
+  try {
+    papers = await readJson(join(contentDir, 'papers.json'));
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error;
+  }
+  if (!Array.isArray(papers)) throw new Error('content/papers.json must be an array');
+
   const postFiles = (await readdir(join(contentDir, 'posts'))).filter((file) => file.endsWith('.html'));
 
   const rawPosts = [];
@@ -719,6 +822,7 @@ const main = async () => {
     words: totalWords,
     reading: totalReading,
     vocabulary: wordList.length,
+    papers: papers.length,
     vocabularyDays: new Set(wordList.flatMap((item) => (item.tags || []).filter((tag) => /^DAY/i.test(tag)))).size,
     wordsLabel: totalWords >= 1000 ? (totalWords / 1000).toFixed(1).replace(/\.0$/, '') + 'k' : String(totalWords),
     timeLabel: totalReading >= 60
@@ -748,6 +852,8 @@ const main = async () => {
   await writePage('categories.html', renderCategories(categories, site, stats));
   await writePage('tags.html', renderTags(tags, posts, site, stats));
   await writePage('words.html', renderWords(site, stats, wordList));
+  await writePage('papers.html', renderPapers(papers, site, stats));
+  await writePage('paper.html', renderPaperReader(site, stats));
   await writePage('about.html', await renderAbout(site, stats));
   await writePage('404.html', render404(site, stats));
 
@@ -765,14 +871,14 @@ const main = async () => {
   await writeFile(join(outDir, 'search.json'), JSON.stringify(searchIndex), 'utf8');
   await writeFile(join(outDir, 'atom.xml'), renderAtom(posts, site), 'utf8');
 
-  const sitemapPages = ['/', ...Array.from({ length: Math.max(0, totalPages - 1) }, (_, i) => `/page/${i + 2}/`), ...posts.map((post) => post.path), '/archives.html', '/categories.html', '/tags.html', '/words.html', '/about.html'];
+  const sitemapPages = ['/', ...Array.from({ length: Math.max(0, totalPages - 1) }, (_, i) => `/page/${i + 2}/`), ...posts.map((post) => post.path), '/archives.html', '/categories.html', '/tags.html', '/words.html', '/papers.html', '/about.html'];
   await writeFile(join(outDir, 'sitemap.xml'), renderSitemap(site, sitemapPages), 'utf8');
   await writeFile(join(outDir, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${site.url}/sitemap.xml\n`, 'utf8');
   await writeFile(join(outDir, '.nojekyll'), '', 'utf8');
 
   console.log('');
   console.log('  晚风小筑 · build complete');
-  console.log(`  ${posts.length} posts / ${categories.length} categories / ${tags.length} tags / ${wordList.length} vocabulary words`);
+  console.log(`  ${posts.length} posts / ${categories.length} categories / ${tags.length} tags / ${wordList.length} vocabulary words / ${papers.length} paper sets`);
   console.log(`  ${totalPages} home page(s), ${stats.wordsLabel} words`);
   console.log(`  output: ${relative(process.cwd(), outDir) || outDir}`);
   console.log('');

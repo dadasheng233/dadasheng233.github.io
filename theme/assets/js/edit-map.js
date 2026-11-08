@@ -140,6 +140,18 @@
       selectors: ['.home-word-card']
     },
     {
+      id: 'papers', group: '文章内容', label: '四级真题库',
+      file: 'content/papers.json', field: 'paper / answer',
+      note: 'PDF 放在 theme/assets/papers/；列表由 build.mjs → renderPapers() 生成',
+      selectors: ['.papers-page']
+    },
+    {
+      id: 'pdf-reader', group: '进阶', label: 'PDF 阅读器',
+      file: 'theme/assets/js/pdf-reader.js', field: 'PDF.js 渲染逻辑',
+      note: '本地 PDF.js，支持翻页、缩放、全屏、下载',
+      selectors: ['.pdf-reader-page']
+    },
+    {
       id: 'auto-pages', group: '文章内容', label: '归档、分类、标签',
       file: 'build.mjs', field: '自动生成',
       note: '根据文章 front matter 自动汇总，不用手写',

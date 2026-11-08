@@ -52,6 +52,9 @@ public/       生成结果，不要手改
 | 关于页 | `content/about.html` |
 | 四级单词 | `content/words.json` |
 | 单词页面交互 | `theme/assets/js/words.js` |
+| 四级真题 | `content/papers.json` |
+| 真题 PDF 文件 | `theme/assets/papers/` |
+| PDF 阅读器 | `theme/assets/js/pdf-reader.js` |
 | 首页 CET-4 入口卡片 | `build.mjs → renderHome()` + `.home-word-card` |
 | 头像、封面、照片 | `theme/assets/img/` |
 | 颜色、宽度、字体 | `theme/assets/css/site.css` 的 `:root` |
@@ -78,6 +81,7 @@ blog/
 ├─ content/                        输入：内容
 │  ├─ site.json                    站点配置
 │  ├─ words.json                   CET-4 单词数据
+│  ├─ papers.json                  CET-4 真题索引
 │  ├─ about.html                   关于页正文
 │  └─ posts/                       文章
 │     ├─ hello-live2d.html
@@ -93,6 +97,10 @@ blog/
 │     ├─ js/cat.js                 Live2D 启动/兜底
 │     ├─ js/edit-map.js            配置地图
 │     ├─ js/words.js               单词本交互
+│     ├─ js/papers.js              真题库年份筛选
+│     ├─ js/pdf-reader.js          PDF.js 阅读器
+│     ├─ papers/                   真题 PDF
+│     ├─ vendor/pdfjs/             PDF.js 运行时
 │     ├─ icons.svg                 SVG 图标 sprite
 │     ├─ icons.html                图标预览页
 │     └─ img/                      头像、封面、照片
@@ -293,6 +301,22 @@ CET-4 单词本的数据。数组，每个元素：
 
 学习进度不写回这个文件，只存在浏览器 localStorage。
 
+### 3.6 `content/papers.json`
+
+四级真题库的索引。数组，每个元素是一套试卷：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `id` | string | 唯一 id，如 `2024-06-1` |
+| `year` / `month` / `set` | number | 年份、月份、第几套 |
+| `label` | string | 卡片标题 |
+| `paper` | string | 试卷 PDF 路径 |
+| `paperSize` | string | 试卷大小显示文本 |
+| `answer` | string | 解析 PDF 路径 |
+| `answerSize` | string | 解析大小显示文本 |
+
+PDF 实际文件在 `theme/assets/papers/<year-month>/`，通过 `cp` 复制到 `public`。
+
 ---
 
 ## 4. 路由 / 页面接口
@@ -309,6 +333,10 @@ CET-4 单词本的数据。数组，每个元素：
 | GET | `/tags.html` | 标签 | `build.mjs → renderTags()` |
 | GET | `/words.html` | CET-4 单词本 | `build.mjs → renderWords()` + `words.js` |
 | GET | `/words.json` | 单词数据 | `content/words.json` |
+| GET | `/papers.html` | 四级真题库 | `build.mjs → renderPapers()` |
+| GET | `/paper.html?file=...` | PDF 阅读器 | `build.mjs → renderPaperReader()` + `pdf-reader.js` |
+| GET | `/assets/papers/*` | 真题 PDF | `theme/assets/papers/` |
+| GET | `/assets/vendor/pdfjs/*` | PDF.js 运行时 | `theme/assets/vendor/pdfjs/` |
 | GET | `/about.html` | 关于 | `build.mjs → renderAbout()` |
 | GET | `/404.html` | 404 页面 | `build.mjs → render404()` |
 | GET | `/search.json` | 搜索索引 | `build.mjs → main()` |
@@ -591,6 +619,32 @@ wanfeng:words:wrong         错词数组
 
 单词数据不写回，换设备不会同步。
 
+### 7.5 `papers.js`
+
+真题库年份筛选：
+
+- `#papers-app`
+- `[data-paper-filter]`
+- `[data-paper-year]`
+- `#paper-count`
+- `#paper-empty`
+
+只做显示/隐藏，不改数据。
+
+### 7.6 `pdf-reader.js`
+
+PDF.js 阅读器：
+
+- 读取 URL 参数 `file`、`title`、`back`
+- `file` 必须是 `/assets/papers/` 下的 `.pdf`
+- 动态 `import('/assets/vendor/pdfjs/pdf.min.mjs')`
+- worker：`/assets/vendor/pdfjs/pdf.worker.min.mjs`
+- 功能：上一页/下一页、缩放、适合宽度、全屏、下载、键盘方向键
+- 只渲染当前页，不一次渲染整本 PDF
+- 大文件通过 `getDocument().onProgress` 显示加载进度
+
+PDF.js 版本和许可证在 `theme/assets/vendor/pdfjs/`。
+
 ---
 
 ## 8. CSS 参考
@@ -677,6 +731,12 @@ wanfeng:words:wrong         错词数组
 | 标签 | `build.mjs` | `renderTags()` |
 | 单词数据 | `content/words.json` | `word` / `meaning` / `example` |
 | 单词本页面 | `build.mjs` + `theme/assets/js/words.js` | `renderWords()` / 卡片 / 词表 / 测验 |
+| 真题数据 | `content/papers.json` | `paper` / `answer` / `label` |
+| 真题文件 | `theme/assets/papers/` | 按 `年份-月份/setN-paper.pdf` |
+| 真题列表 | `build.mjs` | `renderPapers()` |
+| 真题筛选 | `theme/assets/js/papers.js` | `[data-paper-filter]` |
+| PDF 阅读器 | `theme/assets/js/pdf-reader.js` | `renderPage()` / zoom / fullscreen |
+| PDF.js | `theme/assets/vendor/pdfjs/` | `pdf.min.mjs` / worker |
 | 首页 CET 卡片 | `build.mjs → renderHome()` | `.home-word-card`，仅第 1 页 |
 | 首页 CET 文案/颜色 | `theme/assets/css/site.css` | `.home-word-card` / `.home-word-*` |
 | RSS | `build.mjs` | `renderAtom()` |
@@ -693,6 +753,8 @@ wanfeng:words:wrong         错词数组
 | 颜色 | `theme/assets/css/site.css` | `:root` |
 | 卡片样式 | `theme/assets/css/site.css` | `.post` / `.post-cover` |
 | 首页 CET 卡片 | `theme/assets/css/site.css` | `.home-word-card` / `.home-word-icon` / `.home-word-action` |
+| 真题卡片 | `theme/assets/css/site.css` | `.papers-page` / `.paper-card` / `.paper-btn` |
+| PDF 阅读器 | `theme/assets/css/site.css` | `.pdf-reader-page` / `.pdf-toolbar` / `.pdf-stage` |
 | 正文排版 | `theme/assets/css/site.css` | `.post-body` |
 | 图标 | `theme/assets/icons.svg` | `<symbol id="...">` |
 | 图标预览 | `theme/assets/icons.html` | 打开看全部 |
@@ -741,6 +803,29 @@ theme/layout.mjs → 如果有写死的文案
 - 总词数 / DAY 数：来自 `stats.vocabulary` 和 `stats.vocabularyDays`
 - 样式：`theme/assets/css/site.css` 的 `.home-word-card` / `.home-word-*`
 - 不想显示：删掉 `renderHome()` 里的 `current === 1 ? ...` 整段
+
+### 加一套真题
+
+1. PDF 放进 `theme/assets/papers/<year-month>/`
+2. 在 `content/papers.json` 加一条：
+
+```json
+{
+  "id": "2025-12-1",
+  "year": 2025,
+  "month": 12,
+  "set": 1,
+  "label": "2025年12月 第1套",
+  "paper": "/assets/papers/2025-12/set1-paper.pdf",
+  "paperSize": "12.3 MB",
+  "answer": "/assets/papers/2025-12/set1-answer.pdf",
+  "answerSize": "30.1 MB"
+}
+```
+
+3. `npm run build`
+
+> PDF 体积大时注意 GitHub 仓库和 Pages 的 1GB 上限；听力音频不要和全部 PDF 一起放。
 
 ### 改主色
 
@@ -803,6 +888,10 @@ const PAGE_SIZE = 4;
 | 小猫不出现 | 窗口 <1180px / 减少动态效果 / WebGL 不可用 | 拉宽窗口；看 Console；会显示静态猫 |
 | 搜索没结果 | `search.json` 没生成或请求失败 | 重新构建；看 Network |
 | 端口被占用 | 已有服务器在 4200 | 关掉旧窗口，或 `PORT=4201 npm start` |
+| 真题列表空 | `content/papers.json` 没读进来 | 看构建日志的 `paper sets` |
+| PDF 一直加载 | 文件太大或 worker 路径错 | 看 Network 里 `pdf.worker.min.mjs` 是否为 200 |
+| PDF 白屏 | PDF.js 模块/worker 被拦截 | 确认 `/assets/vendor/pdfjs/` 已部署 |
+| 真题 404 | PDF 没复制到 `public` | 重新 `npm run build`；检查 `theme/assets/papers/` |
 | `git push` 失败 | SSH/凭据问题 | 当前仓库已配 `core.sshCommand` 到系统 OpenSSH |
 | 页面转场后 404 | 部署子路径 / 链接错误 | 检查 URL 和 base |
 

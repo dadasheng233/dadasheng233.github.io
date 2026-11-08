@@ -1,20 +1,22 @@
 const base = process.env.CHECK_BASE || 'http://127.0.0.1:4200';
 const pages = [
   '/',
-  '/page/2/',
   '/archives.html',
   '/categories.html',
   '/tags.html',
   '/words.html',
+  '/papers.html',
+  '/paper.html',
   '/about.html',
-  '/404.html',
-  '/posts/hello-live2d.html',
-  '/posts/night-code-lamp.html',
-  '/posts/autumn-city.html',
-  '/posts/static-blog.html',
-  '/posts/slow-reading.html',
-  '/posts/new-season.html'
+  '/404.html'
 ];
+
+try {
+  const index = await (await fetch(base + '/search.json')).json();
+  pages.push(...index.map((post) => post.url));
+} catch (error) {
+  console.log('could not read search.json; checking static pages only');
+}
 
 const seen = new Map();
 const bad = [];
@@ -49,7 +51,7 @@ for (const page of pages) {
   for (const url of urls) await check(url);
 }
 
-for (const asset of ['/assets/icons.svg', '/assets/icons.html', '/assets/css/site.css', '/assets/js/site.js', '/assets/js/cat.js', '/assets/js/edit-map.js', '/assets/js/words.js', '/vendor/live2d/waifu-tips.js', '/vendor/live2d/live2d.min.js', '/vendor/live2d/chunk/index.js', '/vendor/live2d/chunk/index2.js', '/live2d/tororo/tororo.model.json', '/live2d/tororo/moc/tororo.moc', '/live2d/waifu-tips.json', '/words.json', '/search.json', '/atom.xml', '/sitemap.xml']) {
+for (const asset of ['/assets/icons.svg', '/assets/icons.html', '/assets/css/site.css', '/assets/js/site.js', '/assets/js/cat.js', '/assets/js/edit-map.js', '/assets/js/words.js', '/assets/js/papers.js', '/assets/js/pdf-reader.js', '/assets/vendor/pdfjs/pdf.min.mjs', '/assets/vendor/pdfjs/pdf.worker.min.mjs', '/assets/papers/2024-06/set1-paper.pdf', '/vendor/live2d/waifu-tips.js', '/vendor/live2d/live2d.min.js', '/vendor/live2d/chunk/index.js', '/vendor/live2d/chunk/index2.js', '/live2d/tororo/tororo.model.json', '/live2d/tororo/moc/tororo.moc', '/live2d/waifu-tips.json', '/words.json', '/search.json', '/atom.xml', '/sitemap.xml']) {
   await check(base + asset);
 }
 
