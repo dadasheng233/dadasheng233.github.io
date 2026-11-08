@@ -30,6 +30,7 @@ npm start
 - 首页文章流 + 分页
 - 首页 CET-4 单词卡片入口，显示总词数和 DAY 数
 - 文章详情页：目录、代码复制、图片灯箱、标签、版权、前后篇
+- 文章评论：Utterances + GitHub Issues，留言会持久保存
 - CET-4 单词本：翻卡记忆、词表搜索、四选一测验、本地学习进度
 - 归档、分类、标签、关于、404
 - 全站搜索（标题 / 标签 / 分类 / 正文）
@@ -190,6 +191,30 @@ http://127.0.0.1:4200/?edit-map=1
 - 点页面元素只会提示路径，不会跳转；按 `C` 可以复制路径
 - 它只是阅读辅助，**不会修改任何文件**
 
+## 评论
+
+文章底部现在用 [Utterances](https://utteranc.es/)，留言会写进仓库的 GitHub Issues，不再只存在浏览器里。
+
+配置在 `content/site.json`：
+
+```json
+"comments": {
+  "provider": "utterances",
+  "repo": "dadasheng233/dadasheng233.github.io",
+  "issueTerm": "pathname",
+  "theme": "github-light"
+}
+```
+
+第一次使用需要：
+
+1. 打开 https://github.com/apps/utterances
+2. 点 **Install**
+3. 选择 `dadasheng233/dadasheng233.github.io` 仓库
+4. 刷新文章页，用 GitHub 账号登录后留言
+
+每条留言会变成一个 GitHub Issue，刷新、换浏览器、换设备都能看到。访客没有 GitHub 账号时不能直接留言。
+
 ## 部署到 GitHub Pages
 
 这个项目已经带好 GitHub Actions 配置：`.github/workflows/pages.yml`。推送到 `main` 后会自动构建 `public/` 并部署。
@@ -304,7 +329,8 @@ npm run dev     # 先构建再启动
 
 - 文章是 HTML，不是 Markdown。这样不用装 Markdown 解析器，也方便直接塞入复杂组件；写纯文字时稍微啰嗦一点。
 - 小猫的 8 段随机动作来自模型自身，不做额外编排。
-- 免费静态托管通常没有服务端，留言和阅读量都是演示数据；阅读量在 front matter 里手写。
+- 免费静态托管通常没有服务端，阅读量在 front matter 里手写。
+- 评论使用 Utterances，访客需要 GitHub 账号；留言保存在仓库的 GitHub Issues 里，不再是浏览器本地演示。
 - 插画是 SVG 手绘的抽象场景，不是照片。想换成自己的照片，直接替换 cover 文件即可。
 
 ---
