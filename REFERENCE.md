@@ -57,8 +57,7 @@ public/       生成结果，不要手改
 | 颜色、宽度、字体 | `theme/assets/css/site.css` 的 `:root` |
 | 小猫台词 | `live2d/waifu-tips.json` |
 | 导航、页头、侧栏、页脚结构 | `theme/layout.mjs` |
-| 搜索、灯箱、页面转场 | `theme/assets/js/site.js` |
-| 评论 | `build.mjs → renderPostPage()` + `content/site.json → comments` |
+| 搜索、灯箱、留言、页面转场 | `theme/assets/js/site.js` |
 | 配置地图 | `theme/assets/js/edit-map.js` |
 | 构建、分页、RSS、站点地图 | `build.mjs` |
 | 部署 | `.github/workflows/pages.yml` |
@@ -159,7 +158,6 @@ npm run check     # 检查内部链接和资源
 | `keywords` | string | 否 | meta keywords |
 | `links` | array | 否 | 侧栏社交链接，元素为 `{name,url,icon}` |
 | `blogroll` | array | 否 | 侧栏友链，元素为 `{name,url}` |
-| `comments` | object | 否 | 评论配置，当前支持 `{provider,repo,issueTerm,theme}` |
 
 示例：
 
@@ -170,13 +168,7 @@ npm run check     # 检查内部链接和资源
   "author": "dadasheng",
   "url": "https://dadasheng233.github.io",
   "avatar": "/assets/img/avatar.svg",
-  "github": "https://github.com/dadasheng233",
-  "comments": {
-    "provider": "utterances",
-    "repo": "dadasheng233/dadasheng233.github.io",
-    "issueTerm": "pathname",
-    "theme": "github-light"
-  }
+  "github": "https://github.com/dadasheng233"
 }
 ```
 
@@ -330,7 +322,7 @@ CET-4 单词本的数据。数组，每个元素：
 | GET | `/words.html?tab=list` | 单词本直接打开词表 | `theme/assets/js/words.js` |
 | GET | `/words.html?tab=quiz` | 单词本直接打开测验 | `theme/assets/js/words.js` |
 
-没有 POST / PUT / DELETE。搜索、标签筛选都在浏览器里完成；评论通过 Utterances iframe 写入 GitHub Issues。
+没有 POST / PUT / DELETE。搜索、留言、标签筛选都在浏览器里完成。
 
 ### 4.1 页面内部锚点
 
@@ -507,11 +499,15 @@ node build.mjs
 | 搜索 | `#search-modal`、`#search-input`、`#search-results` | 读取 `/search.json` |
 | 代码复制 | `.post-body pre > code` | 自动包 `.code-block` |
 | 图片灯箱 | `.post-body img` + `#lightbox` | 点击放大 |
-| 评论 | `.comments` + Utterances iframe | GitHub Issues，不在 `site.js` 里 |
+| 留言 | `#comment-form`、`#comment-list` | localStorage |
 | 标签筛选 | `#tag-cloud`、`#tag-results` | 只改显示 |
 | 页面转场 | 站内 `<a>` | 180ms 淡出 |
 
-评论由 `build.mjs → renderPostPage()` 插入 Utterances 脚本，仓库配置在 `content/site.json → comments`。访客需要 GitHub 账号；留言会变成仓库的 GitHub Issue。
+localStorage：
+
+```text
+wanfeng:comments:<slug>     文章留言
+```
 
 sessionStorage：
 
@@ -688,7 +684,7 @@ wanfeng:words:wrong         错词数组
 | 搜索 | `theme/assets/js/site.js` | `search` 段 + `layout.mjs → searchModal()` |
 | 搜索索引 | `build.mjs` | `searchIndex` |
 | 灯箱 | `theme/assets/js/site.js` | `lightbox` 段 + `layout.mjs → lightbox()` |
-| 评论 | `build.mjs` + `content/site.json` | `renderPostPage()` 的 `.comments` / `comments` 配置 |
+| 留言 | `theme/assets/js/site.js` | `comments` 段 + `build.mjs → renderPostPage()` |
 | 页面转场 | `theme/assets/js/site.js` | `page transition` 段 |
 | 配置地图 | `theme/assets/js/edit-map.js` | `ENTRIES` / `buildTargets()` |
 | 小猫启动 | `theme/assets/js/cat.js` | `boot()` / `initWidget()` |
@@ -805,8 +801,6 @@ const PAGE_SIZE = 4;
 | GitHub Pages 显示 README | Pages Source 还在用 branch/Jekyll | Settings → Pages → Source 选 GitHub Actions |
 | GitHub Pages 样式丢失 | 部署在子目录，绝对路径失效 | 用 `<用户名>.github.io` 或加 base 前缀 |
 | 小猫不出现 | 窗口 <1180px / 减少动态效果 / WebGL 不可用 | 拉宽窗口；看 Console；会显示静态猫 |
-| 评论框空白/提示未安装 | Utterances App 没授权仓库，或 GitHub 被阻断 | 安装 utterances App；检查 `site.json → comments.repo` |
-| 评论在别的浏览器看不到 | 旧版本是 localStorage 本地演示 | 现在的评论写入 GitHub Issues，不再用 localStorage |
 | 搜索没结果 | `search.json` 没生成或请求失败 | 重新构建；看 Network |
 | 端口被占用 | 已有服务器在 4200 | 关掉旧窗口，或 `PORT=4201 npm start` |
 | `git push` 失败 | SSH/凭据问题 | 当前仓库已配 `core.sshCommand` 到系统 OpenSSH |

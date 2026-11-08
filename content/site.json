@@ -12,12 +12,6 @@
   "rss": "/atom.xml",
   "footer": "技术即生活，生活即技术",
   "keywords": "个人博客,前端,生活,摄影,阅读",
-  "comments": {
-    "provider": "utterances",
-    "repo": "dadasheng233/dadasheng233.github.io",
-    "issueTerm": "pathname",
-    "theme": "github-light"
-  },
   "links": [
     { "name": "GitHub", "url": "https://github.com/", "icon": "i-github" },
     { "name": "邮箱", "url": "mailto:1468057394@qq.com", "icon": "i-mail" },

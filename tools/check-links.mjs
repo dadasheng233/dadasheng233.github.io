@@ -1,20 +1,20 @@
 const base = process.env.CHECK_BASE || 'http://127.0.0.1:4200';
 const pages = [
   '/',
+  '/page/2/',
   '/archives.html',
   '/categories.html',
   '/tags.html',
   '/words.html',
   '/about.html',
-  '/404.html'
+  '/404.html',
+  '/posts/hello-live2d.html',
+  '/posts/night-code-lamp.html',
+  '/posts/autumn-city.html',
+  '/posts/static-blog.html',
+  '/posts/slow-reading.html',
+  '/posts/new-season.html'
 ];
-
-try {
-  const index = await (await fetch(base + '/search.json')).json();
-  pages.push(...index.map((post) => post.url));
-} catch (error) {
-  console.log('could not read search.json; checking static pages only');
-}
 
 const seen = new Map();
 const bad = [];

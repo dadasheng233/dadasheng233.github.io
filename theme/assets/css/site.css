@@ -951,27 +951,6 @@ body.nav-open .nav-toggle-line:nth-child(3) { transform: translateY(-7px) rotate
 }
 .comments-head h2 { font-size: 19px; }
 .comments-head span { color: #aaa49c; font-family: var(--sans); font-size: 10.5px; }
-.utterances-wrap {
-  min-height: 180px;
-  margin-top: 8px;
-}
-.utterances-wrap iframe {
-  width: 100% !important;
-  border: 0;
-}
-.comments-help {
-  margin: 10px 0 0;
-  color: #aaa49c;
-  font-family: var(--sans);
-  font-size: 10px;
-  line-height: 1.8;
-  text-align: center;
-}
-.comments-help a {
-  color: #b26a48;
-  border-bottom: 1px solid #e3c4ae;
-}
-.comments-help a:hover { color: var(--coral); }
 .comment-form { display: grid; gap: 10px; }
 .comment-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .comment-form input,

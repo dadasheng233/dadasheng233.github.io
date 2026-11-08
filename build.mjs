@@ -146,23 +146,6 @@ const renderPostPage = (post, context) => {
 
   const tagLinks = post.tagInfos.map((tag) => `<a href="/tags.html#${tag.id}">${escapeHtml(tag.name)}</a>`).join('');
 
-  const comments = site.comments || {};
-  const commentRepo = comments.repo || '';
-  const commentTerm = comments.issueTerm || 'pathname';
-  const commentTheme = comments.theme || 'github-light';
-  const commentsHtml = commentRepo
-    ? `<div class="utterances-wrap">
-        <script src="https://utteranc.es/client.js"
-          repo="${escapeHtml(commentRepo)}"
-          issue-term="${escapeHtml(commentTerm)}"
-          theme="${escapeHtml(commentTheme)}"
-          crossorigin="anonymous"
-          async>
-        </script>
-      </div>
-      <p class="comments-help">留言会保存到 GitHub Issues，需要 GitHub 账号登录。首次使用需要在仓库安装 <a href="https://github.com/apps/utterances" target="_blank" rel="noopener">utterances App</a>。</p>`
-    : '<p class="comments-help">评论功能还没有配置 GitHub 仓库。</p>';
-
   const content = `
   <article class="post post-detail reveal">
     <header class="post-header">
@@ -205,10 +188,21 @@ const renderPostPage = (post, context) => {
 
     <section class="comments" aria-labelledby="comments-title">
       <div class="comments-head">
-        <h2 id="comments-title">留言板</h2>
-        <span>使用 GitHub 账号登录后留言</span>
+        <h2 id="comments-title">猫爪留言板</h2>
+        <span>留言只保存在你的浏览器里</span>
       </div>
-      ${commentsHtml}
+      <form class="comment-form" id="comment-form" data-slug="${escapeHtml(post.slug)}">
+        <div class="comment-fields">
+          <input id="comment-name" name="name" type="text" maxlength="24" placeholder="你的名字（可不填）" autocomplete="nickname">
+          <input id="comment-email" name="email" type="email" maxlength="80" placeholder="邮箱（不会公开）" autocomplete="email">
+        </div>
+        <textarea id="comment-text" name="text" maxlength="500" placeholder="写点什么吧，猫会看到的。" required></textarea>
+        <div class="comment-actions">
+          <span class="comment-note">静态站点演示：数据不会上传到服务器。</span>
+          <button class="btn-comment" type="submit">留下猫爪印</button>
+        </div>
+      </form>
+      <ul class="comment-list" id="comment-list"></ul>
     </section>
   </article>`;
 
@@ -230,7 +224,7 @@ const renderPostPage = (post, context) => {
 
 const renderHome = (pagePosts, current, total, site, stats) => {
   const content = `
-  ${current === 1 ? `<a class="home-word-card reveal" href="/words.html">
+  ${current === 0 ? `<a class="home-word-card reveal" href="/words.html">
     <span class="home-word-icon">${icon('i-book')}</span>
     <span class="home-word-copy">
       <span class="home-word-kicker">CET-4 VOCABULARY</span>
