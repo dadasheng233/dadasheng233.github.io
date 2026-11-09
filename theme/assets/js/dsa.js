@@ -121,6 +121,7 @@
     }
     const p = getProgress(node.id);
     const state = mastery(node.id);
+    const hasWrong = data.questions.some((question) => question.concept === node.id && wrong.has(question.id));
     box.innerHTML = `
       <div class="dsa-concept-head">
         <span class="dsa-chapter">${escapeHtml(node.chapter)}</span>
@@ -136,7 +137,7 @@
       <div class="dsa-traps"><strong>常见坑</strong>${node.traps.map((trap) => `<span>${escapeHtml(trap)}</span>`).join('')}</div>
       <div class="dsa-actions">
         <button class="dsa-btn is-primary" type="button" data-start-quiz="${escapeHtml(node.id)}">练 4 题</button>
-        <button class="dsa-btn" type="button" data-review-quiz="${escapeHtml(node.id)}" ${wrong.size ? '' : 'disabled'}>复习错题</button>
+        <button class="dsa-btn" type="button" data-review-quiz="${escapeHtml(node.id)}" ${hasWrong ? '' : 'disabled'}>复习错题</button>
       </div>`;
   }
 
