@@ -597,6 +597,65 @@ const renderPaperReader = (site, stats) => {
   });
 };
 
+const renderLearn = (site, stats) => {
+  const content = `
+  <div class="learner-page" id="dsa-app">
+    <div class="page-header learner-header">
+      <div>
+        <p class="page-kicker">LEARNING LAB</p>
+        <h1 class="page-title">数据结构</h1>
+        <p class="page-subtitle">先跑通一条最小闭环：知识图谱 → 学知识点 → 做题 → 错题 → 复习</p>
+      </div>
+      <div class="learner-stats">
+        <div><strong id="dsa-mastered">0</strong><span>已掌握</span></div>
+        <div><strong id="dsa-answered">0</strong><span>已练题</span></div>
+        <div><strong id="dsa-wrong">0</strong><span>错题</span></div>
+      </div>
+    </div>
+
+    <div class="dsa-layout">
+      <aside class="dsa-map-card">
+        <div class="dsa-map-head">
+          <strong>知识图谱</strong>
+          <span id="dsa-map-count">加载中…</span>
+        </div>
+        <div class="dsa-map-scroll">
+          <svg id="dsa-graph" viewBox="0 0 800 420" role="img" aria-label="数据结构知识图谱"></svg>
+        </div>
+        <div class="dsa-legend">
+          <span><i class="dot dot-none"></i>未开始</span>
+          <span><i class="dot dot-learning"></i>学习中</span>
+          <span><i class="dot dot-strong"></i>已掌握</span>
+        </div>
+      </aside>
+
+      <main class="dsa-main">
+        <div class="dsa-daily" id="dsa-daily"></div>
+        <article class="dsa-concept-card" id="dsa-concept">
+          <p class="dsa-empty">正在加载知识图谱…</p>
+        </article>
+        <section class="dsa-quiz-card" id="dsa-quiz"></section>
+      </main>
+    </div>
+
+    <p class="dsa-footnote">进度保存在当前浏览器；这一步先验证“学—练—错—复习”的闭环。</p>
+  </div>`;
+
+  return renderPage({
+    site,
+    stats,
+    page: {
+      title: '数据结构',
+      description: '数据结构知识图谱、知识点练习、错题与复习的最小闭环。',
+      active: 'learn',
+      path: '/learn.html',
+      image: toAbsolute(site.url, '/assets/img/cover-book.svg'),
+      canonical: toAbsolute(site.url, '/learn.html')
+    },
+    content
+  });
+};
+
 const renderAbout = async (site, stats) => {
   const aboutBody = await readFile(join(contentDir, 'about.html'), 'utf8');
   const content = `
@@ -738,6 +797,13 @@ const main = async () => {
   }
   if (!Array.isArray(papers)) throw new Error('content/papers.json must be an array');
 
+  let dsa = { nodes: [], edges: [], questions: [] };
+  try {
+    dsa = await readJson(join(contentDir, 'dsa.json'));
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error;
+  }
+
   const postFiles = (await readdir(join(contentDir, 'posts'))).filter((file) => file.endsWith('.html'));
 
   const rawPosts = [];
@@ -854,6 +920,8 @@ const main = async () => {
   await writePage('words.html', renderWords(site, stats, wordList));
   await writePage('papers.html', renderPapers(papers, site, stats));
   await writePage('paper.html', renderPaperReader(site, stats));
+  await writeFile(join(outDir, 'dsa.json'), JSON.stringify(dsa), 'utf8');
+  await writePage('learn.html', renderLearn(site, stats));
   await writePage('about.html', await renderAbout(site, stats));
   await writePage('404.html', render404(site, stats));
 
@@ -871,7 +939,7 @@ const main = async () => {
   await writeFile(join(outDir, 'search.json'), JSON.stringify(searchIndex), 'utf8');
   await writeFile(join(outDir, 'atom.xml'), renderAtom(posts, site), 'utf8');
 
-  const sitemapPages = ['/', ...Array.from({ length: Math.max(0, totalPages - 1) }, (_, i) => `/page/${i + 2}/`), ...posts.map((post) => post.path), '/archives.html', '/categories.html', '/tags.html', '/words.html', '/papers.html', '/about.html'];
+  const sitemapPages = ['/', ...Array.from({ length: Math.max(0, totalPages - 1) }, (_, i) => `/page/${i + 2}/`), ...posts.map((post) => post.path), '/archives.html', '/categories.html', '/tags.html', '/words.html', '/papers.html', '/learn.html', '/about.html'];
   await writeFile(join(outDir, 'sitemap.xml'), renderSitemap(site, sitemapPages), 'utf8');
   await writeFile(join(outDir, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${site.url}/sitemap.xml\n`, 'utf8');
   await writeFile(join(outDir, '.nojekyll'), '', 'utf8');

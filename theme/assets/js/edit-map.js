@@ -152,6 +152,12 @@
       selectors: ['.pdf-reader-page']
     },
     {
+      id: 'learn-dsa', group: '文章内容', label: '数据结构学习页',
+      file: 'content/dsa.json', field: 'nodes / edges / questions',
+      note: '知识图谱、知识点、题库；练习进度在 localStorage',
+      selectors: ['.learner-page']
+    },
+    {
       id: 'auto-pages', group: '文章内容', label: '归档、分类、标签',
       file: 'build.mjs', field: '自动生成',
       note: '根据文章 front matter 自动汇总，不用手写',

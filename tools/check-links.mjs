@@ -7,6 +7,7 @@ const pages = [
   '/words.html',
   '/papers.html',
   '/paper.html',
+  '/learn.html',
   '/about.html',
   '/404.html'
 ];
@@ -51,7 +52,7 @@ for (const page of pages) {
   for (const url of urls) await check(url);
 }
 
-for (const asset of ['/assets/icons.svg', '/assets/icons.html', '/assets/css/site.css', '/assets/js/site.js', '/assets/js/cat.js', '/assets/js/edit-map.js', '/assets/js/words.js', '/assets/js/papers.js', '/assets/js/pdf-reader.js', '/assets/vendor/pdfjs/pdf.min.mjs', '/assets/vendor/pdfjs/pdf.worker.min.mjs', '/assets/papers/2024-06/set1-paper.pdf', '/vendor/live2d/waifu-tips.js', '/vendor/live2d/live2d.min.js', '/vendor/live2d/chunk/index.js', '/vendor/live2d/chunk/index2.js', '/live2d/tororo/tororo.model.json', '/live2d/tororo/moc/tororo.moc', '/live2d/waifu-tips.json', '/words.json', '/search.json', '/atom.xml', '/sitemap.xml']) {
+for (const asset of ['/assets/icons.svg', '/assets/icons.html', '/assets/css/site.css', '/assets/js/site.js', '/assets/js/cat.js', '/assets/js/edit-map.js', '/assets/js/words.js', '/assets/js/papers.js', '/assets/js/pdf-reader.js', '/assets/js/dsa.js', '/assets/vendor/pdfjs/pdf.min.mjs', '/assets/vendor/pdfjs/pdf.worker.min.mjs', '/assets/papers/2024-06/set1-paper.pdf', '/dsa.json', '/vendor/live2d/waifu-tips.js', '/vendor/live2d/live2d.min.js', '/vendor/live2d/chunk/index.js', '/vendor/live2d/chunk/index2.js', '/live2d/tororo/tororo.model.json', '/live2d/tororo/moc/tororo.moc', '/live2d/waifu-tips.json', '/words.json', '/search.json', '/atom.xml', '/sitemap.xml']) {
   await check(base + asset);
 }
 

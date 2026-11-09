@@ -55,6 +55,7 @@ public/       生成结果，不要手改
 | 四级真题 | `content/papers.json` |
 | 真题 PDF 文件 | `theme/assets/papers/` |
 | PDF 阅读器 | `theme/assets/js/pdf-reader.js` |
+| 数据结构学习页 | `content/dsa.json` + `theme/assets/js/dsa.js` |
 | 首页 CET-4 入口卡片 | `build.mjs → renderHome()` + `.home-word-card` |
 | 头像、封面、照片 | `theme/assets/img/` |
 | 颜色、宽度、字体 | `theme/assets/css/site.css` 的 `:root` |
@@ -82,6 +83,7 @@ blog/
 │  ├─ site.json                    站点配置
 │  ├─ words.json                   CET-4 单词数据
 │  ├─ papers.json                  CET-4 真题索引
+│  ├─ dsa.json                     数据结构图谱/题库
 │  ├─ about.html                   关于页正文
 │  └─ posts/                       文章
 │     ├─ hello-live2d.html
@@ -99,6 +101,7 @@ blog/
 │     ├─ js/words.js               单词本交互
 │     ├─ js/papers.js              真题库年份筛选
 │     ├─ js/pdf-reader.js          PDF.js 阅读器
+│     ├─ js/dsa.js                 数据结构学习 MVP
 │     ├─ papers/                   真题 PDF
 │     ├─ vendor/pdfjs/             PDF.js 运行时
 │     ├─ icons.svg                 SVG 图标 sprite
@@ -317,6 +320,18 @@ CET-4 单词本的数据。数组，每个元素：
 
 PDF 实际文件在 `theme/assets/papers/<year-month>/`，通过 `cp` 复制到 `public`。
 
+### 3.7 `content/dsa.json`
+
+数据结构 MVP 的图谱、知识点和题库。页面 `/learn.html` 读取 `/dsa.json`。
+
+| 字段 | 说明 |
+|---|---|
+| `nodes` | 知识点节点：`id` / `name` / `chapter` / `x` / `y` / `summary` / `points` / `complexity` / `traps` |
+| `edges` | 知识图谱先修边，`[from, to]` |
+| `questions` | 题目：`id` / `concept` / `level` / `question` / `options` / `answer`（从 0 开始）/ `explain` |
+
+学习进度只保存在 localStorage，键为 `wanfeng:dsa:progress` 和 `wanfeng:dsa:wrong`。
+
 ---
 
 ## 4. 路由 / 页面接口
@@ -335,6 +350,8 @@ PDF 实际文件在 `theme/assets/papers/<year-month>/`，通过 `cp` 复制到 
 | GET | `/words.json` | 单词数据 | `content/words.json` |
 | GET | `/papers.html` | 四级真题库 | `build.mjs → renderPapers()` |
 | GET | `/paper.html?file=...` | PDF 阅读器 | `build.mjs → renderPaperReader()` + `pdf-reader.js` |
+| GET | `/learn.html` | 数据结构学习 MVP | `build.mjs → renderLearn()` + `dsa.js` |
+| GET | `/dsa.json` | 数据结构图谱/题库数据 | `content/dsa.json` |
 | GET | `/assets/papers/*` | 真题 PDF | `theme/assets/papers/` |
 | GET | `/assets/vendor/pdfjs/*` | PDF.js 运行时 | `theme/assets/vendor/pdfjs/` |
 | GET | `/about.html` | 关于 | `build.mjs → renderAbout()` |
@@ -645,6 +662,19 @@ PDF.js 阅读器：
 
 PDF.js 版本和许可证在 `theme/assets/vendor/pdfjs/`。
 
+### 7.7 `dsa.js`
+
+数据结构 MVP：
+
+- 读取 `/dsa.json`
+- 渲染 SVG 知识图谱；节点颜色表示未开始/学习中/已掌握
+- 点击节点切换知识点
+- 每日任务选最弱知识点
+- 每组 4 题，答完更新掌握度
+- 错题写入 `localStorage`，支持按知识点复习
+- URL 参数：`?concept=binary-tree` 选中节点，`&start=1` 直接开始练习
+- 进度键：`wanfeng:dsa:progress`、`wanfeng:dsa:wrong`
+
 ---
 
 ## 8. CSS 参考
@@ -736,6 +766,9 @@ PDF.js 版本和许可证在 `theme/assets/vendor/pdfjs/`。
 | 真题列表 | `build.mjs` | `renderPapers()` |
 | 真题筛选 | `theme/assets/js/papers.js` | `[data-paper-filter]` |
 | PDF 阅读器 | `theme/assets/js/pdf-reader.js` | `renderPage()` / zoom / fullscreen |
+| 数据结构图谱/题库 | `content/dsa.json` | `nodes` / `edges` / `questions` |
+| 数据结构交互 | `theme/assets/js/dsa.js` | 图谱 / 练习 / 错题 / 进度 |
+| 数据结构样式 | `theme/assets/css/site.css` | `.learner-page` / `.dsa-*` |
 | PDF.js | `theme/assets/vendor/pdfjs/` | `pdf.min.mjs` / worker |
 | 首页 CET 卡片 | `build.mjs → renderHome()` | `.home-word-card`，仅第 1 页 |
 | 首页 CET 文案/颜色 | `theme/assets/css/site.css` | `.home-word-card` / `.home-word-*` |

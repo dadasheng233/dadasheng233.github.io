@@ -1,0 +1,536 @@
+{
+  "title": "数据结构",
+  "subtitle": "先跑通一条最小闭环：知识图谱 → 学知识点 → 做题 → 错题 → 复习",
+  "nodes": [
+    {
+      "id": "array",
+      "name": "数组",
+      "chapter": "线性结构",
+      "x": 95,
+      "y": 78,
+      "summary": "连续内存 + 下标访问。它是很多结构的基础，也是理解复杂度的起点。",
+      "points": [
+        "下标从 0 开始，a[i] 的访问是 O(1)",
+        "插入/删除要移动元素，最坏和平均都是 O(n)",
+        "适合读多写少、需要随机访问的场景"
+      ],
+      "complexity": "访问 O(1) · 插入/删除 O(n) · 空间 O(n)",
+      "traps": ["越界访问", "删除中间元素后忘记前移"]
+    },
+    {
+      "id": "linked-list",
+      "name": "链表",
+      "chapter": "线性结构",
+      "x": 285,
+      "y": 65,
+      "summary": "用指针把分散的节点串起来。牺牲随机访问，换取插入删除的灵活性。",
+      "points": [
+        "节点由数据域和指针域组成",
+        "查找第 k 个节点需要从头走，O(n)",
+        "已知前驱时，插入/删除是 O(1)",
+        "不支持下标随机访问"
+      ],
+      "complexity": "查找 O(n) · 已知前驱插入/删除 O(1) · 空间 O(n)",
+      "traps": ["修改指针的顺序写反，导致链断裂", "删除节点后没有处理前驱的 next"]
+    },
+    {
+      "id": "stack",
+      "name": "栈",
+      "chapter": "线性结构",
+      "x": 195,
+      "y": 220,
+      "summary": "后进先出（LIFO）。函数调用、括号匹配、表达式求值都靠它。",
+      "points": [
+        "只允许在栈顶插入和删除",
+        "入栈/出栈都是 O(1)",
+        "括号匹配、函数调用栈、表达式求值是典型应用"
+      ],
+      "complexity": "入栈/出栈 O(1) · 空间 O(n)",
+      "traps": ["空栈弹出", "把栈和队列的进出顺序记反"]
+    },
+    {
+      "id": "queue",
+      "name": "队列",
+      "chapter": "线性结构",
+      "x": 395,
+      "y": 195,
+      "summary": "先进先出（FIFO）。BFS、任务调度、缓冲区的底层结构。",
+      "points": [
+        "队尾入队，队头出队",
+        "普通数组队列会假溢出，常用循环队列",
+        "BFS 依赖队列保证按层访问"
+      ],
+      "complexity": "入队/出队 O(1) · 空间 O(n)",
+      "traps": ["循环队列的 front/rear 取模写错", "把 BFS 写成队列、DFS 写成队列"]
+    },
+    {
+      "id": "binary-tree",
+      "name": "二叉树",
+      "chapter": "树结构",
+      "x": 585,
+      "y": 72,
+      "summary": "每个节点最多两个孩子的层次结构。遍历是树类题目的基本功。",
+      "points": [
+        "前序：根 → 左 → 右",
+        "中序：左 → 根 → 右",
+        "后序：左 → 右 → 根",
+        "n0 = n2 + 1：叶子节点数比双孩子节点数多 1"
+      ],
+      "complexity": "遍历 O(n) · 递归栈空间 O(h)",
+      "traps": ["前序/中序/后序的顺序记混", "递归终止条件漏掉空节点"]
+    },
+    {
+      "id": "bst",
+      "name": "二叉搜索树",
+      "chapter": "树结构",
+      "x": 525,
+      "y": 225,
+      "summary": "左小右大。中序遍历得到有序序列，是查找类题目的基础。",
+      "points": [
+        "左子树所有节点小于根，右子树所有节点大于根",
+        "中序遍历得到升序序列",
+        "平均查找 O(log n)，退化成链表时 O(n)"
+      ],
+      "complexity": "平均查找/插入 O(log n) · 最坏 O(n)",
+      "traps": ["只比较当前节点，忘记整棵子树的大小关系", "删除双孩子节点时选错后继"]
+    },
+    {
+      "id": "heap",
+      "name": "堆",
+      "chapter": "树结构",
+      "x": 715,
+      "y": 185,
+      "summary": "完全二叉树 + 堆序。优先队列、Top K、堆排序都靠它。",
+      "points": [
+        "小根堆：父节点 ≤ 子节点；大根堆相反",
+        "插入和删除堆顶是 O(log n)",
+        "建堆是 O(n)，不是 O(n log n)",
+        "常用数组存储，下标从 1 开始更方便"
+      ],
+      "complexity": "插入/删除堆顶 O(log n) · 建堆 O(n) · 取堆顶 O(1)",
+      "traps": ["把建堆复杂度记成 O(n log n)", "上浮/下沉时比较对象写错"]
+    },
+    {
+      "id": "graph-traversal",
+      "name": "图的遍历",
+      "chapter": "图结构",
+      "x": 620,
+      "y": 335,
+      "summary": "BFS 用队列，DFS 用栈/递归。遍历是图算法的基础。",
+      "points": [
+        "BFS 按层扩展，用队列",
+        "DFS 一条路走到底，用栈或递归",
+        "必须记录 visited，否则有环会死循环",
+        "无权图 BFS 可以得到最短路径"
+      ],
+      "complexity": "邻接表 O(V+E) · 邻接矩阵 O(V²)",
+      "traps": ["忘记 visited", "BFS 和 DFS 的数据结构用反"]
+    },
+    {
+      "id": "binary-search",
+      "name": "二分查找",
+      "chapter": "查找",
+      "x": 105,
+      "y": 320,
+      "summary": "在有序区间里不断折半。边界条件比算法本身更容易错。",
+      "points": [
+        "数组必须有序",
+        "每次排除一半，O(log n)",
+        "mid 建议写成 left + (right - left) / 2",
+        "循环条件和边界更新决定成败"
+      ],
+      "complexity": "时间 O(log n) · 空间 O(1)",
+      "traps": ["数组无序却直接二分", "left/right 更新导致死循环"]
+    },
+    {
+      "id": "sorting",
+      "name": "排序",
+      "chapter": "排序",
+      "x": 355,
+      "y": 330,
+      "summary": "快排、归并、堆排序是必须掌握的三种 O(n log n) 排序。",
+      "points": [
+        "快速排序平均 O(n log n)，最坏 O(n²)",
+        "归并排序稳定，额外空间 O(n)",
+        "堆排序原地，时间 O(n log n)",
+        "冒泡/选择/插入是 O(n²) 的基础排序"
+      ],
+      "complexity": "快排/归并/堆排序平均 O(n log n) · 冒泡/选择/插入 O(n²)",
+      "traps": ["快排最坏情况分析", "归并排序的合并边界", "稳定性的概念混淆"]
+    }
+  ],
+  "edges": [
+    ["array", "linked-list"],
+    ["array", "binary-search"],
+    ["array", "sorting"],
+    ["linked-list", "stack"],
+    ["linked-list", "queue"],
+    ["binary-tree", "bst"],
+    ["binary-tree", "heap"],
+    ["stack", "graph-traversal"],
+    ["queue", "graph-traversal"],
+    ["bst", "binary-search"]
+  ],
+  "questions": [
+    {
+      "id": "array-1",
+      "concept": "array",
+      "level": 1,
+      "question": "数组按下标访问 a[i] 的时间复杂度是？",
+      "options": ["O(1)", "O(log n)", "O(n)", "O(n²)"],
+      "answer": 0,
+      "explain": "数组元素连续存放，地址可以直接计算，所以随机访问是 O(1)。"
+    },
+    {
+      "id": "array-2",
+      "concept": "array",
+      "level": 1,
+      "question": "在长度为 n 的数组头部插入一个元素，最坏需要移动多少个元素？",
+      "options": ["0 个", "1 个", "n 个", "log n 个"],
+      "answer": 2,
+      "explain": "头部插入要把后面 n 个元素整体后移一位，所以是 O(n)。"
+    },
+    {
+      "id": "array-3",
+      "concept": "array",
+      "level": 2,
+      "question": "数组相对链表的典型优势是？",
+      "options": ["插入删除更快", "支持随机访问", "不需要连续内存", "容量可以无限增长"],
+      "answer": 1,
+      "explain": "数组支持 O(1) 下标访问；插入删除和动态扩容反而不如链表灵活。"
+    },
+    {
+      "id": "array-4",
+      "concept": "array",
+      "level": 2,
+      "question": "删除数组中间的一个元素，通常需要做什么？",
+      "options": ["只改一个指针", "把后面的元素整体前移", "重新申请整块内存", "不需要任何操作"],
+      "answer": 1,
+      "explain": "数组要保持连续，删除中间元素后必须把后面的元素前移补位。"
+    },
+    {
+      "id": "linked-list-1",
+      "concept": "linked-list",
+      "level": 1,
+      "question": "单链表查找第 k 个节点的时间复杂度是？",
+      "options": ["O(1)", "O(log n)", "O(k)，即 O(n)", "O(n²)"],
+      "answer": 2,
+      "explain": "单链表不能随机访问，只能从头节点开始逐个走。"
+    },
+    {
+      "id": "linked-list-2",
+      "concept": "linked-list",
+      "level": 2,
+      "question": "已知节点 p，在 p 后面插入新节点 s，正确的指针操作是？",
+      "options": ["p.next = s; s.next = p.next", "s.next = p.next; p.next = s", "s.next = p; p.next = s", "p.next = s.next; s.next = p"],
+      "answer": 1,
+      "explain": "必须先让 s 接住 p 原来的后继，再让 p 指向 s，否则会丢失后面的链表。"
+    },
+    {
+      "id": "linked-list-3",
+      "concept": "linked-list",
+      "level": 1,
+      "question": "在单链表头部插入一个节点的时间复杂度是？",
+      "options": ["O(1)", "O(log n)", "O(n)", "O(n²)"],
+      "answer": 0,
+      "explain": "只需要修改新节点的 next 和头指针，不需要遍历。"
+    },
+    {
+      "id": "linked-list-4",
+      "concept": "linked-list",
+      "level": 2,
+      "question": "双向链表相对单链表的优势是？",
+      "options": ["一定更省内存", "可以 O(1) 找到前驱", "查找第 k 个变成 O(1)", "不需要头指针"],
+      "answer": 1,
+      "explain": "双向链表有 prev 指针，已知节点时可以 O(1) 找到前驱；但每个节点要多存一个指针。"
+    },
+    {
+      "id": "stack-1",
+      "concept": "stack",
+      "level": 1,
+      "question": "栈的插入和删除遵循什么原则？",
+      "options": ["先进先出", "后进先出", "随机进出", "按优先级进出"],
+      "answer": 1,
+      "explain": "栈是 LIFO（Last In First Out），只能在栈顶操作。"
+    },
+    {
+      "id": "stack-2",
+      "concept": "stack",
+      "level": 1,
+      "question": "括号匹配最适合用哪种数据结构？",
+      "options": ["队列", "栈", "链表", "堆"],
+      "answer": 1,
+      "explain": "遇到左括号入栈，遇到右括号弹出栈顶检查是否匹配。"
+    },
+    {
+      "id": "stack-3",
+      "concept": "stack",
+      "level": 1,
+      "question": "栈的入栈和出栈时间复杂度是？",
+      "options": ["O(1)", "O(log n)", "O(n)", "O(n²)"],
+      "answer": 0,
+      "explain": "只在栈顶操作，不涉及遍历。"
+    },
+    {
+      "id": "stack-4",
+      "concept": "stack",
+      "level": 2,
+      "question": "函数调用过程中，保存返回地址和局部变量通常使用？",
+      "options": ["队列", "调用栈", "哈希表", "二叉搜索树"],
+      "answer": 1,
+      "explain": "函数调用是典型的栈结构：后调用的函数先返回。"
+    },
+    {
+      "id": "queue-1",
+      "concept": "queue",
+      "level": 1,
+      "question": "队列的插入和删除遵循什么原则？",
+      "options": ["先进先出", "后进先出", "随机进出", "按大小进出"],
+      "answer": 0,
+      "explain": "队列是 FIFO（First In First Out），队尾入队、队头出队。"
+    },
+    {
+      "id": "queue-2",
+      "concept": "queue",
+      "level": 1,
+      "question": "图的 BFS 遍历通常借助哪种数据结构？",
+      "options": ["栈", "队列", "堆", "并查集"],
+      "answer": 1,
+      "explain": "BFS 按层扩展，用队列保存待访问节点。"
+    },
+    {
+      "id": "queue-3",
+      "concept": "queue",
+      "level": 2,
+      "question": "循环队列容量为 n，牺牲一个单元区分队空/队满时，队满条件是？",
+      "options": ["rear == front", "(rear + 1) % n == front", "rear == n", "front == 0"],
+      "answer": 1,
+      "explain": "牺牲一个单元时，队尾再走一格就追上队头表示队满。"
+    },
+    {
+      "id": "queue-4",
+      "concept": "queue",
+      "level": 2,
+      "question": "普通数组队列可能出现“假溢出”，原因是？",
+      "options": ["数组太小", "队头前面还有空位但 rear 已经到末尾", "队列元素太多", "没有头指针"],
+      "answer": 1,
+      "explain": "出队后 front 前移，前面空出来的位置普通队列不能复用，rear 到末尾就误以为满了。"
+    },
+    {
+      "id": "binary-tree-1",
+      "concept": "binary-tree",
+      "level": 1,
+      "question": "二叉树的前序遍历顺序是？",
+      "options": ["左 → 根 → 右", "根 → 左 → 右", "左 → 右 → 根", "根 → 右 → 左"],
+      "answer": 1,
+      "explain": "前序是“根左右”，中序是“左根右”，后序是“左右根”。"
+    },
+    {
+      "id": "binary-tree-2",
+      "concept": "binary-tree",
+      "level": 2,
+      "question": "一棵二叉树中，叶子节点数 n0 与双孩子节点数 n2 的关系是？",
+      "options": ["n0 = n2", "n0 = n2 + 1", "n0 = n2 - 1", "n0 = 2n2"],
+      "answer": 1,
+      "explain": "由边数关系可推出 n0 = n2 + 1。"
+    },
+    {
+      "id": "binary-tree-3",
+      "concept": "binary-tree",
+      "level": 2,
+      "question": "对二叉搜索树进行中序遍历，得到的序列是？",
+      "options": ["随机序列", "升序序列", "降序序列", "层序序列"],
+      "answer": 1,
+      "explain": "BST 左小右大，中序“左根右”正好得到升序。"
+    },
+    {
+      "id": "binary-tree-4",
+      "concept": "binary-tree",
+      "level": 1,
+      "question": "二叉树遍历的时间复杂度是？",
+      "options": ["O(1)", "O(log n)", "O(n)", "O(n²)"],
+      "answer": 2,
+      "explain": "每个节点访问一次，所以是 O(n)。"
+    },
+    {
+      "id": "bst-1",
+      "concept": "bst",
+      "level": 1,
+      "question": "二叉搜索树的左子树节点值应满足？",
+      "options": ["都大于根", "都小于根", "都等于根", "没有限制"],
+      "answer": 1,
+      "explain": "BST 的规则是左小右大。"
+    },
+    {
+      "id": "bst-2",
+      "concept": "bst",
+      "level": 2,
+      "question": "二叉搜索树退化成单链表时，查找的时间复杂度是？",
+      "options": ["O(1)", "O(log n)", "O(n)", "O(n log n)"],
+      "answer": 2,
+      "explain": "树高变成 n，查找退化为链表遍历。"
+    },
+    {
+      "id": "bst-3",
+      "concept": "bst",
+      "level": 1,
+      "question": "在二叉搜索树中查找一个值，平均时间复杂度是？",
+      "options": ["O(1)", "O(log n)", "O(n)", "O(n²)"],
+      "answer": 1,
+      "explain": "平衡情况下每次排除一半，平均 O(log n)；最坏 O(n)。"
+    },
+    {
+      "id": "bst-4",
+      "concept": "bst",
+      "level": 3,
+      "question": "删除二叉搜索树中一个有两个孩子的节点，常用做法是？",
+      "options": ["直接删除，不管孩子", "用左子树最大值或右子树最小值替代", "把整棵树重建", "把节点移到根"],
+      "answer": 1,
+      "explain": "用中序前驱或后继替代被删节点，再删除替代节点，能保持 BST 性质。"
+    },
+    {
+      "id": "heap-1",
+      "concept": "heap",
+      "level": 1,
+      "question": "堆在逻辑上是一棵什么树？",
+      "options": ["满二叉树", "完全二叉树", "二叉搜索树", "平衡二叉树"],
+      "answer": 1,
+      "explain": "堆必须是完全二叉树，这样才能用数组紧凑存储。"
+    },
+    {
+      "id": "heap-2",
+      "concept": "heap",
+      "level": 1,
+      "question": "小根堆的根节点是？",
+      "options": ["最大值", "最小值", "中间值", "随机值"],
+      "answer": 1,
+      "explain": "小根堆任意父节点 ≤ 子节点，所以根最小。"
+    },
+    {
+      "id": "heap-3",
+      "concept": "heap",
+      "level": 2,
+      "question": "堆插入一个元素的时间复杂度是？",
+      "options": ["O(1)", "O(log n)", "O(n)", "O(n log n)"],
+      "answer": 1,
+      "explain": "插入到末尾后向上调整，最多走树高 O(log n)。"
+    },
+    {
+      "id": "heap-4",
+      "concept": "heap",
+      "level": 3,
+      "question": "把一个无序数组建成堆，时间复杂度是？",
+      "options": ["O(1)", "O(log n)", "O(n)", "O(n log n)"],
+      "answer": 2,
+      "explain": "自底向上建堆的总代价是 O(n)，不是逐个插入的 O(n log n)。"
+    },
+    {
+      "id": "graph-traversal-1",
+      "concept": "graph-traversal",
+      "level": 1,
+      "question": "图的 DFS 通常借助什么结构？",
+      "options": ["队列", "栈或递归", "堆", "哈希表"],
+      "answer": 1,
+      "explain": "DFS 一条路走到底，用栈保存回退点，递归本质也是栈。"
+    },
+    {
+      "id": "graph-traversal-2",
+      "concept": "graph-traversal",
+      "level": 1,
+      "question": "图的 BFS 通常借助什么结构？",
+      "options": ["栈", "队列", "堆", "并查集"],
+      "answer": 1,
+      "explain": "BFS 按层扩展，用队列保存待访问节点。"
+    },
+    {
+      "id": "graph-traversal-3",
+      "concept": "graph-traversal",
+      "level": 2,
+      "question": "图遍历中必须记录 visited 的主要原因是？",
+      "options": ["提高代码可读性", "防止有环图死循环", "减少内存", "让图变成树"],
+      "answer": 1,
+      "explain": "有环时可能重复访问同一节点，必须用 visited 去重。"
+    },
+    {
+      "id": "graph-traversal-4",
+      "concept": "graph-traversal",
+      "level": 2,
+      "question": "在无权图中，BFS 可以用来求？",
+      "options": ["最短路径", "最大生成树", "拓扑排序", "强连通分量"],
+      "answer": 0,
+      "explain": "BFS 按层访问，第一次到达某节点时的层数就是无权最短路径。"
+    },
+    {
+      "id": "binary-search-1",
+      "concept": "binary-search",
+      "level": 1,
+      "question": "二分查找要求数组满足什么条件？",
+      "options": ["元素互不相同", "必须有序", "长度是 2 的幂", "必须是整数"],
+      "answer": 1,
+      "explain": "二分依赖有序性来判断目标在左半还是右半。"
+    },
+    {
+      "id": "binary-search-2",
+      "concept": "binary-search",
+      "level": 1,
+      "question": "二分查找的时间复杂度是？",
+      "options": ["O(1)", "O(log n)", "O(n)", "O(n log n)"],
+      "answer": 1,
+      "explain": "每次排除一半，最多 log₂n 次。"
+    },
+    {
+      "id": "binary-search-3",
+      "concept": "binary-search",
+      "level": 2,
+      "question": "计算 mid 时，写成 left + (right - left) / 2 的主要好处是？",
+      "options": ["更快", "避免 left + right 溢出", "不用取整", "自动排序"],
+      "answer": 1,
+      "explain": "left + right 可能超过整型范围，先减后加更安全。"
+    },
+    {
+      "id": "binary-search-4",
+      "concept": "binary-search",
+      "level": 2,
+      "question": "二分查找中，如果目标值小于 a[mid]，下一步应该？",
+      "options": ["left = mid + 1", "right = mid - 1", "left = mid", "right = mid + 1"],
+      "answer": 1,
+      "explain": "目标在左半区，right 收缩到 mid - 1。"
+    },
+    {
+      "id": "sorting-1",
+      "concept": "sorting",
+      "level": 1,
+      "question": "快速排序的平均时间复杂度是？",
+      "options": ["O(n)", "O(n log n)", "O(n²)", "O(log n)"],
+      "answer": 1,
+      "explain": "平均每次划分较均匀，递归深度 log n，每层 O(n)。"
+    },
+    {
+      "id": "sorting-2",
+      "concept": "sorting",
+      "level": 1,
+      "question": "归并排序的额外空间复杂度通常是？",
+      "options": ["O(1)", "O(log n)", "O(n)", "O(n²)"],
+      "answer": 2,
+      "explain": "合并两个有序数组需要额外 O(n) 的辅助空间。"
+    },
+    {
+      "id": "sorting-3",
+      "concept": "sorting",
+      "level": 2,
+      "question": "下列排序中，通常稳定的是？",
+      "options": ["快速排序", "堆排序", "归并排序", "选择排序"],
+      "answer": 2,
+      "explain": "归并排序在合并时保持相等元素的相对顺序，是稳定排序。"
+    },
+    {
+      "id": "sorting-4",
+      "concept": "sorting",
+      "level": 2,
+      "question": "快速排序最坏情况的时间复杂度是？",
+      "options": ["O(n)", "O(n log n)", "O(n²)", "O(log n)"],
+      "answer": 2,
+      "explain": "当每次划分极不均匀（如已有序且选端点为基准）时，退化为 O(n²)。"
+    }
+  ]
+}
