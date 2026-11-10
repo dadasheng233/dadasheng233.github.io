@@ -12,7 +12,7 @@ const NAV = [
   { key: 'tags', label: '标签', href: '/tags.html', icon: 'i-tag' },
   { key: 'words', label: '单词', href: '/words.html', icon: 'i-book' },
   { key: 'papers', label: '真题', href: '/papers.html', icon: 'i-archive' },
-  { key: 'learn', label: '学习', href: '/learn.html', icon: 'i-grid' },
+  { key: 'learn', label: '学习', href: '/visual.html', icon: 'i-grid' },
   { key: 'about', label: '关于', href: '/about.html', icon: 'i-user' }
 ];
 
@@ -235,6 +235,7 @@ export function renderPage({ site, page, content, stats }) {
   <script src="/assets/js/papers.js" defer></script>
   <script src="/assets/js/pdf-reader.js" defer></script>
   <script src="/assets/js/dsa.js" defer></script>
+  <script src="/assets/js/visual.js" defer></script>
   <script type="module" src="/assets/js/cat.js"></script>
 </body>
 </html>`;

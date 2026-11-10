@@ -55,7 +55,7 @@ public/       生成结果，不要手改
 | 四级真题 | `content/papers.json` |
 | 真题 PDF 文件 | `theme/assets/papers/` |
 | PDF 阅读器 | `theme/assets/js/pdf-reader.js` |
-| 数据结构学习页 | `content/dsa.json` + `theme/assets/js/dsa.js` |
+| 数据结构可视化实验室 | `content/dsa.json` + `theme/assets/js/visual.js` |
 | 首页 CET-4 入口卡片 | `build.mjs → renderHome()` + `.home-word-card` |
 | 头像、封面、照片 | `theme/assets/img/` |
 | 颜色、宽度、字体 | `theme/assets/css/site.css` 的 `:root` |
@@ -322,7 +322,7 @@ PDF 实际文件在 `theme/assets/papers/<year-month>/`，通过 `cp` 复制到 
 
 ### 3.7 `content/dsa.json`
 
-数据结构知识图谱可视化诊断 Demo。页面 `/learn.html` 读取 `/dsa.json`。
+数据结构知识图谱可视化诊断 Demo。页面 `/visual.html`（可视化）和 `/learn.html`（文字诊断）读取 `/dsa.json`。
 
 | 字段 | 说明 |
 |---|---|
@@ -352,7 +352,8 @@ PDF 实际文件在 `theme/assets/papers/<year-month>/`，通过 `cp` 复制到 
 | GET | `/words.json` | 单词数据 | `content/words.json` |
 | GET | `/papers.html` | 四级真题库 | `build.mjs → renderPapers()` |
 | GET | `/paper.html?file=...` | PDF 阅读器 | `build.mjs → renderPaperReader()` + `pdf-reader.js` |
-| GET | `/learn.html` | 数据结构学习 MVP | `build.mjs → renderLearn()` + `dsa.js` |
+| GET | `/learn.html` | 数据结构文字诊断/教师班级/实验设计 | `build.mjs → renderLearn()` + `dsa.js` |
+| GET | `/visual.html` | 数据结构可视化实验室 | `build.mjs → renderVisual()` + `visual.js` |
 | GET | `/dsa.json` | 数据结构图谱/题库数据 | `content/dsa.json` |
 | GET | `/assets/papers/*` | 真题 PDF | `theme/assets/papers/` |
 | GET | `/assets/vendor/pdfjs/*` | PDF.js 运行时 | `theme/assets/vendor/pdfjs/` |
@@ -678,6 +679,18 @@ PDF.js 版本和许可证在 `theme/assets/vendor/pdfjs/`。
 - 实验设计视图：30 人、4 周、A/B 对照、指标
 - URL 参数：`?concept=binary-tree` 选中节点，`&start=1` 直接开始练习，`?demo=1` 使用演示学生，`?view=teacher` 打开教师视图
 - 进度键：`wanfeng:dsa:progress`、`wanfeng:dsa:wrong`
+
+### 7.8 `visual.js`
+
+数据结构可视化实验室：
+
+- 读取 `/dsa.json`
+- SVG 知识地图：节点大小=权重，外圈圆环=完成度，颜色=掌握状态
+- 总完成度环形图、章节进度条、知识点热力块
+- 二分查找动画：数组 cells、low/high/mid 指针、区间排除、找到目标
+- 播放/暂停、上一步、下一步、重置
+- 点击其他知识点时显示“动画制作中”占位
+- URL 参数：`?demo=0` 使用本地进度；`?concept=binary-search` 选中节点
 
 ---
 

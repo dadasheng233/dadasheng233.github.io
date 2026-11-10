@@ -718,6 +718,84 @@ const renderLearn = (site, stats) => {
   });
 };
 
+const renderVisual = (site, stats) => {
+  const content = `
+  <div class="visual-page" id="visual-app">
+    <div class="page-header visual-header">
+      <div>
+        <p class="page-kicker">VISUAL LAB</p>
+        <h1 class="page-title">数据结构 · 可视化实验室</h1>
+        <p class="page-subtitle">知识地图、完成度和算法动画放在同一张桌面上，先看见，再理解</p>
+      </div>
+      <a class="viz-text-link" href="/learn.html">文字诊断版 →</a>
+    </div>
+
+    <div class="viz-top">
+      <section class="viz-map-card">
+        <div class="viz-card-head">
+          <strong>知识地图</strong>
+          <span id="viz-map-note">点击节点查看相关知识</span>
+        </div>
+        <svg id="viz-graph" viewBox="0 0 800 500" role="img" aria-label="数据结构知识地图"></svg>
+        <div class="viz-legend">
+          <span><i class="dot dot-none"></i>未开始</span>
+          <span><i class="dot dot-learning"></i>学习中</span>
+          <span><i class="dot dot-strong"></i>已掌握</span>
+          <span>圆环 = 完成度</span>
+        </div>
+      </section>
+
+      <aside class="viz-progress-card">
+        <div class="viz-card-head">
+          <strong>知识完成度</strong>
+          <span class="viz-demo-badge">演示数据</span>
+        </div>
+        <div class="viz-ring-wrap">
+          <svg class="viz-ring" viewBox="0 0 140 140" aria-label="总完成度">
+            <circle class="viz-ring-bg" cx="70" cy="70" r="56"></circle>
+            <circle class="viz-ring-value" id="viz-ring-value" cx="70" cy="70" r="56"></circle>
+            <text id="viz-ring-text" x="70" y="76" text-anchor="middle">0%</text>
+          </svg>
+          <div class="viz-ring-copy">
+            <strong id="viz-mastered-count">0 / 10</strong>
+            <span>知识点已掌握</span>
+            <small id="viz-average-note">平均掌握度 0%</small>
+          </div>
+        </div>
+        <div class="viz-chapters" id="viz-chapters"></div>
+        <div class="viz-heat" id="viz-heat"></div>
+      </aside>
+    </div>
+
+    <div class="viz-bottom">
+      <section class="viz-algo-card">
+        <div class="viz-card-head">
+          <strong id="viz-algo-title">算法动画 · 二分查找</strong>
+          <span>目标值 23</span>
+        </div>
+        <div class="viz-algo-body" id="viz-algo-body"></div>
+      </section>
+      <aside class="viz-detail-card" id="viz-detail"></aside>
+    </div>
+
+    <p class="dsa-footnote">可视化实验室当前使用演示数据；二分查找动画已可用，其他知识点会逐步补齐。</p>
+  </div>`;
+
+  return renderPage({
+    site,
+    stats,
+    page: {
+      title: '数据结构 · 可视化实验室',
+      description: '数据结构知识地图、知识完成度和二分查找算法动画。',
+      active: 'learn',
+      path: '/visual.html',
+      image: toAbsolute(site.url, '/assets/img/cover-book.svg'),
+      canonical: toAbsolute(site.url, '/visual.html')
+    },
+    content
+  });
+};
+
 const renderAbout = async (site, stats) => {
   const aboutBody = await readFile(join(contentDir, 'about.html'), 'utf8');
   const content = `
@@ -984,6 +1062,7 @@ const main = async () => {
   await writePage('paper.html', renderPaperReader(site, stats));
   await writeFile(join(outDir, 'dsa.json'), JSON.stringify(dsa), 'utf8');
   await writePage('learn.html', renderLearn(site, stats));
+  await writePage('visual.html', renderVisual(site, stats));
   await writePage('about.html', await renderAbout(site, stats));
   await writePage('404.html', render404(site, stats));
 
@@ -1001,7 +1080,7 @@ const main = async () => {
   await writeFile(join(outDir, 'search.json'), JSON.stringify(searchIndex), 'utf8');
   await writeFile(join(outDir, 'atom.xml'), renderAtom(posts, site), 'utf8');
 
-  const sitemapPages = ['/', ...Array.from({ length: Math.max(0, totalPages - 1) }, (_, i) => `/page/${i + 2}/`), ...posts.map((post) => post.path), '/archives.html', '/categories.html', '/tags.html', '/words.html', '/papers.html', '/learn.html', '/about.html'];
+  const sitemapPages = ['/', ...Array.from({ length: Math.max(0, totalPages - 1) }, (_, i) => `/page/${i + 2}/`), ...posts.map((post) => post.path), '/archives.html', '/categories.html', '/tags.html', '/words.html', '/papers.html', '/learn.html', '/visual.html', '/about.html'];
   await writeFile(join(outDir, 'sitemap.xml'), renderSitemap(site, sitemapPages), 'utf8');
   await writeFile(join(outDir, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${site.url}/sitemap.xml\n`, 'utf8');
   await writeFile(join(outDir, '.nojekyll'), '', 'utf8');
