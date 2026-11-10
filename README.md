@@ -234,6 +234,9 @@ http://127.0.0.1:4200/assets/companion-demo.html
 
 这是一个独立的移动端 Demo，不依赖博客布局：
 
+- 单文件版：`http://127.0.0.1:4200/assets/companion-single.html`，可直接发给组员、双击打开
+- 单文件版内嵌同一只猫的透明帧，用 CSS 做呼吸动画，不加载外部资源
+- 实时 Live2D 版：`http://127.0.0.1:4200/assets/companion-demo.html`，需要服务器上的 `vendor/live2d` 和 `live2d` 资源
 - 纸感 / 手写 / 奶油配色，参考 `小本子.html` 的气质
 - 博客推荐作为首页主内容
 - 心情打卡 + 七日心情条
