@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#fbf4ec">
 <title>一点点 · 陪伴式学习博客 Demo</title>
+<link rel="stylesheet" href="/vendor/live2d/waifu.css">
 <style>
 :root {
   --paper: #fbf4ec;
@@ -215,6 +216,15 @@ ul { margin: 0; padding: 0; list-style: none; }
 .pet-state { position: relative; z-index: 1; margin-top: 3px; color: var(--ink-2); font-family: var(--hand); font-size: 16px; }
 .pet-message { position: relative; z-index: 1; max-width: 270px; margin-top: 3px; color: var(--ink-3); font-family: var(--hand); font-size: 14px; line-height: 1.7; text-align: center; }
 .pet-stage .stamp-mini { position: absolute; top: 15px; right: 16px; color: var(--rose-d); border: 1px dashed var(--rose); border-radius: 50%; width: 55px; height: 55px; display: grid; place-items: center; font-family: var(--hand); font-size: 10px; line-height: 1.2; transform: rotate(8deg); opacity: .8; }
+.live2d-slot { display: none; position: relative; z-index: 1; width: 220px; height: 220px; margin: 2px auto 0; }
+.live2d-slot #waifu { position: relative !important; left: auto !important; bottom: auto !important; transform: none !important; z-index: 1 !important; }
+.live2d-slot #waifu:hover { transform: none !important; }
+.live2d-slot #live2d { width: 220px !important; height: 220px !important; }
+.live2d-slot #live2d canvas { width: 100% !important; height: 100% !important; display: block; }
+.live2d-slot #waifu-tool, .live2d-slot #waifu-tips, #waifu-toggle { display: none !important; }
+body:not(.live2d-ready) #waifu { opacity: 0; pointer-events: none; }
+body.live2d-ready .pet-big { display: none; }
+body.live2d-ready .live2d-slot { display: block; }
 .pet-actions { display: flex; gap: 7px; justify-content: center; margin-top: 10px; position: relative; z-index: 1; }
 .pet-actions .btn { font-size: 10px; padding: 6px 12px; }
 .pet-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-top: 12px; }
@@ -393,6 +403,7 @@ ul { margin: 0; padding: 0; list-style: none; }
       <div class="pet-stage" id="pet-stage">
         <span class="stamp-mini">今日<br>也在</span>
         <div class="pet-big" id="pet-big"></div>
+        <div class="live2d-slot" id="live2d-slot" aria-label="Live2D 小猫"></div>
         <div class="pet-shadow"></div>
         <p class="pet-state" id="pet-state">陪伴</p>
         <p class="pet-message" id="pet-message">我在这儿，慢慢来。</p>
@@ -741,6 +752,44 @@ ul { margin: 0; padding: 0; list-style: none; }
     save(); renderModule();
   }));
 })();
+</script>
+<script type="module">
+  // 把博客里同一只 Live2D 小猫请进陪伴页。
+  // 模型来自公开 Tororo 资源，正式公开部署前请确认模型许可。
+  (async () => {
+    const slot = document.getElementById('live2d-slot');
+    if (!slot) return;
+    try {
+      localStorage.removeItem('waifu-disabled');
+      await import('/vendor/live2d/waifu-tips.js');
+      if (typeof window.initWidget !== 'function') return;
+      window.initWidget({
+        waifuPath: '/live2d/waifu-tips.json',
+        cubism2Path: '/vendor/live2d/live2d.min.js',
+        logLevel: 'warn',
+        drag: false
+      });
+      const started = Date.now();
+      const wait = setInterval(() => {
+        const waifu = document.getElementById('waifu');
+        const canvas = waifu && waifu.querySelector('#live2d');
+        if (waifu && canvas && canvas.width > 0) {
+          clearInterval(wait);
+          document.getElementById('waifu-toggle')?.remove();
+          slot.appendChild(waifu);
+          waifu.classList.add('waifu-active');
+          document.body.classList.add('live2d-ready');
+          return;
+        }
+        if (Date.now() - started > 12000) {
+          clearInterval(wait);
+          console.warn('[companion] Live2D 没有在 12 秒内加载，保留 CSS 小猫。');
+        }
+      }, 120);
+    } catch (error) {
+      console.warn('[companion] Live2D 启动失败，保留 CSS 小猫。', error);
+    }
+  })();
 </script>
 </body>
 </html>
