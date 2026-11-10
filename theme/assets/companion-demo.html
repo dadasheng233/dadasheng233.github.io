@@ -1,0 +1,746 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fbf4ec">
+<title>一点点 · 陪伴式学习博客 Demo</title>
+<style>
+:root {
+  --paper: #fbf4ec;
+  --paper-2: #fffdf9;
+  --ink: #4b3f3a;
+  --ink-2: #7d6c63;
+  --ink-3: #9b8a7f;
+  --line: #e7d8cc;
+  --line-2: #f0e5db;
+  --rose: #e79aa4;
+  --rose-d: #c9737f;
+  --rose-l: #fae3e6;
+  --butter: #f2cf7d;
+  --mint: #8fbfa3;
+  --sky: #8fb3d9;
+  --lav: #b3a2d6;
+  --clay: #dd9a7d;
+  --hand: "Kaiti SC", "KaiTi", "STKaiti", "LXGW WenKai", "Songti SC", "SimSun", serif;
+  --sans: "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  background:
+    radial-gradient(120% 85% at 6% 0%, #fdeee7 0%, rgba(253,238,231,0) 58%),
+    radial-gradient(95% 75% at 102% 100%, #efe9f7 0%, rgba(239,233,247,0) 56%),
+    var(--paper);
+  font: 15px/1.7 var(--sans);
+}
+body::before {
+  content: "";
+  position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .55;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
+}
+button, input, textarea { font: inherit; color: inherit; }
+button { border: 0; background: none; cursor: pointer; padding: 0; }
+h1,h2,h3,p { margin: 0; }
+ul { margin: 0; padding: 0; list-style: none; }
+::selection { background: #f6cdd3; color: #4b3f3a; }
+
+.phone {
+  position: relative; z-index: 1;
+  width: 100%; max-width: 430px; min-height: 100vh;
+  margin: 0 auto; padding: 0 14px 92px;
+  background:
+    radial-gradient(110% 55% at 0% 0%, rgba(253,238,231,.9), transparent 65%),
+    radial-gradient(100% 65% at 100% 100%, rgba(239,233,247,.75), transparent 62%),
+    var(--paper);
+}
+@media (min-width: 620px) {
+  body { padding: 20px 0; }
+  .phone { min-height: calc(100vh - 40px); border-radius: 30px; box-shadow: 0 30px 70px -40px rgba(86,59,46,.55), 0 0 0 1px rgba(255,255,255,.55) inset; overflow: hidden; }
+  .tabbar { bottom: 20px; border-radius: 0 0 30px 30px; }
+}
+
+/* header */
+.top { padding: max(18px, env(safe-area-inset-top)) 4px 0; }
+.top-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.brand-kicker { color: var(--ink-3); font-size: 9px; letter-spacing: .28em; }
+.brand-title { display: inline-block; position: relative; margin-top: 3px; color: #4a3a34; font-family: var(--hand); font-size: 32px; line-height: 1.1; letter-spacing: .04em; }
+.brand-title::after { content: ""; position: absolute; left: -3px; right: -8px; bottom: -1px; height: 8px; background: no-repeat center/100% 100% url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 12' preserveAspectRatio='none'%3E%3Cpath d='M2 8c40-5 90-6 196-3' fill='none' stroke='%23e79aa4' stroke-width='4' stroke-linecap='round' opacity='.55'/%3E%3C/svg%3E"); }
+.brand-sub { margin-top: 5px; color: var(--ink-3); font-family: var(--hand); font-size: 12px; letter-spacing: .06em; }
+.avatar { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; color: #8e5f61; background: var(--rose-l); border: 1px solid #ecc7cb; font-family: var(--hand); font-size: 16px; transform: rotate(3deg); }
+.date-line { display: flex; align-items: center; gap: 7px; margin: 14px 4px 16px; color: var(--ink-3); font-size: 10px; letter-spacing: .08em; }
+.date-line b { color: var(--rose-d); font-weight: 500; }
+.date-line::after { content: ""; height: 1px; flex: 1; background: repeating-linear-gradient(to right, var(--line) 0 4px, transparent 4px 8px); }
+
+/* screens */
+.screen { display: none; }
+.screen.on { display: block; animation: pageIn .32s ease both; }
+@keyframes pageIn { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: none; } }
+
+/* paper cards */
+.paper {
+  position: relative;
+  background: linear-gradient(180deg, #fffdf9 0%, #fffcf7 100%);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: 0 1px 0 #fff inset, 0 16px 28px -30px rgba(108,79,63,.8);
+}
+.tape { position: relative; }
+.tape::before { content: ""; position: absolute; top: -8px; left: 50%; width: 78px; height: 17px; transform: translateX(-50%) rotate(-2deg); background: repeating-linear-gradient(90deg, rgba(242,207,125,.62) 0 7px, rgba(242,207,125,.42) 7px 14px); clip-path: polygon(0 12%,4% 0,96% 4%,100% 14%,99% 90%,95% 100%,5% 96%,1% 84%); mix-blend-mode: multiply; }
+
+/* blog lead */
+.blog-lead { margin: 0 0 14px; padding: 21px 19px 18px; }
+.blog-lead .eyebrow { color: var(--rose-d); font-size: 9px; letter-spacing: .16em; }
+.blog-lead h2 { margin: 7px 0 6px; color: #443630; font-family: var(--hand); font-size: 25px; line-height: 1.45; letter-spacing: .02em; }
+.blog-lead p { color: var(--ink-2); font-family: var(--hand); font-size: 14px; line-height: 1.85; }
+.blog-meta { display: flex; align-items: center; gap: 8px; margin-top: 12px; color: var(--ink-3); font-size: 9px; }
+.blog-meta i { width: 3px; height: 3px; border-radius: 50%; background: var(--rose); }
+.read-link { display: inline-flex; align-items: center; gap: 4px; margin-top: 13px; color: var(--rose-d); border-bottom: 1px dashed #e5aeb4; font-size: 11px; letter-spacing: .06em; }
+.read-link span { transition: transform .2s; }
+.read-link:hover span { transform: translateX(3px); }
+
+/* section head */
+.section { margin-top: 14px; }
+.sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin: 0 4px 8px; }
+.sec-head h3 { color: #4a3a34; font-family: var(--hand); font-size: 19px; font-weight: 700; letter-spacing: .04em; }
+.sec-head span { color: var(--ink-3); font-size: 9px; letter-spacing: .06em; }
+.sec-head button { color: var(--ink-3); font-size: 9px; border-bottom: 1px dashed var(--line); }
+
+/* mood */
+.mood-card { padding: 16px 16px 14px; }
+.moods { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; }
+.mood-btn { display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 8px 1px 7px; color: var(--ink-3); border: 1px solid transparent; border-radius: 13px; transition: .18s; }
+.mood-btn .face { font-size: 26px; line-height: 1; filter: saturate(.8); transition: transform .18s; }
+.mood-btn span { font-size: 10px; white-space: nowrap; }
+.mood-btn.on { color: #5d4a42; background: color-mix(in srgb, var(--mc) 15%, #fffdfa); border-color: color-mix(in srgb, var(--mc) 50%, #fff); box-shadow: 0 2px 0 -1px color-mix(in srgb, var(--mc) 40%, #fff); }
+.mood-btn.on .face { transform: translateY(-2px) scale(1.08); filter: none; }
+.mood-line { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 9px; padding-top: 9px; border-top: 1px dashed var(--line-2); color: var(--ink-3); font-size: 10px; }
+.mood-line strong { color: var(--rose-d); font-family: var(--hand); font-size: 13px; font-weight: 500; }
+.mood-chart { display: flex; align-items: flex-end; gap: 6px; height: 48px; margin-top: 11px; padding: 0 2px; }
+.mood-bar { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; color: #b2a195; font-size: 7px; }
+.mood-bar i { display: block; width: 100%; max-width: 22px; height: var(--h); min-height: 5px; background: linear-gradient(to top, var(--rose-l), var(--rose)); border-radius: 99px 99px 3px 3px; opacity: .7; }
+.mood-bar.today i { background: linear-gradient(to top, #f2cf7d, var(--rose-d)); opacity: 1; }
+.mood-bar.today { color: var(--rose-d); font-weight: 600; }
+
+/* focus */
+.focus-card { display: flex; align-items: center; gap: 16px; padding: 16px; }
+.focus-ring { --progress: 0deg; width: 96px; height: 96px; flex: none; display: grid; place-items: center; border-radius: 50%; background: conic-gradient(var(--rose) var(--progress), #f0e2d6 0); position: relative; }
+.focus-ring::before { content: ""; position: absolute; inset: 7px; border-radius: 50%; background: var(--paper-2); }
+.focus-time { position: relative; color: #55443d; font-family: var(--mono, var(--hand)); font-size: 19px; letter-spacing: .03em; }
+.focus-copy { min-width: 0; flex: 1; }
+.focus-copy h3 { color: #493932; font-family: var(--hand); font-size: 19px; }
+.focus-copy p { margin-top: 3px; color: var(--ink-3); font-size: 10px; line-height: 1.7; }
+.focus-actions { display: flex; gap: 6px; margin-top: 9px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; padding: 7px 14px; border-radius: 999px; color: #fffaf7; background: var(--rose); box-shadow: 0 2px 0 #cf8692; font-size: 11px; letter-spacing: .08em; transition: .16s; }
+.btn:active { transform: translateY(2px); box-shadow: none; }
+.btn.ghost { color: var(--ink-2); background: #fffdf9; border: 1px solid var(--line); box-shadow: 0 2px 0 #eee0d3; }
+.btn.small { padding: 5px 11px; font-size: 10px; }
+
+/* tasks */
+.task-card { padding: 16px; }
+.task-list { display: flex; flex-direction: column; gap: 7px; }
+.task { display: flex; align-items: center; gap: 9px; padding: 7px 0; border-bottom: 1px dashed var(--line-2); }
+.task:last-child { border-bottom: 0; }
+.task-check { width: 18px; height: 18px; flex: none; border: 1px solid #d9c8bb; border-radius: 50%; display: grid; place-items: center; color: transparent; font-size: 11px; transition: .18s; }
+.task.done .task-check { color: #fff; background: var(--mint); border-color: var(--mint); }
+.task.done .task-text { color: #b1a196; text-decoration: line-through; text-decoration-color: #d4b3ae; }
+.task-text { flex: 1; color: var(--ink-2); font-family: var(--hand); font-size: 15px; line-height: 1.6; }
+.task-tag { color: #b8a89a; font-size: 8px; }
+.task-add { display: flex; gap: 7px; margin-top: 10px; }
+.task-add input { flex: 1; min-width: 0; padding: 8px 13px; border-radius: 999px; border: 1px solid var(--line); background: #fffefb; font-size: 12px; }
+.task-add input:focus { outline: none; border-color: var(--rose); box-shadow: 0 0 0 3px rgba(231,154,164,.13); }
+.task-add button { flex: none; padding: 0 15px; border-radius: 999px; color: #fff; background: var(--rose); font-size: 11px; }
+
+/* diary */
+.diary-card { padding: 16px 16px 14px; }
+.diary-card textarea { display: block; width: 100%; min-height: 82px; resize: vertical; padding: 3px 3px 5px; border: 0; color: #4a3a34; background: repeating-linear-gradient(to bottom, transparent 0 27px, #ece0d4 27px 28px); background-attachment: local; font-family: var(--hand); font-size: 16px; line-height: 28px; }
+.diary-card textarea:focus { outline: none; background-color: #fffefb; }
+.diary-card textarea::placeholder { color: #b5a396; }
+.diary-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; color: #b4a396; font-size: 9px; }
+.text-btn { color: var(--rose-d); border-bottom: 1px dashed #e5aeb4; font-size: 10px; }
+
+/* pet peek */
+.pet-peek { display: flex; align-items: center; gap: 12px; padding: 13px 15px; background: #fdf8f2; border: 1px dashed #e7cdbb; border-radius: 16px; }
+.pet-peek .mini-pet { width: 48px; height: 48px; flex: none; }
+.pet-peek p { color: var(--ink-2); font-family: var(--hand); font-size: 14px; line-height: 1.6; }
+.pet-peek small { display: block; margin-top: 2px; color: var(--ink-3); font-family: var(--sans); font-size: 9px; }
+
+/* generic pet svg */
+.pet-svg { width: 100%; height: 100%; overflow: visible; }
+.pet-svg .pet-body { fill: var(--pet, #f6e1d5); }
+.pet-svg .pet-head { fill: var(--pet, #f6e1d5); }
+.pet-svg .pet-ear { fill: var(--pet, #f6e1d5); }
+.pet-svg .pet-inner { fill: #eab6ad; }
+.pet-svg .pet-eye { fill: #5a4640; transform-origin: center; }
+.pet-svg .pet-mouth { fill: none; stroke: #6d5148; stroke-width: 2.1; stroke-linecap: round; }
+.pet-svg .pet-blush { fill: #e8a7a0; opacity: .58; }
+.pet-svg .pet-mark { fill: #fff9f1; opacity: .85; }
+
+/* blog screen */
+.page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; padding: 6px 4px 15px; }
+.page-head h2 { color: #4a3a34; font-family: var(--hand); font-size: 28px; line-height: 1.2; }
+.page-head p { margin-top: 3px; color: var(--ink-3); font-size: 9px; letter-spacing: .1em; }
+.search { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; padding: 8px 13px; border-radius: 999px; background: #fffdfa; border: 1px solid var(--line); }
+.search input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font-size: 12px; }
+.search svg { width: 15px; height: 15px; color: var(--ink-3); }
+.chips { display: flex; gap: 5px; overflow-x: auto; padding-bottom: 3px; margin-bottom: 12px; scrollbar-width: none; }
+.chips::-webkit-scrollbar { display: none; }
+.chip { flex: none; padding: 4px 11px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink-3); background: #fffdfa; font-size: 10px; }
+.chip.on { color: #fff; background: var(--rose); border-color: var(--rose); }
+.article-list { display: grid; gap: 9px; }
+.article-card { display: flex; align-items: stretch; gap: 12px; padding: 13px; }
+.article-art { width: 67px; flex: none; border-radius: 10px; background: var(--art, #f6ddd8); display: grid; place-items: center; color: rgba(90,62,55,.6); font-family: var(--hand); font-size: 24px; }
+.article-card h3 { margin: 1px 0 3px; color: #473831; font-family: var(--hand); font-size: 17px; line-height: 1.4; }
+.article-card p { color: var(--ink-3); font-size: 10px; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.article-meta { display: flex; gap: 7px; margin-top: 5px; color: #b2a194; font-size: 8px; }
+.article-card[hidden] { display: none; }
+
+/* pet screen */
+.pet-stage { position: relative; min-height: 330px; margin: 0 0 12px; padding: 16px 12px 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; background: radial-gradient(65% 70% at 50% 70%, #fde8e3, transparent 75%), #fdf8f2; border: 1px solid var(--line); border-radius: 24px; }
+.pet-stage::before { content: ""; position: absolute; width: 230px; height: 230px; bottom: 22px; border-radius: 50%; border: 1px dashed #e9cabb; opacity: .7; }
+.pet-stage::after { content: ""; position: absolute; width: 145px; height: 210px; bottom: 9px; border-radius: 50%; background: radial-gradient(ellipse, rgba(242,207,125,.18), transparent 70%); }
+.pet-big { position: relative; z-index: 1; width: 188px; height: 180px; margin-top: 4px; animation: breathe 3.8s ease-in-out infinite; }
+.pet-shadow { width: 116px; height: 12px; margin: -7px 0 0; border-radius: 50%; background: rgba(124,86,72,.13); filter: blur(3px); }
+@keyframes breathe { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-4px) scale(1.012); } }
+.pet-stage.is-focus .pet-big { animation: focusPet 1.8s ease-in-out infinite; }
+.pet-stage.is-soothe .pet-big { animation: soothePet 3.5s ease-in-out infinite; }
+.pet-stage.is-cheer .pet-big { animation: cheerPet .8s ease-in-out infinite; }
+@keyframes focusPet { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
+@keyframes soothePet { 0%,100% { transform: translateY(2px) rotate(-1deg); } 50% { transform: translateY(-2px) rotate(1deg); } }
+@keyframes cheerPet { 0%,100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-8px) rotate(2deg); } }
+.pet-state { position: relative; z-index: 1; margin-top: 3px; color: var(--ink-2); font-family: var(--hand); font-size: 16px; }
+.pet-message { position: relative; z-index: 1; max-width: 270px; margin-top: 3px; color: var(--ink-3); font-family: var(--hand); font-size: 14px; line-height: 1.7; text-align: center; }
+.pet-stage .stamp-mini { position: absolute; top: 15px; right: 16px; color: var(--rose-d); border: 1px dashed var(--rose); border-radius: 50%; width: 55px; height: 55px; display: grid; place-items: center; font-family: var(--hand); font-size: 10px; line-height: 1.2; transform: rotate(8deg); opacity: .8; }
+.pet-actions { display: flex; gap: 7px; justify-content: center; margin-top: 10px; position: relative; z-index: 1; }
+.pet-actions .btn { font-size: 10px; padding: 6px 12px; }
+.pet-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-top: 12px; }
+.pet-stat { padding: 11px 9px; text-align: center; background: #fffdf9; border: 1px solid var(--line); border-radius: 13px; }
+.pet-stat strong { display: block; color: var(--rose-d); font-family: var(--mono, var(--hand)); font-size: 21px; line-height: 1.2; }
+.pet-stat span { color: var(--ink-3); font-size: 8px; }
+.companion-line { display: flex; align-items: center; gap: 9px; margin-top: 12px; padding: 12px 14px; }
+.companion-line > span { color: var(--ink-3); font-size: 9px; white-space: nowrap; }
+.companion-bar { flex: 1; height: 7px; overflow: hidden; background: #eedfd2; border-radius: 99px; }
+.companion-bar i { display: block; height: 100%; width: 60%; background: linear-gradient(90deg, var(--butter), var(--rose)); border-radius: 99px; }
+.companion-line b { color: var(--rose-d); font-family: var(--hand); font-size: 13px; font-weight: 400; }
+
+/* me screen */
+.profile { display: flex; align-items: center; gap: 13px; padding: 17px; }
+.profile-avatar { width: 58px; height: 58px; flex: none; display: grid; place-items: center; border-radius: 50%; color: #8b5c60; background: var(--rose-l); border: 1px solid #ecc7cb; font-family: var(--hand); font-size: 22px; }
+.profile h3 { color: #4a3a34; font-family: var(--hand); font-size: 20px; }
+.profile p { color: var(--ink-3); font-size: 9px; }
+.profile-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 12px; }
+.profile-stats div { padding: 12px 8px; text-align: center; background: #fffdf9; border: 1px solid var(--line); border-radius: 13px; }
+.profile-stats strong { display: block; color: var(--rose-d); font-family: var(--mono, var(--hand)); font-size: 19px; }
+.profile-stats span { color: var(--ink-3); font-size: 8px; }
+.settings { margin-top: 12px; padding: 15px 16px; }
+.settings h3 { margin-bottom: 8px; color: #4a3a34; font-family: var(--hand); font-size: 18px; }
+.setting-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 0; border-bottom: 1px dashed var(--line-2); }
+.setting-row:last-child { border-bottom: 0; }
+.setting-row span { color: var(--ink-2); font-size: 11px; }
+.switch { width: 36px; height: 21px; flex: none; border-radius: 999px; background: #e7d8cc; padding: 2px; transition: .18s; }
+.switch i { display: block; width: 17px; height: 17px; border-radius: 50%; background: #fffdf9; box-shadow: 0 1px 3px rgba(90,60,50,.2); transition: .18s; }
+.switch.on { background: var(--rose); }
+.switch.on i { transform: translateX(15px); }
+.me-note { margin: 13px 4px 0; color: #b3a294; font-family: var(--hand); font-size: 12px; line-height: 1.8; text-align: center; }
+
+/* bottom tabbar */
+.tabbar { position: fixed; z-index: 10; left: 50%; bottom: 0; transform: translateX(-50%); width: min(430px, 100%); padding: 7px 10px max(7px, env(safe-area-inset-bottom)); display: flex; justify-content: space-around; background: rgba(255,252,247,.92); border-top: 1px solid var(--line); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); }
+.tab { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 56px; padding: 4px 8px 2px; color: #b09e91; font-size: 8.5px; letter-spacing: .05em; border-radius: 12px; }
+.tab svg { width: 19px; height: 19px; stroke-width: 1.5; }
+.tab.on { color: var(--rose-d); background: #fdf0ed; }
+.tab:active { transform: scale(.96); }
+
+/* article sheet */
+.sheet-layer { position: fixed; inset: 0; z-index: 30; display: flex; align-items: flex-end; justify-content: center; padding: 0; background: rgba(65,45,38,.26); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
+.sheet-layer[hidden] { display: none; }
+.article-sheet { width: min(430px, 100%); max-height: 88vh; overflow: auto; padding: 24px 22px calc(25px + env(safe-area-inset-bottom)); background: var(--paper-2); border-radius: 24px 24px 0 0; box-shadow: 0 -20px 50px -25px rgba(60,40,32,.5); animation: sheetUp .3s ease both; }
+@keyframes sheetUp { from { transform: translateY(30px); opacity: .4; } to { transform: none; opacity: 1; } }
+.sheet-top { display: flex; justify-content: space-between; gap: 10px; align-items: center; }
+.sheet-top span { color: var(--ink-3); font-size: 9px; letter-spacing: .1em; }
+.sheet-close { width: 28px; height: 28px; border: 1px solid var(--line); border-radius: 50%; color: var(--ink-3); font-size: 16px; line-height: 1; }
+.article-sheet h2 { margin: 14px 0 4px; color: #473831; font-family: var(--hand); font-size: 26px; line-height: 1.4; }
+.article-sheet .article-date { color: var(--ink-3); font-size: 9px; }
+.article-sheet .article-body { margin-top: 17px; color: #675a50; font-family: var(--hand); font-size: 16px; line-height: 2; }
+.article-sheet .article-body p { margin: 0 0 13px; }
+.article-sheet .article-body blockquote { margin: 15px 0; padding: 9px 13px; color: #8d6f62; background: #fdf5ea; border-left: 2px solid var(--butter); font-family: var(--hand); }
+
+/* breathing overlay */
+.breath { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; background: rgba(74,58,52,.2); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+.breath[hidden] { display: none; }
+.breath-box { width: 210px; padding: 22px; text-align: center; background: var(--paper-2); border-radius: 24px; border: 1px solid var(--line); }
+.breath-orb { width: 92px; height: 92px; margin: 0 auto 12px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff, #f3c8cc 70%); box-shadow: 0 0 0 12px rgba(231,154,164,.1); animation: breatheOrb 5s ease-in-out infinite; }
+@keyframes breatheOrb { 0%,100% { transform: scale(.76); box-shadow: 0 0 0 12px rgba(231,154,164,.1); } 50% { transform: scale(1); box-shadow: 0 0 0 24px rgba(231,154,164,.04); } }
+.breath-box strong { display: block; color: var(--ink); font-family: var(--hand); font-size: 20px; }
+.breath-box p { margin: 5px 0 14px; color: var(--ink-3); font-size: 10px; }
+
+/* toast */
+.toast { position: fixed; z-index: 50; left: 50%; bottom: 86px; transform: translate(-50%, 10px); opacity: 0; padding: 7px 14px; color: #fffaf7; background: rgba(74,58,52,.88); border-radius: 999px; font-size: 10px; pointer-events: none; transition: .25s; white-space: nowrap; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+@media (max-width: 360px) {
+  .phone { padding-left: 10px; padding-right: 10px; }
+  .blog-lead h2 { font-size: 22px; }
+  .focus-card { gap: 10px; padding: 13px; }
+  .focus-ring { width: 82px; height: 82px; }
+  .focus-time { font-size: 16px; }
+  .mood-btn .face { font-size: 22px; }
+  .mood-btn span { font-size: 9px; }
+}
+</style>
+</head>
+<body>
+<div class="phone" id="app">
+  <header class="top">
+    <div class="top-row">
+      <div class="brand">
+        <span class="brand-kicker">ONE LITTLE DAY</span>
+        <h1 class="brand-title">一点点</h1>
+        <p class="brand-sub">把今天，收进一张纸里</p>
+      </div>
+      <button class="avatar" id="avatar-btn" aria-label="我的">慢</button>
+    </div>
+    <div class="date-line"><b id="date-text">今天</b><span id="greeting-text">晚上好，慢慢来</span></div>
+  </header>
+
+  <main>
+    <!-- 今天 -->
+    <section class="screen on" id="screen-today">
+      <article class="paper tape blog-lead" data-module="blog" data-article="paper-day">
+        <span class="eyebrow">今日读一点 · 4 分钟</span>
+        <h2>把一天收进一张纸里</h2>
+        <p>不是每一天都要有产出。有时候，写下三件小事，就已经把飘着的一天接住了。</p>
+        <div class="blog-meta"><span>生活随笔</span><i></i><span>2026.11.10</span><i></i><span>一点点</span></div>
+        <button class="read-link" data-article="paper-day">继续读 <span>→</span></button>
+      </article>
+
+      <section class="section" data-module="mood">
+        <div class="sec-head"><h3>此刻的心情</h3><span id="mood-streak">连续记录 3 天</span></div>
+        <div class="paper mood-card">
+          <div class="moods" id="mood-buttons">
+            <button class="mood-btn" data-mood="1" style="--mc:#b3a2d6"><span class="face">☹</span><span>难过</span></button>
+            <button class="mood-btn" data-mood="2" style="--mc:#8fb3d9"><span class="face">⌒</span><span>疲惫</span></button>
+            <button class="mood-btn" data-mood="3" style="--mc:#f2cf7d"><span class="face">·</span><span>平静</span></button>
+            <button class="mood-btn" data-mood="4" style="--mc:#8fbfa3"><span class="face">◡</span><span>开心</span></button>
+            <button class="mood-btn" data-mood="5" style="--mc:#e79aa4"><span class="face">♥</span><span>很好</span></button>
+          </div>
+          <div class="mood-line"><span id="mood-note">今天不用急着变好，先待一会儿。</span><strong id="mood-label">平静</strong></div>
+          <div class="mood-chart" id="mood-chart" aria-label="最近七天心情"></div>
+        </div>
+      </section>
+
+      <section class="section" data-module="focus">
+        <div class="sec-head"><h3>专注一会儿</h3><span>番茄钟</span></div>
+        <div class="paper focus-card">
+          <div class="focus-ring" id="focus-ring"><span class="focus-time" id="focus-time">25:00</span></div>
+          <div class="focus-copy">
+            <h3>只做眼前这一件</h3>
+            <p id="focus-message">开始后，小满会安静地陪你。</p>
+            <div class="focus-actions">
+              <button class="btn" id="focus-start">开始</button>
+              <button class="btn ghost" id="focus-reset">重置</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" data-module="tasks">
+        <div class="sec-head"><h3>今天的小事</h3><span id="task-count">0 / 3</span></div>
+        <div class="paper task-card">
+          <ul class="task-list" id="task-list"></ul>
+          <div class="task-add">
+            <input id="task-input" maxlength="50" placeholder="再加一件小事…" aria-label="新增待办">
+            <button id="task-add">加上</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" data-module="diary">
+        <div class="sec-head"><h3>今天想记下</h3><span>只给自己看</span></div>
+        <div class="paper diary-card">
+          <textarea id="diary" maxlength="500" placeholder="写一点就好，不用完整。"></textarea>
+          <div class="diary-foot"><span id="diary-status">自动留在本机</span><button class="text-btn" id="diary-save">收进本子</button></div>
+        </div>
+      </section>
+
+      <section class="section" data-module="pet">
+        <button class="pet-peek" id="pet-peek">
+          <span class="mini-pet" id="mini-pet"></span>
+          <span><p id="peek-message">小满在等你回来。</p><small>去陪它一会儿 →</small></span>
+        </button>
+      </section>
+    </section>
+
+    <!-- 博客 -->
+    <section class="screen" id="screen-blog">
+      <div class="page-head"><div><h2>博客</h2><p>慢慢读，不赶时间</p></div><span style="font-family:var(--hand);color:var(--rose-d);font-size:13px">12 篇</span></div>
+      <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="10.8" cy="10.8" r="6.6"/><path d="m16 16 4.4 4.4"/></svg><input id="blog-search" placeholder="搜一搜文章…"></label>
+      <div class="chips" id="blog-chips"><button class="chip on" data-cat="all">全部</button><button class="chip" data-cat="生活">生活</button><button class="chip" data-cat="技术">技术</button><button class="chip" data-cat="学习">学习</button><button class="chip" data-cat="情绪">情绪</button></div>
+      <div class="article-list" id="article-list">
+        <button class="paper article-card" data-article="paper-day" data-cat="生活" style="--art:#f6ddd8"><span class="article-art">一页</span><span><h3>把一天收进一张纸里</h3><p>不是每一天都要有产出，写下三件小事，也算把今天接住了。</p><span class="article-meta"><span>生活随笔</span><span>4 分钟</span></span></span></button>
+        <button class="paper article-card" data-article="cat-blog" data-cat="技术" style="--art:#e0e9f3"><span class="article-art">小猫</span><span><h3>把一只小猫请进博客</h3><p>它不说话，只是偶尔眨眼、转头，让一个安静的页面突然有了呼吸。</p><span class="article-meta"><span>技术</span><span>9 分钟</span></span></span></button>
+        <button class="paper article-card" data-article="night-lamp" data-cat="情绪" style="--art:#f5e8c9"><span class="article-art">一盏</span><span><h3>深夜写代码时，我给自己留了一盏灯</h3><p>那更像是一种提醒：你需要一个边界，把自己从白天里捞出来。</p><span class="article-meta"><span>生活</span><span>4 分钟</span></span></span></button>
+        <button class="paper article-card" data-article="small-things" data-cat="学习" style="--art:#e4efdf"><span class="article-art">小事</span><span><h3>学习之前，先允许自己慢一点</h3><p>不是所有专注都要从“准备好”开始，有时候先坐下来就好。</p><span class="article-meta"><span>学习</span><span>3 分钟</span></span></span></button>
+      </div>
+    </section>
+
+    <!-- 陪伴 -->
+    <section class="screen" id="screen-pet">
+      <div class="page-head"><div><h2>小满</h2><p>一只住在纸页里的小猫</p></div><span style="font-family:var(--hand);color:var(--rose-d);font-size:13px">陪伴中</span></div>
+      <div class="pet-stage" id="pet-stage">
+        <span class="stamp-mini">今日<br>也在</span>
+        <div class="pet-big" id="pet-big"></div>
+        <div class="pet-shadow"></div>
+        <p class="pet-state" id="pet-state">陪伴</p>
+        <p class="pet-message" id="pet-message">我在这儿，慢慢来。</p>
+        <div class="pet-actions">
+          <button class="btn" id="pet-touch">摸摸它</button>
+          <button class="btn ghost" id="pet-breathe">一起呼吸</button>
+        </div>
+      </div>
+      <div class="paper companion-line"><span>陪伴值</span><div class="companion-bar"><i id="companion-bar"></i></div><b id="companion-value">6 / 10</b></div>
+      <div class="pet-stats">
+        <div class="pet-stat"><strong id="pet-days">3</strong><span>连续陪伴</span></div>
+        <div class="pet-stat"><strong id="pet-focus">0</strong><span>今日番茄</span></div>
+        <div class="pet-stat"><strong id="pet-moods">1</strong><span>今日打卡</span></div>
+      </div>
+      <div class="paper settings" style="margin-top:12px"><h3>它记得的事</h3><div class="setting-row"><span>你最近一次说“有点累”</span><span style="color:var(--rose-d)">昨天</span></div><div class="setting-row"><span>上次一起专注</span><span style="color:var(--rose-d)">今天</span></div><div class="setting-row"><span>它想对你说</span><span style="color:var(--rose-d)">不用一直很好</span></div></div>
+    </section>
+
+    <!-- 我的 -->
+    <section class="screen" id="screen-me">
+      <div class="page-head"><div><h2>我的</h2><p>留一点自己的秩序</p></div></div>
+      <div class="paper profile"><div class="profile-avatar">慢</div><div><h3>慢慢同学</h3><p>今天也在这里，已经很好</p></div></div>
+      <div class="profile-stats"><div><strong id="me-days">3</strong><span>连续记录</span></div><div><strong id="me-notes">1</strong><span>今日小记</span></div><div><strong id="me-focus">0</strong><span>今日专注</span></div></div>
+      <div class="paper settings">
+        <h3>我的首页</h3>
+        <div class="setting-row"><span>博客推荐</span><button class="switch on" data-setting="blog"><i></i></button></div>
+        <div class="setting-row"><span>心情打卡</span><button class="switch on" data-setting="mood"><i></i></button></div>
+        <div class="setting-row"><span>番茄专注</span><button class="switch on" data-setting="focus"><i></i></button></div>
+        <div class="setting-row"><span>今天的小事</span><button class="switch on" data-setting="tasks"><i></i></button></div>
+        <div class="setting-row"><span>小满陪伴</span><button class="switch on" data-setting="pet"><i></i></button></div>
+      </div>
+      <p class="me-note">这是演示版，数据只存在这台设备的浏览器里。<br>不是心理测评工具，只是一个陪你慢慢来的小本子。</p>
+    </section>
+  </main>
+
+  <nav class="tabbar" aria-label="主导航">
+    <button class="tab on" data-screen="today"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 10.9 12 3l9 7.9"/><path d="M5.2 9.6V21h13.6V9.6"/><path d="M9.5 21v-6.2h5V21"/></svg><span>今天</span></button>
+    <button class="tab" data-screen="blog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3.5 5.5A2.5 2.5 0 0 1 6 3h14v16H6a2.5 2.5 0 0 0-2.5 2.5Z"/><path d="M3.5 18.5A2.5 2.5 0 0 1 6 16h14"/></svg><span>博客</span></button>
+    <button class="tab" data-screen="pet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 9c0-3 2-5 5-5s5 2 5 5v3c0 3-2 6-5 6s-5-3-5-6Z"/><path d="M5 8 3 4l4 2M19 8l2-4-4 2"/><path d="M9.5 11h.1M14.5 11h.1M10 14c1.2.9 2.8.9 4 0"/></svg><span>陪伴</span></button>
+    <button class="tab" data-screen="me"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="8" r="3.4"/><path d="M4.5 20.5c.7-4 3.7-6 7.5-6s6.8 2 7.5 6"/></svg><span>我的</span></button>
+  </nav>
+</div>
+
+<div class="sheet-layer" id="article-layer" hidden>
+  <article class="article-sheet">
+    <div class="sheet-top"><span>一点点 · 今天读一点</span><button class="sheet-close" id="sheet-close" aria-label="关闭">×</button></div>
+    <h2 id="sheet-title"></h2>
+    <p class="article-date" id="sheet-date"></p>
+    <div class="article-body" id="sheet-body"></div>
+  </article>
+</div>
+
+<div class="breath" id="breath-layer" hidden>
+  <div class="breath-box">
+    <div class="breath-orb"></div>
+    <strong>跟着它，慢一点</strong>
+    <p>吸气 4 秒 · 停 4 秒 · 呼气 6 秒</p>
+    <button class="btn" id="breath-close">好了</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+  'use strict';
+  const $ = (sel) => document.querySelector(sel);
+  const $$ = (sel) => [...document.querySelectorAll(sel)];
+  const KEY = 'one-little-day-demo-v1';
+  const MOODS = {
+    1: { label: '难过', note: '今天不用急着变好，先待一会儿。', pet: 'soothe', petLabel: '安抚', petText: '我在这儿，不说话也可以。' },
+    2: { label: '疲惫', note: '累了就先把肩膀放下来。', pet: 'soothe', petLabel: '安抚', petText: '今天先休息，也算一种完成。' },
+    3: { label: '平静', note: '平平的，也是一种好状态。', pet: 'company', petLabel: '陪伴', petText: '我在这儿，慢慢来。' },
+    4: { label: '开心', note: '把这点开心留久一点。', pet: 'cheer', petLabel: '鼓舞', petText: '今天的光，分你一半。' },
+    5: { label: '很好', note: '今天值得被记住。', pet: 'cheer', petLabel: '鼓舞', petText: '你笑起来的时候，纸页都亮了。' }
+  };
+  const ARTICLES = {
+    'paper-day': {
+      title: '把一天收进一张纸里',
+      date: '2026.11.10 · 生活随笔',
+      body: `<p>不是每一天都要有产出。</p><p>有时候，写下三件小事，就已经把飘着的一天接住了。比如今天喝到一杯温度刚好的水，比如在楼下看见一只不着急的猫，比如终于把拖了两天的消息回掉。</p><blockquote>日子不是用来交答卷的。它可以只是被看见。</blockquote><p>如果你今天什么都没做完，也可以在这里坐一会儿。小满会陪你。</p>`
+    },
+    'cat-blog': {
+      title: '把一只小猫请进博客',
+      date: '2026.10.28 · 技术',
+      body: `<p>第一次看到那个站在页面左下角的小猫时，我盯着它看了很久。</p><p>它不说话，只是偶尔眨眼、转头、伸懒腰，却让一个原本安静的页面突然有了呼吸。</p><blockquote>技术不一定要解决大问题。有时候，它只是让一个空间变得愿意被待着。</blockquote><p>于是我想：自己的博客，也应该养一只。</p>`
+    },
+    'night-lamp': {
+      title: '深夜写代码时，我给自己留了一盏灯',
+      date: '2026.10.12 · 生活',
+      body: `<p>凌晨一点，屋子里只剩下键盘声和台灯的一小圈光。</p><p>以前我觉得这是一种浪漫，后来才明白，那更像是一种提醒：你需要一个边界，把自己从白天里捞出来。</p><blockquote>写完这一行，就去睡。明天的事，明天再长出来。</blockquote>`
+    },
+    'small-things': {
+      title: '学习之前，先允许自己慢一点',
+      date: '2026.09.30 · 学习',
+      body: `<p>不是所有专注都要从“准备好”开始。</p><p>有时候先坐下来，打开一页，写下第一行，状态才会慢慢跟上来。</p><p>所以今天不要求自己一口气做完。只做眼前这一件，做完就去喝水。</p>`
+    }
+  };
+
+  const DEFAULT_TASKS = [
+    { id: 't1', text: '读完今天的文章', done: false, tag: '读一点' },
+    { id: 't2', text: '整理 3 道错题', done: false, tag: '学习' },
+    { id: 't3', text: '给明天留 10 分钟', done: false, tag: '留白' }
+  ];
+
+  const state = Object.assign({
+    mood: 3,
+    tasks: DEFAULT_TASKS,
+    diary: '',
+    companion: 6,
+    focusDone: 0,
+    moodDays: 3,
+    modules: { blog: true, mood: true, focus: true, tasks: true, pet: true }
+  }, load());
+  state.modules = Object.assign({ blog: true, mood: true, focus: true, tasks: true, pet: true }, state.modules || {});
+
+  function load() {
+    try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { return {}; }
+  }
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+  }
+  function toast(text) {
+    const el = $('#toast');
+    el.textContent = text;
+    el.classList.add('show');
+    clearTimeout(toast.timer);
+    toast.timer = setTimeout(() => el.classList.remove('show'), 1600);
+  }
+  function petSvg() {
+    return `<svg class="pet-svg" viewBox="0 0 200 190" aria-hidden="true">
+      <ellipse class="pet-body" cx="100" cy="137" rx="55" ry="44"/>
+      <path class="pet-ear" d="M54 63 41 21c-1-6 5-9 9-5l30 24Z"/>
+      <path class="pet-ear" d="M146 63 159 21c1-6-5-9-9-5l-30 24Z"/>
+      <path class="pet-inner" d="M55 48 49 30l16 13Z"/>
+      <path class="pet-inner" d="M145 48 151 30l-16 13Z"/>
+      <circle class="pet-head" cx="100" cy="78" r="51"/>
+      <ellipse class="pet-mark" cx="100" cy="92" rx="30" ry="24"/>
+      <circle class="pet-eye" cx="80" cy="73" r="3.6"/>
+      <circle class="pet-eye" cx="120" cy="73" r="3.6"/>
+      <path class="pet-blush" d="M61 88c6-5 14-4 18 1-6 3-13 3-18-1Z"/>
+      <path class="pet-blush" d="M139 88c-6-5-14-4-18 1 6 3 13 3 18-1Z"/>
+      <path class="pet-mouth" d="M94 89c3 4 9 4 12 0"/>
+      <path class="pet-mouth" d="M100 93v4"/>
+      <path class="pet-body" d="M62 160c-6-18 3-25 12-28M138 160c6-18-3-25-12-28"/>
+    </svg>`;
+  }
+  function mountPets() {
+    $('#mini-pet').innerHTML = petSvg();
+    $('#pet-big').innerHTML = petSvg();
+  }
+  function renderMood() {
+    const m = MOODS[state.mood] || MOODS[3];
+    $$('.mood-btn').forEach((btn) => btn.classList.toggle('on', Number(btn.dataset.mood) === state.mood));
+    $('#mood-label').textContent = m.label;
+    $('#mood-note').textContent = m.note;
+    $('#mood-chart').innerHTML = [3, 2, 4, 3, 5, 2, state.mood].map((v, i) => `<div class="mood-bar ${i === 6 ? 'today' : ''}" style="--h:${18 + v * 7}px"><i></i><span>${i === 6 ? '今天' : ['五','六','日','一','二','三'][i]}</span></div>`).join('');
+    const pet = state.petOverride || m;
+    const stage = $('#pet-stage');
+    stage.className = `pet-stage is-${pet.pet}`;
+    $('#pet-state').textContent = pet.petLabel;
+    $('#pet-message').textContent = pet.petText;
+    $('#peek-message').textContent = pet.petText;
+    $('#pet-stage').style.setProperty('--pet', state.mood <= 2 ? '#e6c5d6' : state.mood >= 4 ? '#f3d9c7' : '#f6e1d5');
+  }
+  function renderTasks() {
+    $('#task-list').innerHTML = state.tasks.map((task) => `<li class="task ${task.done ? 'done' : ''}" data-id="${task.id}"><button class="task-check" data-task="${task.id}" aria-label="完成">✓</button><span class="task-text">${task.text}</span><span class="task-tag">${task.tag || ''}</span></li>`).join('');
+    const done = state.tasks.filter((task) => task.done).length;
+    $('#task-count').textContent = `${done} / ${state.tasks.length}`;
+    $('#me-focus').textContent = state.focusDone;
+    $('#pet-focus').textContent = state.focusDone;
+    $('#pet-moods').textContent = state.moodDays;
+    $('#me-notes').textContent = state.diary ? '1' : '0';
+  }
+  function renderModule() {
+    $$('[data-module]').forEach((section) => {
+      const key = section.dataset.module;
+      section.hidden = state.modules[key] === false;
+    });
+    $$('.switch[data-setting]').forEach((el) => el.classList.toggle('on', state.modules[el.dataset.setting] !== false));
+  }
+  function setScreen(name) {
+    $$('.screen').forEach((screen) => screen.classList.toggle('on', screen.id === `screen-${name}`));
+    $$('.tab').forEach((tab) => tab.classList.toggle('on', tab.dataset.screen === name));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function openArticle(id) {
+    const article = ARTICLES[id];
+    if (!article) return;
+    $('#sheet-title').textContent = article.title;
+    $('#sheet-date').textContent = article.date;
+    $('#sheet-body').innerHTML = article.body;
+    $('#article-layer').hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
+  function closeArticle() {
+    $('#article-layer').hidden = true;
+    document.body.style.overflow = '';
+  }
+  function renderTimer() {
+    const mm = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
+    const ss = String(timerSeconds % 60).padStart(2, '0');
+    $('#focus-time').textContent = `${mm}:${ss}`;
+    $('#focus-ring').style.setProperty('--progress', `${(1 - timerSeconds / (25 * 60)) * 360}deg`);
+    $('#focus-start').textContent = timerRunning ? '暂停' : '开始';
+  }
+  let timerSeconds = 25 * 60;
+  let timerRunning = false;
+  let timerId = null;
+  function startTimer() {
+    if (timerRunning) {
+      timerRunning = false;
+      clearInterval(timerId);
+      timerId = null;
+      $('#focus-message').textContent = '先停一下，也没关系。';
+      state.petOverride = null;
+      renderMood();
+      renderTimer();
+      return;
+    }
+    timerRunning = true;
+    $('#focus-message').textContent = '小满在旁边，安静地陪你。';
+    $('#pet-stage').className = 'pet-stage is-focus';
+    $('#pet-state').textContent = '专注';
+    $('#pet-message').textContent = '我安静地在这儿，不打扰你。';
+    timerId = setInterval(() => {
+      timerSeconds -= 1;
+      if (timerSeconds <= 0) {
+        timerSeconds = 0;
+        timerRunning = false;
+        clearInterval(timerId);
+        timerId = null;
+        state.focusDone += 1;
+        state.companion = Math.min(10, state.companion + 2);
+        state.petOverride = { pet: 'cheer', petLabel: '鼓舞', petText: '完成了。去喝口水吧。' };
+        save();
+        renderMood();
+        renderCompanion();
+        renderTimer();
+        renderTasks();
+        toast('完成一个番茄，小满记住了');
+        $('#focus-message').textContent = '完成了。去喝口水吧。';
+        return;
+      }
+      renderTimer();
+    }, 1000);
+    renderTimer();
+  }
+  function resetTimer() {
+    clearInterval(timerId);
+    timerId = null;
+    timerRunning = false;
+    timerSeconds = 25 * 60;
+    state.petOverride = null;
+    renderMood();
+    $('#focus-message').textContent = '开始后，小满会安静地陪你。';
+    renderTimer();
+  }
+  function renderCompanion() {
+    $('#companion-value').textContent = `${state.companion} / 10`;
+    $('#companion-bar').style.width = `${state.companion * 10}%`;
+    $('#pet-days').textContent = state.moodDays;
+  }
+  function sync() {
+    renderMood();
+    renderTasks();
+    renderCompanion();
+    renderModule();
+    $('#diary').value = state.diary || '';
+    $('#diary-status').textContent = state.diary ? '已收进本子' : '自动留在本机';
+    $('#date-text').textContent = new Intl.DateTimeFormat('zh-CN', { month: 'long', day: 'numeric', weekday: 'long' }).format(new Date());
+    const hour = new Date().getHours();
+    $('#greeting-text').textContent = hour < 6 ? '夜深了，早点睡' : hour < 12 ? '早上好，慢慢来' : hour < 18 ? '下午好，歇一会儿' : '晚上好，慢慢来';
+  }
+  mountPets();
+  sync();
+  renderTimer();
+
+  $$('.mood-btn').forEach((btn) => btn.addEventListener('click', () => {
+    state.mood = Number(btn.dataset.mood);
+    const m = MOODS[state.mood];
+    state.petOverride = { pet: m.pet, petLabel: m.petLabel, petText: m.petText };
+    $('#focus-message').textContent = state.mood <= 2 ? '先不急着做什么，陪自己坐一会儿。' : '今天也可以只做一件小事。';
+    save();
+    renderMood();
+    toast(`记下了：${m.label}`);
+  }));
+  $$('.tab').forEach((tab) => tab.addEventListener('click', () => setScreen(tab.dataset.screen)));
+  $$('[data-article]').forEach((el) => el.addEventListener('click', () => openArticle(el.dataset.article)));
+  $('#sheet-close').addEventListener('click', closeArticle);
+  $('#article-layer').addEventListener('click', (e) => { if (e.target.id === 'article-layer') closeArticle(); });
+  $('#task-list').addEventListener('click', (e) => {
+    const button = e.target.closest('[data-task]');
+    if (!button) return;
+    const task = state.tasks.find((item) => item.id === button.dataset.task);
+    if (!task) return;
+    task.done = !task.done;
+    save(); renderTasks();
+    if (task.done) toast('完成一件小事');
+  });
+  $('#task-add').addEventListener('click', () => {
+    const input = $('#task-input');
+    const text = input.value.trim();
+    if (!text) return;
+    state.tasks.push({ id: 't' + Date.now(), text, done: false, tag: '小事' });
+    input.value = '';
+    save(); renderTasks();
+  });
+  $('#task-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('#task-add').click(); });
+  $('#diary').addEventListener('input', (e) => {
+    state.diary = e.target.value;
+    $('#diary-status').textContent = '未保存';
+  });
+  $('#diary-save').addEventListener('click', () => {
+    state.diary = $('#diary').value;
+    save(); $('#diary-status').textContent = '已收进本子'; toast('收进小本子了');
+  });
+  $('#focus-start').addEventListener('click', startTimer);
+  $('#focus-reset').addEventListener('click', resetTimer);
+  $('#pet-peek').addEventListener('click', () => setScreen('pet'));
+  $('#avatar-btn').addEventListener('click', () => setScreen('me'));
+  $('#pet-touch').addEventListener('click', () => {
+    state.companion = Math.min(10, state.companion + 1);
+    save(); renderCompanion();
+    const messages = ['它眯了眯眼睛。', '小满往你这边靠了一点。', '它把尾巴轻轻绕过来。'];
+    $('#pet-message').textContent = messages[Math.floor(Math.random() * messages.length)];
+    toast('小满收到了');
+  });
+  $('#pet-breathe').addEventListener('click', () => { $('#breath-layer').hidden = false; });
+  $('#breath-close').addEventListener('click', () => { $('#breath-layer').hidden = true; });
+  $('#blog-search').addEventListener('input', (e) => {
+    const value = e.target.value.trim();
+    $$('.article-card').forEach((card) => {
+      card.hidden = value && !card.innerText.includes(value);
+    });
+  });
+  $$('.chip').forEach((chip) => chip.addEventListener('click', () => {
+    $$('.chip').forEach((el) => el.classList.toggle('on', el === chip));
+    const cat = chip.dataset.cat;
+    $$('.article-card').forEach((card) => {
+      card.hidden = cat !== 'all' && card.dataset.cat !== cat;
+    });
+  }));
+  $$('.switch[data-setting]').forEach((el) => el.addEventListener('click', () => {
+    const key = el.dataset.setting;
+    state.modules[key] = state.modules[key] === false;
+    save(); renderModule();
+  }));
+})();
+</script>
+</body>
+</html>
