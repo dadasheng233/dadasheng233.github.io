@@ -322,15 +322,17 @@ PDF 实际文件在 `theme/assets/papers/<year-month>/`，通过 `cp` 复制到 
 
 ### 3.7 `content/dsa.json`
 
-数据结构 MVP 的图谱、知识点和题库。页面 `/learn.html` 读取 `/dsa.json`。
+数据结构知识图谱可视化诊断 Demo。页面 `/learn.html` 读取 `/dsa.json`。
 
 | 字段 | 说明 |
 |---|---|
-| `nodes` | 知识点节点：`id` / `name` / `chapter` / `x` / `y` / `summary` / `points` / `complexity` / `traps` |
+| `nodes` | 知识点节点：`id` / `name` / `chapter` / `x` / `y` / `importance` / `summary` / `points` / `complexity` / `traps` |
 | `edges` | 知识图谱先修边，`[from, to]` |
-| `questions` | 题目：`id` / `concept` / `level` / `question` / `options` / `answer`（从 0 开始）/ `explain` |
+| `questions` | 题目：`id` / `concept` / `level` / `errorType` / `question` / `options` / `answer`（从 0 开始）/ `explain` |
 
-学习进度只保存在 localStorage，键为 `wanfeng:dsa:progress` 和 `wanfeng:dsa:wrong`。
+`errorType` 取值：`concept`、`calculation`、`reading`、`method`。
+
+学生答题进度保存在 localStorage；教师班级视图使用 30 名模拟学生数据，不写入 localStorage。
 
 ---
 
@@ -664,15 +666,17 @@ PDF.js 版本和许可证在 `theme/assets/vendor/pdfjs/`。
 
 ### 7.7 `dsa.js`
 
-数据结构 MVP：
+数据结构知识图谱可视化诊断 Demo：
 
 - 读取 `/dsa.json`
-- 渲染 SVG 知识图谱；节点颜色表示未开始/学习中/已掌握
-- 点击节点切换知识点
+- 渲染 SVG 知识图谱；节点大小表示课程权重，颜色表示未开始/学习中/已掌握
+- 点击节点切换知识点，并生成诊断面板：错因分布、前置知识、结论、下一步
 - 每日任务选最弱知识点
 - 每组 4 题，答完更新掌握度
 - 错题写入 `localStorage`，支持按知识点复习
-- URL 参数：`?concept=binary-tree` 选中节点，`&start=1` 直接开始练习
+- 教师班级视图：30 名模拟学生、班级热力图、薄弱点、需关注学生
+- 实验设计视图：30 人、4 周、A/B 对照、指标
+- URL 参数：`?concept=binary-tree` 选中节点，`&start=1` 直接开始练习，`?demo=1` 使用演示学生，`?view=teacher` 打开教师视图
 - 进度键：`wanfeng:dsa:progress`、`wanfeng:dsa:wrong`
 
 ---

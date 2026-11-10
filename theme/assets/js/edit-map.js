@@ -152,9 +152,9 @@
       selectors: ['.pdf-reader-page']
     },
     {
-      id: 'learn-dsa', group: '文章内容', label: '数据结构学习页',
+      id: 'learn-dsa', group: '文章内容', label: '数据结构知识诊断',
       file: 'content/dsa.json', field: 'nodes / edges / questions',
-      note: '知识图谱、知识点、题库；练习进度在 localStorage',
+      note: '知识图谱、错因诊断、教师班级和实验设计；练习进度在 localStorage',
       selectors: ['.learner-page']
     },
     {

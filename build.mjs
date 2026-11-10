@@ -602,9 +602,9 @@ const renderLearn = (site, stats) => {
   <div class="learner-page" id="dsa-app">
     <div class="page-header learner-header">
       <div>
-        <p class="page-kicker">LEARNING LAB</p>
-        <h1 class="page-title">数据结构</h1>
-        <p class="page-subtitle">先跑通一条最小闭环：知识图谱 → 学知识点 → 做题 → 错题 → 复习</p>
+        <p class="page-kicker">LEARNING DIAGNOSTICS</p>
+        <h1 class="page-title">数据结构 · 知识诊断</h1>
+        <p class="page-subtitle">不是把图画出来，而是让学生看见：学到哪、卡在哪、为什么、下一步做什么</p>
       </div>
       <div class="learner-stats">
         <div><strong id="dsa-mastered">0</strong><span>已掌握</span></div>
@@ -613,40 +613,102 @@ const renderLearn = (site, stats) => {
       </div>
     </div>
 
-    <div class="dsa-layout">
-      <aside class="dsa-map-card">
-        <div class="dsa-map-head">
-          <strong>知识图谱</strong>
-          <span id="dsa-map-count">加载中…</span>
-        </div>
-        <div class="dsa-map-scroll">
-          <svg id="dsa-graph" viewBox="0 0 800 420" role="img" aria-label="数据结构知识图谱"></svg>
-        </div>
-        <div class="dsa-legend">
-          <span><i class="dot dot-none"></i>未开始</span>
-          <span><i class="dot dot-learning"></i>学习中</span>
-          <span><i class="dot dot-strong"></i>已掌握</span>
-        </div>
-      </aside>
-
-      <main class="dsa-main">
-        <div class="dsa-daily" id="dsa-daily"></div>
-        <article class="dsa-concept-card" id="dsa-concept">
-          <p class="dsa-empty">正在加载知识图谱…</p>
-        </article>
-        <section class="dsa-quiz-card" id="dsa-quiz"></section>
-      </main>
+    <div class="learner-tabs" id="dsa-tabs" role="tablist" aria-label="学习诊断视图">
+      <button type="button" class="is-active" data-view="student" role="tab" aria-selected="true">学生诊断</button>
+      <button type="button" data-view="teacher" role="tab" aria-selected="false">教师班级</button>
+      <button type="button" data-view="experiment" role="tab" aria-selected="false">实验设计</button>
     </div>
 
-    <p class="dsa-footnote">进度保存在当前浏览器；这一步先验证“学—练—错—复习”的闭环。</p>
+    <div class="dsa-demo-note" id="dsa-demo-note">
+      <strong>演示说明</strong>
+      <span>教师班级视图使用 30 名模拟学生数据；学生视图默认使用你当前浏览器的答题记录。真实对照实验尚未开始。</span>
+    </div>
+
+    <div id="student-view" class="learner-view">
+      <div class="dsa-layout">
+        <aside class="dsa-map-card">
+          <div class="dsa-map-head">
+            <strong>知识图谱</strong>
+            <span id="dsa-map-count">加载中…</span>
+          </div>
+          <div class="dsa-map-scroll">
+            <svg id="dsa-graph" viewBox="0 0 800 420" role="img" aria-label="数据结构知识图谱"></svg>
+          </div>
+          <div class="dsa-legend">
+            <span><i class="dot dot-none"></i>未开始</span>
+            <span><i class="dot dot-learning"></i>学习中</span>
+            <span><i class="dot dot-strong"></i>已掌握</span>
+            <span class="dsa-size-legend">节点大小 = 课程权重</span>
+          </div>
+        </aside>
+
+        <main class="dsa-main">
+          <div class="dsa-daily" id="dsa-daily"></div>
+          <article class="dsa-concept-card" id="dsa-concept">
+            <p class="dsa-empty">正在加载知识图谱…</p>
+          </article>
+          <section class="dsa-diagnosis" id="dsa-diagnosis"></section>
+          <section class="dsa-quiz-card" id="dsa-quiz"></section>
+        </main>
+      </div>
+      <p class="dsa-footnote">学生视图的答题进度保存在当前浏览器；教师视图是 30 人模拟班级。</p>
+    </div>
+
+    <div id="teacher-view" class="learner-view" hidden>
+      <div class="teacher-summary" id="teacher-summary"></div>
+      <div class="teacher-grid">
+        <section class="teacher-panel teacher-panel-wide">
+          <div class="teacher-panel-head"><strong>班级知识热力</strong><span>30 名模拟学生 · 平均掌握度</span></div>
+          <div id="teacher-heatmap"></div>
+        </section>
+        <section class="teacher-panel">
+          <div class="teacher-panel-head"><strong>班级薄弱点</strong><span>按平均掌握度排序</span></div>
+          <div id="teacher-bottleneck"></div>
+        </section>
+        <section class="teacher-panel">
+          <div class="teacher-panel-head"><strong>需要关注的学生</strong><span>平均掌握度 &lt; 55%</span></div>
+          <div id="teacher-risk"></div>
+        </section>
+      </div>
+      <p class="dsa-footnote">这是可视化诊断界面的演示数据，不是真实教学实验结果。</p>
+    </div>
+
+    <div id="experiment-view" class="learner-view" hidden>
+      <div class="experiment-grid">
+        <article class="experiment-card">
+          <span>研究对象</span>
+          <strong>30 名计算机本科生</strong>
+          <p>数据结构课程学习者，随机分为可视化诊断组和普通列表组，各 15 人。</p>
+        </article>
+        <article class="experiment-card">
+          <span>实验周期</span>
+          <strong>4 周</strong>
+          <p>每周一次学习任务，完成知识点学习、练习和错题复习。</p>
+        </article>
+        <article class="experiment-card">
+          <span>核心指标</span>
+          <strong>诊断效率 + 学习效果</strong>
+          <p>找薄弱点时间、诊断准确率、前后测成绩、7 日留存、认知负荷和满意度。</p>
+        </article>
+        <article class="experiment-card">
+          <span>对照设计</span>
+          <strong>知识图谱 vs 列表</strong>
+          <p>两组使用同一套知识点和题目，只改变诊断界面的呈现方式。</p>
+        </article>
+      </div>
+      <div class="experiment-note">
+        <strong>当前阶段</strong>
+        <p>这个 Demo 已完成可视化诊断界面和模拟班级数据。下一步才是招募 30 名学生，进行真实对照实验；当前页面不伪造实验结果。</p>
+      </div>
+    </div>
   </div>`;
 
   return renderPage({
     site,
     stats,
     page: {
-      title: '数据结构',
-      description: '数据结构知识图谱、知识点练习、错题与复习的最小闭环。',
+      title: '数据结构知识诊断',
+      description: '数据结构知识图谱可视化诊断：掌握度、错因、前置知识与下一步建议。',
       active: 'learn',
       path: '/learn.html',
       image: toAbsolute(site.url, '/assets/img/cover-book.svg'),
