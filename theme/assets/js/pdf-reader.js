@@ -18,6 +18,8 @@
   const file = params.get('file') || '';
   const displayTitle = params.get('title') || 'PDF 阅读器';
   const back = params.get('back') || '/papers.html';
+  const hashPage = Number((location.hash.match(/page=(\d+)/) || [])[1]);
+  const initialPage = Math.max(1, Number(params.get('page')) || hashPage || 1);
 
   const safeFile = /^\/assets\/papers\/[A-Za-z0-9._/-]+\.pdf$/.test(file) && !file.includes('..');
   if (!safeFile) {
@@ -79,6 +81,9 @@
     }
     rendering = true;
     pageNumber = Math.max(1, Math.min(pdf.numPages, number));
+    if (location.hash !== `#page=${pageNumber}`) {
+      history.replaceState(null, '', `#page=${pageNumber}`);
+    }
     updateControls();
 
     try {
@@ -177,7 +182,7 @@
       pdf = await task.promise;
       await measureFit();
       updateControls();
-      await renderPage(1);
+      await renderPage(Math.min(initialPage, pdf.numPages));
     } catch (error) {
       console.error(error);
       showError('PDF 加载失败，可能是文件过大或浏览器不支持。可以点右上角「下载」直接看。');

@@ -1,14 +1,17 @@
 {
   "name": "wanfeng-blog",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
-  "description": "晚风小筑：一个带 Live2D 小猫、滚动动效和静态生成器的个人博客。",
+  "description": "晚风小筑：静态博客 + Spring Boot 后端（账号、进度云同步、后台发文、408 题库）。",
   "scripts": {
     "build": "node build.mjs",
     "start": "node serve.mjs",
     "dev": "node build.mjs && node serve.mjs",
-    "check": "node tools/check-links.mjs"
+    "check": "node tools/check-links.mjs",
+    "papers:index": "python tools/build_paper_text.py",
+    "server": "cd server && mvn spring-boot:run",
+    "dev:full": "node build.mjs && cd server && mvn spring-boot:run"
   },
   "engines": {
     "node": ">=18"

@@ -45,10 +45,50 @@
 
   function saveProgress() {
     try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress)); } catch (error) { /* noop */ }
+    syncPush();
   }
 
   function saveWrong() {
     try { localStorage.setItem(WRONG_KEY, JSON.stringify(wrongWords)); } catch (error) { /* noop */ }
+    syncPush();
+  }
+
+  function syncPush() {
+    if (!window.BlogSync) return;
+    window.BlogSync.push('words', { progress, wrong: wrongWords, updatedAt: Date.now() });
+  }
+
+  async function syncPull() {
+    if (!window.BlogSync || !window.BlogAuth || !window.BlogAuth.user) return;
+    const remote = await window.BlogSync.pull('words');
+    if (!remote || !remote.data) return;
+    const remoteProgress = remote.data.progress && typeof remote.data.progress === 'object' ? remote.data.progress : {};
+    const remoteWrong = Array.isArray(remote.data.wrong) ? remote.data.wrong : [];
+    let changed = false;
+    Object.keys(remoteProgress).forEach((key) => {
+      if (!(key in progress)) {
+        progress[key] = remoteProgress[key];
+        changed = true;
+      }
+    });
+    remoteWrong.forEach((word) => {
+      if (!wrongWords.includes(word)) {
+        wrongWords.push(word);
+        changed = true;
+      }
+    });
+    if (!changed) return;
+    try {
+      localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
+      localStorage.setItem(WRONG_KEY, JSON.stringify(wrongWords));
+    } catch (error) { /* noop */ }
+    if (allWords.length) {
+      updateStats();
+      renderCard();
+      renderList();
+    }
+    window.BlogAuth.toast('已从云端恢复单词进度');
+    syncPush();
   }
 
   function statusOf(word) {
@@ -308,6 +348,11 @@
     });
     $('#word-prev')?.addEventListener('click', () => go(-1));
     $('#word-next')?.addEventListener('click', () => go(1));
+    $('#word-exam')?.addEventListener('click', () => {
+      if (!allWords.length) return;
+      const word = allWords[index] && allWords[index].word;
+      if (word && window.ExamSearch) window.ExamSearch.open(word);
+    });
     $$('[data-word-mark]').forEach((button) => button.addEventListener('click', () => mark(button.dataset.wordMark)));
 
     $$('[data-word-tab]').forEach((button) => button.addEventListener('click', () => setTab(button.dataset.wordTab)));
@@ -390,9 +435,18 @@
 
       const params = new URLSearchParams(location.search);
       const tab = params.get('tab');
-      if (['cards', 'list', 'quiz'].includes(tab)) setTab(tab);
+      if (['cards', 'list', 'quiz', 'exam'].includes(tab)) setTab(tab);
+      if (tab === 'exam' && params.get('q') && window.ExamSearch) {
+        window.ExamSearch.open(params.get('q'));
+      }
       if (params.get('flip') === '1') flipCard();
       if (tab === 'quiz' && params.get('start') === '1') quizStart();
+
+      if (window.BlogAuth) {
+        window.BlogAuth.onChange((user) => {
+          if (user) syncPull();
+        });
+      }
     })
     .catch((error) => {
       const front = $('#word-front');

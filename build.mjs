@@ -414,6 +414,7 @@ const renderWords = (site, stats, words) => {
       <button class="word-tab is-active" type="button" role="tab" aria-selected="true" data-word-tab="cards">${icon('i-book')} 卡片记忆</button>
       <button class="word-tab" type="button" role="tab" aria-selected="false" data-word-tab="list">${icon('i-search')} 词表</button>
       <button class="word-tab" type="button" role="tab" aria-selected="false" data-word-tab="quiz">${icon('i-sparkle')} 小测验</button>
+      <button class="word-tab" type="button" role="tab" aria-selected="false" data-word-tab="exam">${icon('i-search')} 真题出处</button>
     </div>
 
     <section class="word-panel" data-word-panel="cards" role="tabpanel">
@@ -441,6 +442,7 @@ const renderWords = (site, stats, words) => {
         <div class="word-stage-tools">
           <button type="button" id="word-audio">${icon('i-music')} 发音</button>
           <button type="button" id="word-shuffle">${icon('i-sparkle')} 随机</button>
+          <button type="button" id="word-exam">${icon('i-search')} 查真题</button>
           <button type="button" id="word-prev">${icon('i-chevron-left')} 上一个</button>
           <button type="button" id="word-next">下一个 ${icon('i-chevron-right')}</button>
         </div>
@@ -483,6 +485,22 @@ const renderWords = (site, stats, words) => {
           <p>看英文，选中文。答错的词会进入错词本。</p>
           <button class="btn-read" type="button" id="quiz-start">开始测验 ${icon('i-arrow-right')}</button>
         </div>
+      </div>
+    </section>
+
+    <section class="word-panel" data-word-panel="exam" role="tabpanel" hidden>
+      <div class="exam-search">
+        <form class="exam-search-bar" id="exam-form">
+          <label class="exam-search-field">
+            ${icon('i-search')}
+            <input id="exam-input" type="search" placeholder="查一个单词，例如 abandon、sustainable" autocomplete="off" spellcheck="false">
+          </label>
+          <button class="btn-read" type="submit">查真题</button>
+        </form>
+        <p class="exam-hint" id="exam-hint">统计这个词在四级真题库中出现的次数、所属试卷和位置，点击可直接翻到 PDF 那一页。</p>
+      </div>
+      <div class="exam-results" id="exam-results">
+        <div class="exam-empty">输入单词开始查；也可以在卡片页点「查真题」。</div>
       </div>
     </section>
   </div>`;
@@ -850,6 +868,57 @@ const render404 = (site, stats) => {
   });
 };
 
+const renderPractice = (site, stats) => {
+  const content = `
+  <div class="practice-page" id="practice-app">
+    <div class="page-header practice-header">
+      <p class="page-kicker">408 · PRACTICE</p>
+      <h1 class="page-title">408 练习</h1>
+      <p class="page-subtitle">数据结构 · 计算机组成原理 · 操作系统 · 计算机网络 · 登录后记录错题和正确率</p>
+    </div>
+
+    <div class="practice-tabs" role="tablist" aria-label="练习视图">
+      <button class="practice-tab is-active" type="button" role="tab" aria-selected="true" data-practice-tab="sets">题库</button>
+      <button class="practice-tab" type="button" role="tab" aria-selected="false" data-practice-tab="wrong">错题本</button>
+      <button class="practice-tab" type="button" role="tab" aria-selected="false" data-practice-tab="stats">统计</button>
+    </div>
+
+    <section class="practice-panel" data-practice-panel="sets" role="tabpanel"></section>
+    <section class="practice-panel" data-practice-panel="wrong" role="tabpanel" hidden></section>
+    <section class="practice-panel" data-practice-panel="stats" role="tabpanel" hidden></section>
+  </div>`;
+
+  return renderPage({
+    site,
+    stats,
+    page: {
+      title: '408 练习',
+      description: '408 考研四门课题库练习、错题本与正确率统计。',
+      active: 'practice',
+      path: '/practice.html',
+      canonical: toAbsolute(site.url, '/practice.html')
+    },
+    content
+  });
+};
+
+const renderAdmin = (site, stats) => {
+  const content = `<div class="admin-page" id="admin-app"></div>`;
+
+  return renderPage({
+    site,
+    stats,
+    page: {
+      title: '后台管理',
+      description: '文章与 408 题库后台。',
+      active: 'admin',
+      path: '/admin.html',
+      canonical: toAbsolute(site.url, '/admin.html')
+    },
+    content
+  });
+};
+
 const xml = (value = '') => String(value)
   .replace(/&/g, '&amp;')
   .replace(/</g, '&lt;')
@@ -940,6 +1009,13 @@ const main = async () => {
   let dsa = { nodes: [], edges: [], questions: [] };
   try {
     dsa = await readJson(join(contentDir, 'dsa.json'));
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error;
+  }
+
+  let papersText = null;
+  try {
+    papersText = await readJson(join(contentDir, 'papers-text.json'));
   } catch (error) {
     if (error.code !== 'ENOENT') throw error;
   }
@@ -1061,8 +1137,13 @@ const main = async () => {
   await writePage('papers.html', renderPapers(papers, site, stats));
   await writePage('paper.html', renderPaperReader(site, stats));
   await writeFile(join(outDir, 'dsa.json'), JSON.stringify(dsa), 'utf8');
+  if (papersText) {
+    await writeFile(join(outDir, 'papers-text.json'), JSON.stringify(papersText), 'utf8');
+  }
   await writePage('learn.html', renderLearn(site, stats));
   await writePage('visual.html', renderVisual(site, stats));
+  await writePage('practice.html', renderPractice(site, stats));
+  await writePage('admin.html', renderAdmin(site, stats));
   await writePage('about.html', await renderAbout(site, stats));
   await writePage('404.html', render404(site, stats));
 
@@ -1080,7 +1161,7 @@ const main = async () => {
   await writeFile(join(outDir, 'search.json'), JSON.stringify(searchIndex), 'utf8');
   await writeFile(join(outDir, 'atom.xml'), renderAtom(posts, site), 'utf8');
 
-  const sitemapPages = ['/', ...Array.from({ length: Math.max(0, totalPages - 1) }, (_, i) => `/page/${i + 2}/`), ...posts.map((post) => post.path), '/archives.html', '/categories.html', '/tags.html', '/words.html', '/papers.html', '/learn.html', '/visual.html', '/about.html'];
+  const sitemapPages = ['/', ...Array.from({ length: Math.max(0, totalPages - 1) }, (_, i) => `/page/${i + 2}/`), ...posts.map((post) => post.path), '/archives.html', '/categories.html', '/tags.html', '/words.html', '/papers.html', '/learn.html', '/visual.html', '/practice.html', '/about.html'];
   await writeFile(join(outDir, 'sitemap.xml'), renderSitemap(site, sitemapPages), 'utf8');
   await writeFile(join(outDir, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${site.url}/sitemap.xml\n`, 'utf8');
   await writeFile(join(outDir, '.nojekyll'), '', 'utf8');

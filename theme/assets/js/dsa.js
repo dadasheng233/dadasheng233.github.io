@@ -45,6 +45,46 @@
     } catch (error) {
       /* 隐私模式下不阻塞页面 */
     }
+    syncPush();
+  };
+
+  const syncPush = () => {
+    if (!window.BlogSync) return;
+    window.BlogSync.push('dsa', { progress, wrong: [...wrong], updatedAt: Date.now() });
+  };
+
+  const syncPull = async () => {
+    if (!window.BlogSync || !window.BlogAuth || !window.BlogAuth.user) return;
+    const remote = await window.BlogSync.pull('dsa');
+    if (!remote || !remote.data) return;
+    const remoteProgress = remote.data.progress && typeof remote.data.progress === 'object' ? remote.data.progress : {};
+    const remoteWrong = Array.isArray(remote.data.wrong) ? remote.data.wrong : [];
+    let changed = false;
+    Object.keys(remoteProgress).forEach((key) => {
+      if (!(key in progress)) {
+        progress[key] = remoteProgress[key];
+        changed = true;
+      }
+    });
+    remoteWrong.forEach((id) => {
+      if (!wrong.has(id)) {
+        wrong.add(id);
+        changed = true;
+      }
+    });
+    if (!changed) return;
+    try {
+      localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
+      localStorage.setItem(WRONG_KEY, JSON.stringify([...wrong]));
+    } catch (error) { /* noop */ }
+    if (data) {
+      renderStats();
+      renderConcept();
+      renderDiagnosis();
+      renderDaily();
+    }
+    window.BlogAuth.toast('已从云端恢复学习进度');
+    syncPush();
   };
 
   const getProgress = (id) => progress[id] || { correct: 0, total: 0 };
@@ -544,6 +584,12 @@
       const requestedView = params.get('view');
       if (['student', 'teacher', 'experiment'].includes(requestedView)) setView(requestedView);
       if (params.get('start') === '1') startQuiz(selected);
+
+      if (window.BlogAuth) {
+        window.BlogAuth.onChange((user) => {
+          if (user) syncPull();
+        });
+      }
     } catch (error) {
       console.error(error);
       $('#dsa-concept').innerHTML = '<p class="dsa-empty">学习数据加载失败，请刷新页面。</p>';

@@ -13,6 +13,7 @@ const NAV = [
   { key: 'words', label: '单词', href: '/words.html', icon: 'i-book' },
   { key: 'papers', label: '真题', href: '/papers.html', icon: 'i-archive' },
   { key: 'learn', label: '学习', href: '/visual.html', icon: 'i-grid' },
+  { key: 'practice', label: '408', href: '/practice.html', icon: 'i-book' },
   { key: 'about', label: '关于', href: '/about.html', icon: 'i-user' }
 ];
 
@@ -46,6 +47,12 @@ function header(site, active) {
           <a href="#search" role="button" class="search-trigger" aria-haspopup="dialog" aria-controls="search-modal">
             ${icon('i-search', 'menu-icon')}
             <span>搜索</span>
+          </a>
+        </li>
+        <li class="menu-item menu-item-account" style="--i:6">
+          <a href="#account" data-account-trigger aria-haspopup="dialog" aria-controls="account-modal" title="登录 / 注册，开启学习进度云同步">
+            ${icon('i-user', 'menu-icon')}
+            <span class="account-label">登录</span>
           </a>
         </li>
       </ul>
@@ -191,6 +198,7 @@ export function renderPage({ site, page, content, stats }) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#141418">
+  <meta name="blog-api" content="${esc(site.apiBase || '')}">
   <meta name="description" content="${esc(description)}">
   <meta name="keywords" content="${esc(site.keywords || '')}">
   <meta name="author" content="${esc(site.author)}">
@@ -229,13 +237,17 @@ export function renderPage({ site, page, content, stats }) {
   ${searchModal()}
   ${lightbox()}
 
+  <script src="/assets/js/account.js" defer></script>
   <script src="/assets/js/site.js" defer></script>
   <script src="/assets/js/edit-map.js" defer></script>
   <script src="/assets/js/words.js" defer></script>
+  <script src="/assets/js/exam-search.js" defer></script>
   <script src="/assets/js/papers.js" defer></script>
   <script src="/assets/js/pdf-reader.js" defer></script>
   <script src="/assets/js/dsa.js" defer></script>
   <script src="/assets/js/visual.js" defer></script>
+  <script src="/assets/js/practice.js" defer></script>
+  <script src="/assets/js/admin.js" defer></script>
   <script type="module" src="/assets/js/cat.js"></script>
 </body>
 </html>`;

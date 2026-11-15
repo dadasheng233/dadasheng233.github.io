@@ -33,6 +33,9 @@ npm start
 - CET-4 单词本：翻卡记忆、词表搜索、四选一测验、本地学习进度
 - 数据结构可视化实验室：知识地图、完成度、二分查找动画、诊断视图
 - CET-4 真题库：2024–2025 试卷 + 解析，PDF.js 在线阅读
+- 408 练习：题库、答题反馈、错题本、分科正确率（需要后端）
+- 账号：注册 / 登录 / 退出，学习进度云同步（需要后端）
+- 后台管理：网页写文章、一键构建、导入题库（需要后端）
 - 归档、分类、标签、关于、404
 - 全站搜索（标题 / 标签 / 分类 / 正文）
 - RSS Atom、`sitemap.xml`、`robots.txt`
@@ -146,10 +149,31 @@ http://127.0.0.1:4200/words.html
 - 卡片：翻面看释义，按 `1/2/3` 标记不认识/模糊/认识
 - 词表：按字母、状态、关键词筛选
 - 测验：10 题四选一，错词会记录
+- 真题出处：输入任意单词，统计它在真题库中出现的次数、年份分布、试卷 / 部分 / 页码，并显示上下文，点击直接跳到 PDF 对应页
 
 首页第 1 页还会自动生成一张 `.home-word-card` 入口卡片，显示总词数和 DAY 数。文案和样式分别在 `build.mjs → renderHome()` 和 `theme/assets/css/site.css → .home-word-card`。
 
-进度只存在浏览器 `localStorage`，换设备不同步。
+### 真题出处（这个词考过几次、在哪）
+
+单词页的「真题出处」标签页，以及卡片页的「查真题」按钮，都从 `public/papers-text.json` 查询。这份索引由 PDF 的**文字层**抽取而来，不需要联网，也不会上传单词。
+
+更新索引：
+
+```bash
+# 1. 把卷子按目录放好：theme/assets/papers/年份-月份/setN-paper.pdf
+#    例如 theme/assets/papers/2015-06/set1-paper.pdf
+#    answer 文件会被忽略
+python tools/build_paper_text.py      # 或 npm run papers:index
+node build.mjs
+```
+
+- 脚本会自动把新 PDF 补进 `content/papers.json`，年份、月份、第几套都从目录和文件名推断
+- `content/papers-text.json` 是生成结果，`build.mjs` 会复制成 `public/papers-text.json`
+- 页码是 PDF 的物理页；阅读器地址支持 `?file=...&page=7`，所以结果可以直接定位
+- 扫描版 PDF（没有文字层）会提示「可能是扫描版」，需要先 OCR 再抽
+- 统计按词边界、不区分大小写；PDF 偶尔丢空格（如 `atleast`）会导致极少数漏计
+
+进度默认只存在当前浏览器；登录后（见「账号与后端」）会同步到服务器。
 
 ## 改成你的
 
@@ -222,7 +246,35 @@ http://127.0.0.1:4200/learn.html?demo=1&view=teacher
 
 数据在 `content/dsa.json`，可视化交互在 `theme/assets/js/visual.js`，文字诊断在 `theme/assets/js/dsa.js`。
 
-这是学习平台的第一块试验田，不是完整平台；登录、题库后台、代码判题和知识图谱数据库都还没接。
+这是学习平台的第一块试验田，不是完整平台；题库后台、代码判题和知识图谱数据库还没接，账号和错题记录已经由 Spring Boot 后端接上了（见下一节）。
+
+## 账号与后端（Spring Boot）
+
+博客本身还是静态站，另加了一个 `server/` 目录的 Spring Boot 后端，提供账号、学习进度云同步、后台发文和 408 题库。
+
+```text
+双击  启动后端.bat
+```
+
+或者：
+
+```bash
+npm run build
+npm run server
+```
+
+打开 `http://127.0.0.1:8080`（后端会同时托管生成好的 `public/` 和 `/api/**`）。
+
+- 默认管理员：`admin` / `wanfeng-408`，首次启动自动创建，部署前请改 `BLOG_ADMIN_PASSWORD`
+- 第一次启动自动导入 20 道 408 示例题
+- 导航栏「登录」可以注册 / 登录；登录后单词本和数据结构诊断的进度会同步到服务器
+- 导航栏「408」进入练习页：题库、错题本、正确率统计
+- 管理员登录后打开 `/admin.html`：写文章、一键构建、导入 408 题库
+- 数据默认存在 `server/data/blog.mv.db`（H2），也可以切 MySQL
+
+完整的启动方式、接口表、题库 JSON 格式、部署注意事项都在 **[server/README.md](server/README.md)**。
+
+> GitHub Pages 仍然只能托管静态页面，跑不了这个后端；纯静态部署时登录和练习记录会不可用。
 
 ## 陪伴博客 Demo
 
@@ -368,10 +420,11 @@ Tororo 模型是从原站 `blog.daliansky.net` 的公开资源中取下来做本
 ## 技术说明
 
 - 零第三方依赖。`build.mjs` 只使用 Node 内置模块，`site.js` 不依赖框架。
+- 后端是独立目录 `server/`，Maven + Spring Boot 3.4 + Java 21，默认 H2 文件数据库，不依赖外部服务。
 - 生成器在 `build.mjs` 里，约 500 行，负责：文章排序、分类/标签统计、目录、分页、首页卡片、RSS、搜索索引、站点地图。
 - `.js .reveal` 才会隐藏卡片；如果 JavaScript 加载失败，内容仍然完整可读。
 - 搜索索引在第一次打开搜索框时才请求，不拖慢首屏。
-- 留言板是静态站演示，只写入浏览器的 `localStorage`，不会上传。需要真实评论时可以接 Giscus / Waline。
+- 留言板是静态站演示，只写入浏览器的 `localStorage`，不会上传。需要真实评论时可以接 Giscus / Waline 或后端自己做。
 
 ## 命令
 
