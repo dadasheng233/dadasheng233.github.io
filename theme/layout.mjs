@@ -199,6 +199,7 @@ export function renderPage({ site, page, content, stats }) {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#141418">
   <meta name="blog-api" content="${esc(site.apiBase || '')}">
+  <meta name="blog-translate" content="${esc(site.translateApi || '')}">
   <meta name="description" content="${esc(description)}">
   <meta name="keywords" content="${esc(site.keywords || '')}">
   <meta name="author" content="${esc(site.author)}">
@@ -241,6 +242,7 @@ export function renderPage({ site, page, content, stats }) {
   <script src="/assets/js/site.js" defer></script>
   <script src="/assets/js/edit-map.js" defer></script>
   <script src="/assets/js/words.js" defer></script>
+  <script src="/assets/js/translate.js" defer></script>
   <script src="/assets/js/exam-search.js" defer></script>
   <script src="/assets/js/papers.js" defer></script>
   <script src="/assets/js/pdf-reader.js" defer></script>

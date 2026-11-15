@@ -144,12 +144,12 @@ http://127.0.0.1:4200/words.html
 }
 ```
 
-页面有三种模式：
+页面有四种模式：
 
 - 卡片：翻面看释义，按 `1/2/3` 标记不认识/模糊/认识
 - 词表：按字母、状态、关键词筛选
 - 测验：10 题四选一，错词会记录
-- 真题出处：输入任意单词，统计它在真题库中出现的次数、年份分布、试卷 / 部分 / 页码，并显示上下文，点击直接跳到 PDF 对应页
+- 真题出处：输入任意单词，统计它在真题库中出现的次数、年份分布、试卷 / 部分 / 页码，并显示词义、所在句子和中文翻译，点击直接跳到 PDF 对应页并高亮标注
 
 首页第 1 页还会自动生成一张 `.home-word-card` 入口卡片，显示总词数和 DAY 数。文案和样式分别在 `build.mjs → renderHome()` 和 `theme/assets/css/site.css → .home-word-card`。
 
@@ -168,10 +168,19 @@ node build.mjs
 ```
 
 - 脚本会自动把新 PDF 补进 `content/papers.json`，年份、月份、第几套都从目录和文件名推断
-- `content/papers-text.json` 是生成结果，`build.mjs` 会复制成 `public/papers-text.json`
-- 页码是 PDF 的物理页；阅读器地址支持 `?file=...&page=7`，所以结果可以直接定位
+- `content/papers-text.json` 是全文索引，`content/paper-boxes/` 是每个词的坐标，`build.mjs` 会一起复制到 `public/`
+- 页码是 PDF 的物理页；阅读器地址支持 `?file=...&page=7&word=abandon`，结果里点「卷面标注」会翻到那一页并高亮这个词
 - 扫描版 PDF（没有文字层）会提示「可能是扫描版」，需要先 OCR 再抽
 - 统计按词边界、不区分大小写；PDF 偶尔丢空格（如 `atleast`）会导致极少数漏计
+
+### 词义和整句翻译
+
+- 单词释义先查本地 `content/words.json`（1742 个 CET-4 词，秒出）；不在词库里的词再调翻译接口
+- 每条例句旁有「翻译这句」，点开才请求，避免一次搜索打出一堆请求
+- 使用 [MyMemory](https://mymemory.translated.net/) 免费接口（无需 key，有每日额度），失败时会尝试 Google 翻译作为备用
+- 想换成自己的翻译服务：在 `content/site.json` 里加 `"translateApi": "https://你的-libretranslate/translate"`，前端会优先用这个 LibreTranslate 兼容接口（POST `{q, source, target, format}`）
+- 查询只包含单词或那一句英文，不涉及账号信息；译文缓存在浏览器 `localStorage`，同一个词不会重复请求
+- 完全离线或接口不可用时，词义仍能显示（本地词库），句子翻译会提示失败
 
 进度默认只存在当前浏览器；登录后（见「账号与后端」）会同步到服务器。
 

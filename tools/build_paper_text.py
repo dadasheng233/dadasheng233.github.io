@@ -1,8 +1,12 @@
-"""把真题 PDF 抽成可检索文本，生成 content/papers-text.json。
+"""把真题 PDF 抽成可检索文本，生成 content/papers-text.json 和逐词坐标。
 
 用法：
     python tools/build_paper_text.py            # 扫描 PDF、补 papers.json、重新抽取
     python tools/build_paper_text.py --no-scan  # 只按现有 papers.json 抽取
+
+输出：
+    content/papers-text.json                全文 + 页码 / 段落位置
+    content/paper-boxes/<月份>/<卷名>.json   每页每个词的归一化坐标（PDF 高亮标注用）
 
 目录约定（推荐）：
     theme/assets/papers/2023-06/set1-paper.pdf
@@ -27,6 +31,7 @@ ROOT = Path(__file__).resolve().parent.parent
 PAPERS_DIR = ROOT / "theme" / "assets" / "papers"
 PAPERS_JSON = ROOT / "content" / "papers.json"
 OUT_JSON = ROOT / "content" / "papers-text.json"
+BOXES_DIR = ROOT / "content" / "paper-boxes"
 
 PART_NAMES = {"I": "Writing", "II": "Listening", "III": "Reading", "IV": "Translation"}
 PART_LABELS = {
@@ -200,6 +205,15 @@ def build_sections(text: str) -> list[dict]:
     return sections
 
 
+def boxes_path_for(paper: dict) -> Path | None:
+    """content/paper-boxes/2024-06/set1-paper.json，与 PDF 目录结构一致。"""
+    paper_path = paper.get("paper") or ""
+    match = re.match(r"^/assets/papers/(.+?)\.pdf$", paper_path, re.I)
+    if not match:
+        return None
+    return BOXES_DIR / (match.group(1) + ".json")
+
+
 def extract(paper: dict, warnings: list[str]) -> dict | None:
     pdf = resolve_pdf(paper)
     if pdf is None or not pdf.is_file():
@@ -214,6 +228,7 @@ def extract(paper: dict, warnings: list[str]) -> dict | None:
 
     chunks = []
     page_offsets = []
+    box_pages = []
     offset = 0
     empty_pages = 0
     for page in document:
@@ -223,6 +238,23 @@ def extract(paper: dict, warnings: list[str]) -> dict | None:
         page_offsets.append(offset)
         chunks.append(text)
         offset += len(text) + 1
+
+        # 记录每个词的归一化坐标，供 PDF 阅读器做高亮标注
+        width = page.rect.width or 1
+        height = page.rect.height or 1
+        words = []
+        for item in page.get_text("words"):
+            token = str(item[4]).strip()
+            if not token:
+                continue
+            words.append([
+                token,
+                round(float(item[0]) / width, 4),
+                round(float(item[1]) / height, 4),
+                round(float(item[2]) / width, 4),
+                round(float(item[3]) / height, 4),
+            ])
+        box_pages.append({"w": round(width, 1), "h": round(height, 1), "words": words})
     document.close()
 
     full_text = "\n".join(chunks)
@@ -234,6 +266,15 @@ def extract(paper: dict, warnings: list[str]) -> dict | None:
         if empty_pages:
             warnings.append(f"  {empty_pages} 页没有抽出文字")
         return None
+
+    target = boxes_path_for(paper)
+    if target is not None:
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(
+            json.dumps({"id": paper.get("id"), "pages": box_pages}, ensure_ascii=False,
+                       separators=(",", ":")),
+            encoding="utf-8",
+        )
 
     return {
         "id": paper.get("id"),
@@ -272,7 +313,6 @@ def main() -> int:
         if item:
             results.append(item)
             print(f"  {item['id']:<12} {len(item['text']):>7} 字  {len(item['sections'])} 个位置标记")
-
     payload = {
         "generatedAt": __import__("datetime").date.today().isoformat(),
         "papers": results,

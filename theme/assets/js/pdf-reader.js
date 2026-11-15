@@ -20,6 +20,7 @@
   const back = params.get('back') || '/papers.html';
   const hashPage = Number((location.hash.match(/page=(\d+)/) || [])[1]);
   const initialPage = Math.max(1, Number(params.get('page')) || hashPage || 1);
+  const highlightWord = String(params.get('word') || '').trim().toLowerCase();
 
   const safeFile = /^\/assets\/papers\/[A-Za-z0-9._/-]+\.pdf$/.test(file) && !file.includes('..');
   if (!safeFile) {
@@ -40,6 +41,134 @@
   let rendering = false;
   let renderTask = null;
   let pendingPage = null;
+  let wordBoxes = null;
+  let lastPageData = null;
+
+  const overlay = document.createElement('div');
+  overlay.className = 'pdf-annotations';
+  overlay.setAttribute('aria-hidden', 'true');
+  stage.appendChild(overlay);
+
+  const annotationNote = document.createElement('div');
+  annotationNote.className = 'pdf-annotation-note';
+  annotationNote.hidden = true;
+  stage.parentNode.insertBefore(annotationNote, stage);
+
+  const boxesUrl = (filePath) => {
+    const match = /^\/assets\/papers\/(.+)\.pdf$/i.exec(filePath);
+    return match ? '/paper-boxes/' + match[1] + '.json' : null;
+  };
+
+  async function ensureBoxes() {
+    if (!highlightWord || wordBoxes) return;
+    const url = boxesUrl(file);
+    if (!url) {
+      wordBoxes = { pages: [] };
+      return;
+    }
+    try {
+      const response = await fetch(url);
+      wordBoxes = response.ok ? await response.json() : { pages: [] };
+    } catch (error) {
+      console.warn('[pdf] word boxes failed', error);
+      wordBoxes = { pages: [] };
+    }
+  }
+
+  const normalizeToken = (value) => String(value || '')
+    .toLowerCase()
+    .replace(/^[^a-z]+|[^a-z]+$/g, '');
+
+  const drawAnnotations = (number) => {
+    overlay.innerHTML = '';
+    const oldPop = stage.querySelector('.pdf-hit-pop');
+    if (oldPop) oldPop.remove();
+    if (!highlightWord) return;
+    const pageData = wordBoxes && wordBoxes.pages ? wordBoxes.pages[number - 1] : null;
+    lastPageData = pageData;
+    if (!pageData || !Array.isArray(pageData.words)) {
+      annotationNote.hidden = true;
+      return;
+    }
+
+    const tokens = pageData.words;
+    let hits = tokens.filter((item) => normalizeToken(item[0]) === highlightWord);
+    if (!hits.length) {
+      hits = tokens.filter((item) => normalizeToken(item[0]).includes(highlightWord));
+    }
+
+    overlay.style.left = canvas.offsetLeft + 'px';
+    overlay.style.top = canvas.offsetTop + 'px';
+    overlay.style.width = canvas.clientWidth + 'px';
+    overlay.style.height = canvas.clientHeight + 'px';
+
+    if (!hits.length) {
+      annotationNote.hidden = false;
+      annotationNote.innerHTML = `本页没有找到 <b>${highlightWord}</b>，试试翻到结果中标注的页码。`;
+      return;
+    }
+
+    hits.forEach((item, index) => {
+      const mark = document.createElement('button');
+      mark.type = 'button';
+      mark.className = 'pdf-hit';
+      mark.dataset.word = item[0];
+      mark.dataset.index = String(index + 1);
+      mark.style.left = (item[1] * 100) + '%';
+      mark.style.top = (item[2] * 100) + '%';
+      mark.style.width = ((item[3] - item[1]) * 100) + '%';
+      mark.style.height = ((item[4] - item[2]) * 100) + '%';
+      mark.setAttribute('aria-label', `标注：${item[0]}`);
+      mark.title = item[0];
+      overlay.appendChild(mark);
+    });
+
+    annotationNote.hidden = false;
+    annotationNote.innerHTML = `已标注 <b>${hits.length}</b> 处「${highlightWord}」，点击高亮块看释义。`;
+    const first = overlay.querySelector('.pdf-hit');
+    if (first) {
+      const top = first.offsetTop;
+      if (top > stage.clientHeight * 0.6) stage.scrollTop = Math.max(0, top - 80);
+    }
+  };
+
+  const openHitPopover = (mark) => {
+    const existing = stage.querySelector('.pdf-hit-pop');
+    if (existing) existing.remove();
+    const pop = document.createElement('div');
+    pop.className = 'pdf-hit-pop';
+    pop.innerHTML = `<strong>${mark.dataset.word}</strong><p class="pdf-hit-meaning">正在查释义…</p>
+      <a href="/words.html?tab=exam&q=${encodeURIComponent(highlightWord)}">在单词页查看真题出处 →</a>`;
+    stage.appendChild(pop);
+    const left = Math.min(Math.max(8, mark.offsetLeft + overlay.offsetLeft), stage.clientWidth - 240);
+    const top = mark.offsetTop + overlay.offsetTop + mark.offsetHeight + 6;
+    pop.style.left = left + 'px';
+    pop.style.top = top + 'px';
+
+    if (window.BlogTranslate) {
+      window.BlogTranslate.meaningOf(highlightWord)
+        .then((result) => {
+          pop.querySelector('.pdf-hit-meaning').textContent = result.meaning || '暂无释义';
+        })
+        .catch((error) => {
+          pop.querySelector('.pdf-hit-meaning').textContent = error.message || '释义获取失败';
+        });
+    } else {
+      pop.querySelector('.pdf-hit-meaning').textContent = '翻译脚本没有加载';
+    }
+  };
+
+  overlay.addEventListener('click', (event) => {
+    const mark = event.target.closest('.pdf-hit');
+    if (mark) openHitPopover(mark);
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!event.target.closest('.pdf-hit') && !event.target.closest('.pdf-hit-pop')) {
+      const pop = stage.querySelector('.pdf-hit-pop');
+      if (pop) pop.remove();
+    }
+  });
 
   const setStatus = (text) => {
     if (!status) return;
@@ -113,6 +242,7 @@
       renderTask = null;
       clearStatus();
       stage.scrollTop = 0;
+      drawAnnotations(pageNumber);
     } catch (error) {
       if (error && error.name === 'RenderingCancelledException') {
         /* 上一页的渲染被取消，正常 */
@@ -180,6 +310,7 @@
         else setStatus('正在加载 PDF…');
       };
       pdf = await task.promise;
+      await ensureBoxes();
       await measureFit();
       updateControls();
       await renderPage(Math.min(initialPage, pdf.numPages));

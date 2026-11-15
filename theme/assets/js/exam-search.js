@@ -1,6 +1,6 @@
 /* 晚风小筑 · 真题出处检索
-   把 /papers-text.json 里的真题全文在浏览器端做词频统计，
-   返回「出现次数 + 试卷 + 部分 + 页码 + 上下文」，点击跳到 PDF 对应页。 */
+   统计单词在真题库中的出现次数与位置，给出词义、所在句子和中文翻译，
+   并可跳到 PDF 对应页做高亮标注。 */
 (() => {
   'use strict';
 
@@ -13,7 +13,8 @@
   let indexPromise = null;
   let timer = null;
   let token = 0;
-  let currentWord = '';
+  const occurrences = new Map();
+  let occurrenceSeq = 0;
 
   const escapeHtml = (value = '') => String(value)
     .replace(/&/g, '&amp;')
@@ -62,28 +63,58 @@
     return { page, section };
   }
 
-  function contextAt(paper, offset, word) {
-    const start = Math.max(0, offset - 80);
-    const end = Math.min(paper.text.length, offset + word.length + 110);
-    const before = paper.text.slice(start, offset);
-    const hit = paper.text.slice(offset, offset + word.length);
-    const after = paper.text.slice(offset + word.length, end);
-    return `${start > 0 ? '…' : ''}${escapeHtml(before)}<mark>${escapeHtml(hit)}</mark>`
-      + `${escapeHtml(after)}${end < paper.text.length ? '…' : ''}`;
+  function sentenceAt(text, offset, wordLength) {
+    const beforeLimit = Math.max(0, offset - 360);
+    let start = beforeLimit;
+    for (let i = offset - 1; i >= beforeLimit; i--) {
+      const ch = text[i];
+      if (ch === '\n') { start = i + 1; break; }
+      if ((ch === '.' || ch === '!' || ch === '?') && /\s/.test(text[i + 1] || ' ')) {
+        start = i + 1;
+        break;
+      }
+    }
+    const afterLimit = Math.min(text.length, offset + wordLength + 360);
+    let end = afterLimit;
+    for (let i = offset + wordLength; i < afterLimit; i++) {
+      const ch = text[i];
+      if (ch === '\n') { end = i; break; }
+      if ((ch === '.' || ch === '!' || ch === '?') && /\s/.test(text[i + 1] || ' ')) {
+        end = i + 1;
+        break;
+      }
+    }
+    return text.slice(start, end).replace(/\s+/g, ' ').trim();
   }
 
-  function paperLink(paper, page) {
+  function clipSentence(sentence, word, max = 300) {
+    if (sentence.length <= max) return sentence;
+    const index = sentence.toLowerCase().indexOf(word.toLowerCase());
+    if (index < 0) return sentence.slice(0, max) + '…';
+    const start = Math.max(0, index - Math.floor(max * 0.45));
+    const end = Math.min(sentence.length, start + max);
+    return `${start > 0 ? '…' : ''}${sentence.slice(start, end)}${end < sentence.length ? '…' : ''}`;
+  }
+
+  function highlightSentence(sentence, word) {
+    const splitter = new RegExp('(' + escapeRegExp(word) + ')', 'gi');
+    return sentence.split(splitter)
+      .map((part, index) => (index % 2 ? `<mark>${escapeHtml(part)}</mark>` : escapeHtml(part)))
+      .join('');
+  }
+
+  function paperLink(paper, page, word) {
     const params = new URLSearchParams({
       file: paper.file || '',
       page: String(page || 1),
       title: paper.label || paper.id || '真题'
     });
+    if (word) params.set('word', word);
     return '/paper.html?' + params.toString();
   }
 
   function search(raw) {
     const word = String(raw || '').trim();
-    currentWord = word;
     const query = word.toLowerCase();
     if (query.length < 2) {
       results.innerHTML = '<div class="exam-empty">至少输入 2 个字母，例如 abandon。</div>';
@@ -118,14 +149,15 @@
 
   function render(papers, query, word, current) {
     const escaped = escapeRegExp(query);
-    const matcher = new RegExp('\\b' + escaped + '\\b', 'gi');
     const groups = [];
     let total = 0;
     let papersHit = 0;
     const byYear = new Map();
+    occurrenceSeq = 0;
+    occurrences.clear();
 
     for (const paper of papers) {
-      const count = (paper.text.match(matcher) || []).length;
+      const count = (paper.text.match(new RegExp('\\b' + escaped + '\\b', 'gi')) || []).length;
       if (!count) continue;
       total += count;
       papersHit += 1;
@@ -167,16 +199,21 @@
         if (shown >= limit) return '';
         shown += 1;
         const where = localeOf(group.paper, offset);
+        const sentence = clipSentence(sentenceAt(group.paper.text, offset, word.length), word);
+        const id = 'occ-' + (++occurrenceSeq);
+        occurrences.set(id, { sentence, word });
         return `
-          <li class="exam-occurrence">
-            <a href="${paperLink(group.paper, where.page)}" target="_blank" rel="noopener">
-              <span class="exam-loc">
-                <span class="exam-dot" aria-hidden="true"></span>
-                ${escapeHtml(where.section || '真题')} · 第 ${where.page} 页
-                <span class="exam-open">打开 PDF →</span>
-              </span>
-              <span class="exam-snippet">${contextAt(group.paper, offset, word)}</span>
-            </a>
+          <li class="exam-occurrence" data-occ="${id}">
+            <div class="exam-loc">
+              <span class="exam-dot" aria-hidden="true"></span>
+              ${escapeHtml(where.section || '真题')} · 第 ${where.page} 页
+              <a class="exam-open" href="${paperLink(group.paper, where.page, word)}" target="_blank" rel="noopener">卷面标注 →</a>
+            </div>
+            <p class="exam-sentence">${highlightSentence(sentence, word)}</p>
+            <div class="exam-trans-row">
+              <button class="exam-translate" type="button" data-exam-translate="${id}">翻译这句</button>
+              <span class="exam-trans" id="trans-${id}" hidden></span>
+            </div>
           </li>`;
       }).join('');
       return `
@@ -196,8 +233,79 @@
         <p class="exam-summary-main"><b>${total}</b> 次 · <b>${papersHit}</b> 套卷 · ${yearRange}</p>
         <div class="exam-years">${yearChips}</div>
       </div>
+      <div class="exam-word-card" id="exam-word-card">
+        <div class="exam-word-head">
+          <strong class="exam-word-itself">${escapeHtml(word)}</strong>
+          <span class="exam-word-phonetic"></span>
+          <span class="exam-word-source">正在查词义…</span>
+        </div>
+        <p class="exam-word-meaning">…</p>
+      </div>
       <div class="exam-papers">${groupsHtml}</div>
       ${remaining > 0 ? `<p class="exam-note">页面只列出前 ${shown} 处，其余 ${remaining} 处只计入次数。</p>` : ''}`;
+
+    fillWordCard(word);
+    const firstOccurrence = occurrences.keys().next().value;
+    if (firstOccurrence) translateOccurrence(firstOccurrence);
+  }
+
+  async function fillWordCard(word) {
+    const card = document.getElementById('exam-word-card');
+    if (!card) return;
+    const meaning = card.querySelector('.exam-word-meaning');
+    const source = card.querySelector('.exam-word-source');
+    const phonetic = card.querySelector('.exam-word-phonetic');
+    if (!window.BlogTranslate) {
+      meaning.textContent = '翻译脚本没有加载';
+      source.textContent = '';
+      return;
+    }
+    try {
+      const info = await window.BlogTranslate.meaningOf(word);
+      if (!document.body.contains(card)) return;
+      meaning.textContent = info.meaning || '暂无释义';
+      source.textContent = info.source || '';
+      if (info.phonetic) phonetic.textContent = '/' + info.phonetic.replace(/^\/|\/$/g, '') + '/';
+    } catch (error) {
+      if (!document.body.contains(card)) return;
+      meaning.textContent = error.message || '释义获取失败';
+      source.textContent = '翻译服务不可用';
+    }
+  }
+
+  async function translateOccurrence(id) {
+    const item = occurrences.get(id);
+    const output = document.getElementById('trans-' + id);
+    const button = document.querySelector(`[data-exam-translate="${id}"]`);
+    if (!item || !output) return;
+    if (output.hidden === false) {
+      output.hidden = true;
+      if (button) button.textContent = '翻译这句';
+      return;
+    }
+    if (output.dataset.done === '1') {
+      output.hidden = false;
+      if (button) button.textContent = '收起译文';
+      return;
+    }
+    if (button) {
+      button.disabled = true;
+      button.textContent = '翻译中…';
+    }
+    output.hidden = false;
+    output.textContent = '正在翻译…';
+    try {
+      if (!window.BlogTranslate) throw new Error('翻译脚本没有加载');
+      const translated = await window.BlogTranslate.translate(item.sentence);
+      output.textContent = translated;
+      output.dataset.done = '1';
+      if (button) button.textContent = '收起译文';
+    } catch (error) {
+      output.textContent = error.message || '翻译失败，稍后再试';
+      if (button) button.textContent = '重试';
+    } finally {
+      if (button) button.disabled = false;
+    }
   }
 
   input.addEventListener('input', () => {
@@ -225,7 +333,10 @@
       input.value = suggest.dataset.examSuggest;
       search(input.value);
       input.focus();
+      return;
     }
+    const translateButton = event.target.closest('[data-exam-translate]');
+    if (translateButton) translateOccurrence(translateButton.dataset.examTranslate);
   });
 
   document.querySelectorAll('[data-word-tab="exam"]').forEach((tab) => {

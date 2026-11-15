@@ -497,7 +497,7 @@ const renderWords = (site, stats, words) => {
           </label>
           <button class="btn-read" type="submit">查真题</button>
         </form>
-        <p class="exam-hint" id="exam-hint">统计这个词在四级真题库中出现的次数、所属试卷和位置，点击可直接翻到 PDF 那一页。</p>
+        <p class="exam-hint" id="exam-hint">统计这个词在四级真题库中出现的次数、所属试卷和位置；释义优先查本地词库，整句翻译使用 MyMemory 免费接口。点「卷面标注」可直接翻到 PDF 那一页并高亮。</p>
       </div>
       <div class="exam-results" id="exam-results">
         <div class="exam-empty">输入单词开始查；也可以在卡片页点「查真题」。</div>
@@ -1116,6 +1116,11 @@ const main = async () => {
   await clean(outDir);
   await ensureDir(outDir);
   await cp(join(themeDir, 'assets'), join(outDir, 'assets'), { recursive: true });
+  try {
+    await cp(join(contentDir, 'paper-boxes'), join(outDir, 'paper-boxes'), { recursive: true });
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error;
+  }
   await cp(join(root, 'vendor', 'live2d'), join(outDir, 'vendor', 'live2d'), { recursive: true });
   await cp(join(root, 'live2d'), join(outDir, 'live2d'), { recursive: true });
   await removeSourceMaps(join(outDir, 'vendor'));

@@ -4321,9 +4321,9 @@ body.account-open { overflow: hidden; }
 .exam-paper-label { color: #454149; font-family: var(--sans); font-size: 12px; font-weight: 600; }
 .exam-paper-count { color: var(--orange); font-family: var(--mono); font-size: 10.5px; }
 .exam-list { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+.exam-occurrence { padding: 10px 14px; transition: background .2s; }
 .exam-occurrence + .exam-occurrence { border-top: 1px dashed var(--line); }
-.exam-occurrence a { display: block; padding: 10px 14px; transition: background .2s; }
-.exam-occurrence a:hover { background: #f8fafd; }
+.exam-occurrence:hover { background: #f8fafd; }
 .exam-loc {
   display: flex;
   align-items: center;
@@ -4334,18 +4334,108 @@ body.account-open { overflow: hidden; }
   font-size: 10.5px;
 }
 .exam-dot { width: 5px; height: 5px; background: var(--blue); border-radius: 50%; }
-.exam-open { margin-left: auto; color: var(--blue); font-size: 10px; opacity: 0; transition: opacity .2s; }
-.exam-occurrence a:hover .exam-open { opacity: 1; }
-.exam-snippet { display: block; color: #55525b; font-family: var(--serif); font-size: 13px; line-height: 1.9; }
-.exam-snippet mark { padding: 0 2px; background: #ffe58a; color: #4a3a00; border-radius: 2px; }
+.exam-open { margin-left: auto; color: var(--blue); font-size: 10px; white-space: nowrap; }
+.exam-open:hover { text-decoration: underline; }
+.exam-sentence { margin: 0 0 6px; color: #55525b; font-family: var(--serif); font-size: 13px; line-height: 1.9; }
+.exam-sentence mark { padding: 0 2px; background: #ffe58a; color: #4a3a00; border-radius: 2px; }
+.exam-trans-row { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 8px; }
+.exam-translate {
+  flex: none;
+  padding: 1px 9px;
+  color: #6d6771;
+  background: #fff;
+  border: 1px solid #d9e0ee;
+  border-radius: 999px;
+  font-family: var(--sans);
+  font-size: 10.5px;
+  line-height: 1.9;
+  cursor: pointer;
+  transition: color .2s, background .2s, border-color .2s;
+}
+.exam-translate:hover { color: #fff; background: var(--blue); border-color: var(--blue); }
+.exam-translate:disabled { opacity: .6; cursor: default; }
+.exam-trans { flex: 1; min-width: 180px; color: #3f7d55; font-family: var(--sans); font-size: 12px; line-height: 1.8; }
 .exam-more { margin: 0; padding: 4px 14px 9px; color: #a09aa2; font-family: var(--sans); font-size: 10.5px; }
 .exam-note { margin: 12px 0 0; color: #a09aa2; font-family: var(--sans); font-size: 11px; text-align: center; }
+
+.exam-word-card {
+  margin-bottom: 14px;
+  padding: 14px 18px;
+  background: linear-gradient(120deg, #fbf7f0, #f4f8fd);
+  border: 1px solid #e3e6ef;
+  border-left: 3px solid var(--orange);
+}
+.exam-word-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+.exam-word-itself { color: #2c2930; font-family: var(--serif); font-size: 24px; font-weight: 600; letter-spacing: .5px; }
+.exam-word-phonetic { color: #8b848d; font-family: var(--mono); font-size: 12px; }
+.exam-word-source { margin-left: auto; color: #a09aa2; font-family: var(--sans); font-size: 10px; }
+.exam-word-meaning { margin: 0; color: #454149; font-family: var(--serif); font-size: 15px; line-height: 1.8; }
+
+/* PDF 卷面标注 */
+.pdf-annotation-note {
+  margin: 0 0 6px;
+  padding: 7px 14px;
+  color: #454149;
+  background: #fff6d8;
+  border: 1px solid #f0e0a8;
+  border-radius: 3px;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  line-height: 1.7;
+}
+.pdf-annotation-note b { color: #b04a5f; }
+.pdf-annotations {
+  position: absolute;
+  z-index: 3;
+  pointer-events: none;
+}
+.pdf-hit {
+  position: absolute;
+  padding: 0;
+  background: rgba(255, 214, 76, .42);
+  border: 1px solid rgba(224, 165, 26, .75);
+  border-radius: 2px;
+  pointer-events: auto;
+  cursor: pointer;
+  transition: background .15s;
+}
+.pdf-hit:hover { background: rgba(255, 196, 24, .65); }
+.pdf-hit::after {
+  content: attr(data-index);
+  position: absolute;
+  top: -15px;
+  left: -1px;
+  min-width: 14px;
+  padding: 0 3px;
+  color: #fff;
+  background: #d98324;
+  border-radius: 2px;
+  font-family: var(--mono);
+  font-size: 9px;
+  line-height: 14px;
+  text-align: center;
+}
+.pdf-hit-pop {
+  position: absolute;
+  z-index: 5;
+  width: 230px;
+  padding: 12px 14px;
+  background: var(--paper);
+  border: 1px solid var(--line-dark);
+  box-shadow: 0 18px 40px -18px rgba(0, 0, 0, .7);
+  font-family: var(--sans);
+}
+.pdf-hit-pop strong { display: block; margin-bottom: 4px; color: #2c2930; font-family: var(--serif); font-size: 17px; }
+.pdf-hit-meaning { margin: 0 0 8px; color: #55525b; font-size: 12px; line-height: 1.8; }
+.pdf-hit-pop a { color: var(--blue); font-size: 11px; }
+.pdf-hit-pop a:hover { text-decoration: underline; }
 
 @media (max-width: 640px) {
   .exam-search-bar { flex-wrap: wrap; }
   .exam-search-field { flex-basis: 100%; }
   .exam-summary-main { font-size: 12px; }
-  .exam-snippet { font-size: 12px; }
+  .exam-sentence { font-size: 12px; }
+  .exam-word-itself { font-size: 21px; }
 }
 
 
