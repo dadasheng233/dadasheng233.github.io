@@ -10,6 +10,7 @@
     "dev": "node build.mjs && node serve.mjs",
     "check": "node tools/check-links.mjs",
     "papers:index": "python tools/build_paper_text.py",
+    "papers:import": "python tools/import_papers.py",
     "server": "cd server && mvn spring-boot:run",
     "dev:full": "node build.mjs && cd server && mvn spring-boot:run"
   },

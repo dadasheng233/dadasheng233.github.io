@@ -92,7 +92,17 @@
     }
 
     const tokens = pageData.words;
-    let hits = tokens.filter((item) => normalizeToken(item[0]) === highlightWord);
+    const queryForms = window.WordForms ? window.WordForms.forms(highlightWord) : new Set([highlightWord]);
+    const tokenMatches = (raw) => {
+      const token = normalizeToken(raw);
+      if (!token) return false;
+      const forms = window.WordForms ? window.WordForms.forms(token) : [token];
+      for (const form of forms) {
+        if (queryForms.has(form)) return true;
+      }
+      return false;
+    };
+    let hits = tokens.filter((item) => tokenMatches(item[0]));
     if (!hits.length) {
       hits = tokens.filter((item) => normalizeToken(item[0]).includes(highlightWord));
     }

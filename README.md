@@ -32,7 +32,7 @@ npm start
 - 文章详情页：目录、代码复制、图片灯箱、标签、版权、前后篇
 - CET-4 单词本：翻卡记忆、词表搜索、四选一测验、本地学习进度
 - 数据结构可视化实验室：知识地图、完成度、二分查找动画、诊断视图
-- CET-4 真题库：2024–2025 试卷 + 解析，PDF.js 在线阅读
+- CET-4 真题库：2015–2025 试卷 + 解析，PDF.js 在线阅读
 - 408 练习：题库、答题反馈、错题本、分科正确率（需要后端）
 - 账号：注册 / 登录 / 退出，学习进度云同步（需要后端）
 - 后台管理：网页写文章、一键构建、导入题库（需要后端）
@@ -170,8 +170,9 @@ node build.mjs
 - 脚本会自动把新 PDF 补进 `content/papers.json`，年份、月份、第几套都从目录和文件名推断
 - `content/papers-text.json` 是全文索引，`content/paper-boxes/` 是每个词的坐标，`build.mjs` 会一起复制到 `public/`
 - 页码是 PDF 的物理页；阅读器地址支持 `?file=...&page=7&word=abandon`，结果里点「卷面标注」会翻到那一页并高亮这个词
+- 查 `abandon` 会同时命中 `abandons` / `abandoned` / `abandoning` 等变形（-s/-es/-ies、-ed/-ied、-ing、短词双写），结果里列出每种形式各出现几次
 - 扫描版 PDF（没有文字层）会提示「可能是扫描版」，需要先 OCR 再抽
-- 统计按词边界、不区分大小写；PDF 偶尔丢空格（如 `atleast`）会导致极少数漏计
+- PDF 偶尔丢空格（如 `atleast`）会导致极少数漏计
 
 ### 词义和整句翻译
 
@@ -315,7 +316,7 @@ http://127.0.0.1:4200/assets/companion-demo.html
 
 ## 真题库
 
-2024–2025 四级真题和解析，列表页：
+2015–2025 四级真题，列表页：
 
 ```text
 http://127.0.0.1:4200/papers.html
@@ -327,17 +328,25 @@ http://127.0.0.1:4200/papers.html
 http://127.0.0.1:4200/paper.html?file=/assets/papers/2024-06/set1-paper.pdf
 ```
 
-- 9 套真题，18 份 PDF，约 336MB
+- 62 套真题，2015-06 到 2025-06，PDF 约 421MB
+- 2020-07 只有 1 套；2023-03 源文件只有第 1 套完整，第 2/3 套缺正文
+- 2021-12 第 1 套是扫描件，能阅读但没有文字层，暂不参与词频检索（其余 61 套都有）
 - PDF 文件在 `theme/assets/papers/`
 - 索引在 `content/papers.json`
 - 阅读器用本地 PDF.js，支持翻页、缩放、适合宽度、全屏、下载
-- 听力音频暂未导入，因为音频总量约 1GB，加上 PDF 会超过 GitHub Pages 上限
+- 听力音频未导入，音频总量约 1GB，会超过 GitHub Pages 上限
 
-增加试卷：
+批量导入新卷子：
 
-1. 把 PDF 放进 `theme/assets/papers/<年份-月份>/`
-2. 在 `content/papers.json` 加一条
-3. `npm run build`
+```bash
+# 目录约定：<源目录>/<年份>年<月份>月.../真题PDF/...第N套.pdf
+python tools/import_papers.py "C:\Users\你\Downloads\四级真题..."
+python tools/build_paper_text.py      # 生成全文索引 + 逐词坐标
+npm run build
+```
+
+导入脚本会自动识别年份、月份、第几套，同一套有多份副本时优先选有文字层的；
+`--dry-run` 可以只看会导入哪些。
 
 ## 部署到 GitHub Pages
 
@@ -455,7 +464,8 @@ npm run dev     # 先构建再启动
 - 文章是 HTML，不是 Markdown。这样不用装 Markdown 解析器，也方便直接塞入复杂组件；写纯文字时稍微啰嗦一点。
 - 小猫的 8 段随机动作来自模型自身，不做额外编排。
 - 免费静态托管通常没有服务端，留言和阅读量都是演示数据；阅读量在 front matter 里手写。
-- 真题 PDF 目前只导入 2024–2025 的 9 套，共约 336MB；听力音频约 1GB，和 PDF 一起会超过 GitHub Pages 上限，暂未导入。
+- 真题 PDF 目前导入 2015–2025 的 62 套，共约 421MB；听力音频约 1GB，和 PDF 一起会超过 GitHub Pages 上限，暂未导入。
+- 2021-12 第 1 套是扫描件，没有文字层，词频检索覆盖 61/62 套；2023-03 第 2/3 套源文件不完整。
 - 真题 PDF 由你提供，默认按个人学习用途使用；公开部署前请确认资料版权。
 - PDF 阅读器使用 PDF.js，许可证在 `theme/assets/vendor/pdfjs/LICENSE`。
 - 插画是 SVG 手绘的抽象场景，不是照片。想换成自己的照片，直接替换 cover 文件即可。

@@ -1,0 +1,391 @@
+{
+  "imported": [
+    {
+      "year": 2015,
+      "month": 6,
+      "set": 1,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2015年06月CET4真题+解析+听力音频【全3套】\\真题PDF\\2015年06月四级真题第1套【可复制可搜索】.pdf",
+      "target": "theme\\assets\\papers\\2015-06\\set1-paper.pdf"
+    },
+    {
+      "year": 2015,
+      "month": 6,
+      "set": 2,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2015年06月CET4真题+解析+听力音频【全3套】\\真题PDF\\2015年06月四级真题第2套【可复制可搜索】.pdf",
+      "target": "theme\\assets\\papers\\2015-06\\set2-paper.pdf"
+    },
+    {
+      "year": 2015,
+      "month": 6,
+      "set": 3,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2015年06月CET4真题+解析+听力音频【全3套】\\真题PDF\\2015年06月四级真题第3套【可复制可搜索】.pdf",
+      "target": "theme\\assets\\papers\\2015-06\\set3-paper.pdf"
+    },
+    {
+      "year": 2015,
+      "month": 12,
+      "set": 1,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2015年12月CET4真题+解析+听力音频【全3套】\\真题PDF\\2015年12月四级真题第1套【可复制可搜索】.pdf",
+      "target": "theme\\assets\\papers\\2015-12\\set1-paper.pdf"
+    },
+    {
+      "year": 2015,
+      "month": 12,
+      "set": 2,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2015年12月CET4真题+解析+听力音频【全3套】\\真题PDF\\2015年12月四级真题第2套【可复制可搜索】.pdf",
+      "target": "theme\\assets\\papers\\2015-12\\set2-paper.pdf"
+    },
+    {
+      "year": 2015,
+      "month": 12,
+      "set": 3,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2015年12月CET4真题+解析+听力音频【全3套】\\真题PDF\\2015年12月四级真题第3套【可复制可搜索】.pdf",
+      "target": "theme\\assets\\papers\\2015-12\\set3-paper.pdf"
+    },
+    {
+      "year": 2016,
+      "month": 6,
+      "set": 1,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2016年06月CET4真题+解析+听力音频【全3套】\\真题PDF\\2016年06月四级真题第1套【可复制可搜索】.pdf",
+      "target": "theme\\assets\\papers\\2016-06\\set1-paper.pdf"
+    },
+    {
+      "year": 2016,
+      "month": 6,
+      "set": 2,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2016年06月CET4真题+解析+听力音频【全3套】\\真题PDF\\2016年06月四级真题第2套【可复制可搜索】.pdf",
+      "target": "theme\\assets\\papers\\2016-06\\set2-paper.pdf"
+    },
+    {
+      "year": 2016,
+      "month": 6,
+      "set": 3,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2016年06月CET4真题+解析+听力音频【全3套】\\真题PDF\\2016年06月四级真题第3套【可复制可搜索】.pdf",
+      "target": "theme\\assets\\papers\\2016-06\\set3-paper.pdf"
+    },
+    {
+      "year": 2016,
+      "month": 12,
+      "set": 1,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2016年12月CET4真题+解析+听力音频【全3套】\\真题PDF\\2016年12月四级真题第1套【可复制可搜索】.pdf",
+      "target": "theme\\assets\\papers\\2016-12\\set1-paper.pdf"
+    },
+    {
+      "year": 2016,
+      "month": 12,
+      "set": 2,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2016年12月CET4真题+解析+听力音频【全3套】\\真题PDF\\2016年12月四级真题第2套【可复制可搜索】.pdf",
+      "target": "theme\\assets\\papers\\2016-12\\set2-paper.pdf"
+    },
+    {
+      "year": 2016,
+      "month": 12,
+      "set": 3,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2016年12月CET4真题+解析+听力音频【全3套】\\真题PDF\\2016年12月四级真题第3套【可复制可搜索】.pdf",
+      "target": "theme\\assets\\papers\\2016-12\\set3-paper.pdf"
+    },
+    {
+      "year": 2017,
+      "month": 6,
+      "set": 1,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2017年06月CET4真题+解析+听力音频【全3套】\\真题PDF\\2017年06月四级真题第1套【可复制可搜索】..pdf",
+      "target": "theme\\assets\\papers\\2017-06\\set1-paper.pdf"
+    },
+    {
+      "year": 2017,
+      "month": 6,
+      "set": 2,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2017年06月CET4真题+解析+听力音频【全3套】\\真题PDF\\2017年06月四级真题第2套【可复制可搜索】..pdf",
+      "target": "theme\\assets\\papers\\2017-06\\set2-paper.pdf"
+    },
+    {
+      "year": 2017,
+      "month": 6,
+      "set": 3,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2017年06月CET4真题+解析+听力音频【全3套】\\真题PDF\\2017年06月四级真题第3套【可复制可搜索】..pdf",
+      "target": "theme\\assets\\papers\\2017-06\\set3-paper.pdf"
+    },
+    {
+      "year": 2017,
+      "month": 12,
+      "set": 1,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2017年12月CET4真题+解析+听力音频【全3套】\\真题PDF\\2017年12月四级真题第1套【可复制可搜索】..pdf",
+      "target": "theme\\assets\\papers\\2017-12\\set1-paper.pdf"
+    },
+    {
+      "year": 2017,
+      "month": 12,
+      "set": 2,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2017年12月CET4真题+解析+听力音频【全3套】\\真题PDF\\2017年12月四级真题第2套【可复制可搜索】..pdf",
+      "target": "theme\\assets\\papers\\2017-12\\set2-paper.pdf"
+    },
+    {
+      "year": 2017,
+      "month": 12,
+      "set": 3,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2017年12月CET4真题+解析+听力音频【全3套】\\真题PDF\\2017年12月四级真题第3套【可复制可搜索】..pdf",
+      "target": "theme\\assets\\papers\\2017-12\\set3-paper.pdf"
+    },
+    {
+      "year": 2018,
+      "month": 6,
+      "set": 1,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2018年06月CET4真题+解析+听力音频【全3套】\\真题PDF\\2018年06月四级真题第1套【可复制可搜索】.pdf",
+      "target": "theme\\assets\\papers\\2018-06\\set1-paper.pdf"
+    },
+    {
+      "year": 2018,
+      "month": 6,
+      "set": 2,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2018年06月CET4真题+解析+听力音频【全3套】\\真题PDF\\2018年06月四级真题第2套【可复制可搜索】.pdf",
+      "target": "theme\\assets\\papers\\2018-06\\set2-paper.pdf"
+    },
+    {
+      "year": 2018,
+      "month": 6,
+      "set": 3,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2018年06月CET4真题+解析+听力音频【全3套】\\真题PDF\\2018年06月四级真题第3套【可复制可搜索】.pdf",
+      "target": "theme\\assets\\papers\\2018-06\\set3-paper.pdf"
+    },
+    {
+      "year": 2018,
+      "month": 12,
+      "set": 1,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2018年12月CET4真题+解析+听力音频【全3套】\\真题PDF\\2018年12月四级真题第1套【可复制可搜索】..pdf",
+      "target": "theme\\assets\\papers\\2018-12\\set1-paper.pdf"
+    },
+    {
+      "year": 2018,
+      "month": 12,
+      "set": 2,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2018年12月CET4真题+解析+听力音频【全3套】\\真题PDF\\2018年12月四级真题第2套【可复制可搜索】..pdf",
+      "target": "theme\\assets\\papers\\2018-12\\set2-paper.pdf"
+    },
+    {
+      "year": 2018,
+      "month": 12,
+      "set": 3,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2018年12月CET4真题+解析+听力音频【全3套】\\真题PDF\\2018年12月四级真题第3套【可复制可搜索】..pdf",
+      "target": "theme\\assets\\papers\\2018-12\\set3-paper.pdf"
+    },
+    {
+      "year": 2019,
+      "month": 6,
+      "set": 1,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2019年06月CET4真题+解析+听力音频【全3套】\\真题PDF\\2019年06月四级真题第1套【可复制可搜索】..pdf",
+      "target": "theme\\assets\\papers\\2019-06\\set1-paper.pdf",
+      "note": "由 Word 版转换（原 PDF 是扫描件）"
+    },
+    {
+      "year": 2019,
+      "month": 6,
+      "set": 2,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2019年06月CET4真题+解析+听力音频【全3套】\\真题PDF\\2019年06月四级真题第2套【可复制可搜索】..pdf",
+      "target": "theme\\assets\\papers\\2019-06\\set2-paper.pdf"
+    },
+    {
+      "year": 2019,
+      "month": 6,
+      "set": 3,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2019年06月CET4真题+解析+听力音频【全3套】\\真题PDF\\2019年06月四级真题第3套【可复制可搜索】..pdf",
+      "target": "theme\\assets\\papers\\2019-06\\set3-paper.pdf"
+    },
+    {
+      "year": 2019,
+      "month": 12,
+      "set": 1,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2019年12月CET4真题+解析+听力音频【全3套】\\真题PDF\\2019年12月四级真题第1套【可复制可搜索】.pdf",
+      "target": "theme\\assets\\papers\\2019-12\\set1-paper.pdf"
+    },
+    {
+      "year": 2019,
+      "month": 12,
+      "set": 2,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2019年12月CET4真题+解析+听力音频【全3套】\\真题PDF\\2019年12月四级真题第2套【可复制可搜索】.pdf",
+      "target": "theme\\assets\\papers\\2019-12\\set2-paper.pdf"
+    },
+    {
+      "year": 2019,
+      "month": 12,
+      "set": 3,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2019年12月CET4真题+解析+听力音频【全3套】\\真题PDF\\2019年12月四级真题第3套【可复制可搜索】.pdf",
+      "target": "theme\\assets\\papers\\2019-12\\set3-paper.pdf"
+    },
+    {
+      "year": 2020,
+      "month": 7,
+      "set": 1,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2020年07月CET4真题+解析+听力音频【全1套】\\2020年07月英语四级真题【可复制可搜索】.pdf",
+      "target": "theme\\assets\\papers\\2020-07\\set1-paper.pdf"
+    },
+    {
+      "year": 2020,
+      "month": 9,
+      "set": 1,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2020年09月CET4真题+解析+听力音频【全3套】\\2020年09月英语四级真题第1套【可复制可搜索】.pdf",
+      "target": "theme\\assets\\papers\\2020-09\\set1-paper.pdf"
+    },
+    {
+      "year": 2020,
+      "month": 9,
+      "set": 2,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2020年09月CET4真题+解析+听力音频【全3套】\\2020年09月英语四级真题第2套【可复制可搜索】.pdf",
+      "target": "theme\\assets\\papers\\2020-09\\set2-paper.pdf"
+    },
+    {
+      "year": 2020,
+      "month": 9,
+      "set": 3,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2016年12月CET4真题+解析+听力音频【全3套】\\2020年09月CET4真题+解析+听力音频【全3套】\\真题PDF\\2020年09月四级真题第3套【可复制可搜索】.pdf",
+      "target": "theme\\assets\\papers\\2020-09\\set3-paper.pdf"
+    },
+    {
+      "year": 2020,
+      "month": 12,
+      "set": 1,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2020年12月CET4真题+解析+听力音频【全3套】\\真题PDF\\2020年12月四级真题第1套【可复制可搜索】.pdf",
+      "target": "theme\\assets\\papers\\2020-12\\set1-paper.pdf"
+    },
+    {
+      "year": 2020,
+      "month": 12,
+      "set": 2,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2020年12月CET4真题+解析+听力音频【全3套】\\真题PDF\\2020年12月四级真题第2套【可复制可搜索】.pdf",
+      "target": "theme\\assets\\papers\\2020-12\\set2-paper.pdf"
+    },
+    {
+      "year": 2020,
+      "month": 12,
+      "set": 3,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2020年12月CET4真题+解析+听力音频【全3套】\\真题PDF\\2020年12月四级真题第3套【可复制可搜索】.pdf",
+      "target": "theme\\assets\\papers\\2020-12\\set3-paper.pdf"
+    },
+    {
+      "year": 2021,
+      "month": 6,
+      "set": 1,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2021年06月CET4真题+解析+听力音频【全3套】\\真题PDF\\2021年06月四级真题第1套【可复制可搜索】.pdf",
+      "target": "theme\\assets\\papers\\2021-06\\set1-paper.pdf"
+    },
+    {
+      "year": 2021,
+      "month": 6,
+      "set": 2,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2021年06月CET4真题+解析+听力音频【全3套】\\真题PDF\\2021年06月四级真题第2套【可复制可搜索】.pdf",
+      "target": "theme\\assets\\papers\\2021-06\\set2-paper.pdf"
+    },
+    {
+      "year": 2021,
+      "month": 6,
+      "set": 3,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2021年06月CET4真题+解析+听力音频【全3套】\\真题PDF\\2021年06月四级真题第3套【可复制可搜索】.pdf",
+      "target": "theme\\assets\\papers\\2021-06\\set3-paper.pdf"
+    },
+    {
+      "year": 2021,
+      "month": 12,
+      "set": 2,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2021年12月CET4真题+解析+听力音频【全3套】\\2021.12四级真题全3套\\2021.12四级真题第2套【可复制可搜索，打印首选】.pdf",
+      "target": "theme\\assets\\papers\\2021-12\\set2-paper.pdf"
+    },
+    {
+      "year": 2021,
+      "month": 12,
+      "set": 3,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2021年12月CET4真题+解析+听力音频【全3套】\\2021.12四级真题全3套\\2021.12四级真题第3套【可复制可搜索，打印首选】.pdf",
+      "target": "theme\\assets\\papers\\2021-12\\set3-paper.pdf"
+    },
+    {
+      "year": 2022,
+      "month": 6,
+      "set": 1,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2022年06月四级真题+解析+听力音频全3套\\2022.06英语四级真题PDF\\2022.06四级真题第1套【可复制可搜索，打印首选】.pdf",
+      "target": "theme\\assets\\papers\\2022-06\\set1-paper.pdf"
+    },
+    {
+      "year": 2022,
+      "month": 6,
+      "set": 2,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2022年06月四级真题+解析+听力音频全3套\\【试卷-第2套】2022年06月四级考试真题.pdf",
+      "target": "theme\\assets\\papers\\2022-06\\set2-paper.pdf"
+    },
+    {
+      "year": 2022,
+      "month": 6,
+      "set": 3,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2022年06月四级真题+解析+听力音频全3套\\【试卷-第3套】2022年06月四级考试真题.pdf",
+      "target": "theme\\assets\\papers\\2022-06\\set3-paper.pdf"
+    },
+    {
+      "year": 2023,
+      "month": 6,
+      "set": 1,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2023年6月CET4真题+解析+听力音频全3套\\2023.6四级真题及解析\\2023.06英语四级真题第1套.pdf",
+      "target": "theme\\assets\\papers\\2023-06\\set1-paper.pdf"
+    },
+    {
+      "year": 2023,
+      "month": 6,
+      "set": 2,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2023年6月CET4真题+解析+听力音频全3套\\2023.6四级真题及解析\\2023.06英语四级真题第2套.pdf",
+      "target": "theme\\assets\\papers\\2023-06\\set2-paper.pdf"
+    },
+    {
+      "year": 2023,
+      "month": 6,
+      "set": 3,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2023年6月CET4真题+解析+听力音频全3套\\2023.6四级真题及解析\\2023.06英语四级真题第3套.pdf",
+      "target": "theme\\assets\\papers\\2023-06\\set3-paper.pdf"
+    },
+    {
+      "year": 2023,
+      "month": 12,
+      "set": 1,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2023年12月CET4真题+解析+听力音频全3套\\2023.12四级真题第1套.pdf",
+      "target": "theme\\assets\\papers\\2023-12\\set1-paper.pdf"
+    },
+    {
+      "year": 2023,
+      "month": 12,
+      "set": 2,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2023年12月CET4真题+解析+听力音频全3套\\2023.12四级真题第2套.pdf",
+      "target": "theme\\assets\\papers\\2023-12\\set2-paper.pdf"
+    },
+    {
+      "year": 2023,
+      "month": 12,
+      "set": 3,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2023年12月CET4真题+解析+听力音频全3套\\2023.12四级真题第3套.pdf",
+      "target": "theme\\assets\\papers\\2023-12\\set3-paper.pdf"
+    },
+    {
+      "year": 2023,
+      "month": 3,
+      "set": 1,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2023年3月四级真题+解析+听力音频全3套\\2023年3月英语四级真题（3套）无水印.pdf",
+      "target": "theme\\assets\\papers\\2023-03\\set1-paper.pdf",
+      "note": "从合并 PDF 拆出第 1 套"
+    }
+  ],
+  "skipped": [
+    "theme\\assets\\papers\\2024-06\\set1-paper.pdf",
+    "theme\\assets\\papers\\2024-06\\set2-paper.pdf",
+    "theme\\assets\\papers\\2024-06\\set3-paper.pdf",
+    "theme\\assets\\papers\\2024-12\\set1-paper.pdf",
+    "theme\\assets\\papers\\2024-12\\set2-paper.pdf",
+    "theme\\assets\\papers\\2024-12\\set3-paper.pdf",
+    "theme\\assets\\papers\\2025-06\\set1-paper.pdf",
+    "theme\\assets\\papers\\2025-06\\set2-paper.pdf",
+    "theme\\assets\\papers\\2025-06\\set3-paper.pdf"
+  ],
+  "missing": [
+    {
+      "year": 2021,
+      "month": 12,
+      "set": 1,
+      "source": "C:\\Users\\lenovo\\Downloads\\四级真题+答案+听力（2025.06-2015.06）\\2021年12月CET4真题+解析+听力音频【全3套】\\2021.12四级真题全3套\\2021.12四级真题第1套【可复制可搜索，打印首选】.pdf",
+      "target": "theme\\assets\\papers\\2021-12\\set1-paper.pdf",
+      "note": "扫描件/无文字层，暂时无法做词频索引"
+    }
+  ]
+}

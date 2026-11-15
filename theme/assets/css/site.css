@@ -4370,6 +4370,11 @@ body.account-open { overflow: hidden; }
 .exam-word-phonetic { color: #8b848d; font-family: var(--mono); font-size: 12px; }
 .exam-word-source { margin-left: auto; color: #a09aa2; font-family: var(--sans); font-size: 10px; }
 .exam-word-meaning { margin: 0; color: #454149; font-family: var(--serif); font-size: 15px; line-height: 1.8; }
+.exam-word-base { margin: 4px 0 0; color: #8b848d; font-family: var(--sans); font-size: 11px; }
+.exam-forms { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 10px 0 0; color: #a09aa2; font-family: var(--sans); font-size: 10.5px; }
+.exam-form { padding: 1px 8px; background: #fff; border: 1px solid #e2e6ef; border-radius: 999px; }
+.exam-form b { color: var(--blue); font-family: var(--mono); font-weight: 600; }
+.exam-form i { margin-left: 4px; color: #a09aa2; font-style: normal; }
 
 /* PDF 卷面标注 */
 .pdf-annotation-note {

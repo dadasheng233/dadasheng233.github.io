@@ -150,7 +150,15 @@
         .then((list) => {
           const map = new Map();
           (Array.isArray(list) ? list : []).forEach((item) => {
-            if (item && item.word) map.set(String(item.word).toLowerCase(), item);
+            if (!item || !item.word) return;
+            const base = String(item.word).toLowerCase();
+            map.set(base, item);
+            // 把 abandon 的 abandons / abandoned / abandoning 也指回同一条
+            if (window.WordForms) {
+              window.WordForms.forms(base).forEach((form) => {
+                if (!map.has(form)) map.set(form, item);
+              });
+            }
           });
           wordsMap = map;
           return map;
@@ -162,12 +170,13 @@
 
   async function meaningOf(word) {
     const key = String(word || '').trim().toLowerCase();
-    if (!key) return { word: key, meaning: '' };
+    if (!key) return { word: key, meaning: '', base: key };
     const map = wordsMap || await loadWords();
     const entry = map.get(key);
     if (entry && entry.meaning) {
       return {
-        word: entry.word || key,
+        word: key,
+        base: String(entry.word || key).toLowerCase(),
         meaning: entry.meaning,
         phonetic: entry.phonetic || '',
         pos: entry.pos || '',
@@ -175,7 +184,7 @@
       };
     }
     const translation = await translate(key);
-    return { word: key, meaning: translation, phonetic: '', pos: '', source: 'MyMemory 翻译' };
+    return { word: key, base: key, meaning: translation, phonetic: '', pos: '', source: 'MyMemory 翻译' };
   }
 
   window.BlogTranslate = { translate, meaningOf, loadWords };

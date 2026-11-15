@@ -97,10 +97,27 @@
   }
 
   function highlightSentence(sentence, word) {
-    const splitter = new RegExp('(' + escapeRegExp(word) + ')', 'gi');
-    return sentence.split(splitter)
-      .map((part, index) => (index % 2 ? `<mark>${escapeHtml(part)}</mark>` : escapeHtml(part)))
-      .join('');
+    const queryForms = window.WordForms ? window.WordForms.forms(word) : new Set([word.toLowerCase()]);
+    const tokenRe = /[A-Za-z][A-Za-z'-]*/g;
+    let output = '';
+    let last = 0;
+    let match;
+    while ((match = tokenRe.exec(sentence))) {
+      const token = match[0];
+      const tokenForms = window.WordForms ? window.WordForms.forms(token) : [token.toLowerCase()];
+      let hit = false;
+      for (const form of tokenForms) {
+        if (queryForms.has(form)) {
+          hit = true;
+          break;
+        }
+      }
+      if (!hit) continue;
+      output += escapeHtml(sentence.slice(last, match.index));
+      output += `<mark>${escapeHtml(token)}</mark>`;
+      last = match.index + token.length;
+    }
+    return output + escapeHtml(sentence.slice(last));
   }
 
   function paperLink(paper, page, word) {
@@ -148,28 +165,44 @@
   }
 
   function render(papers, query, word, current) {
-    const escaped = escapeRegExp(query);
     const groups = [];
     let total = 0;
     let papersHit = 0;
     const byYear = new Map();
+    const variants = new Map();
+    const queryForms = window.WordForms ? window.WordForms.forms(query) : new Set([query]);
     occurrenceSeq = 0;
     occurrences.clear();
 
+    const tokenPattern = /[A-Za-z][A-Za-z'-]*/g;
     for (const paper of papers) {
-      const count = (paper.text.match(new RegExp('\\b' + escaped + '\\b', 'gi')) || []).length;
+      let count = 0;
+      const offsets = [];
+      const finder = new RegExp(tokenPattern.source, 'g');
+      let match;
+      while ((match = finder.exec(paper.text))) {
+        const token = match[0];
+        if (token.charAt(0).toLowerCase() !== query.charAt(0)) continue;
+        const tokenForms = window.WordForms ? window.WordForms.forms(token) : [token.toLowerCase()];
+        let hit = false;
+        for (const form of tokenForms) {
+          if (queryForms.has(form)) {
+            hit = true;
+            break;
+          }
+        }
+        if (!hit) continue;
+        count += 1;
+        const key = token.toLowerCase();
+        variants.set(key, (variants.get(key) || 0) + 1);
+        if (offsets.length < 3) {
+          offsets.push({ index: match.index, length: token.length });
+        }
+      }
       if (!count) continue;
       total += count;
       papersHit += 1;
       byYear.set(paper.year, (byYear.get(paper.year) || 0) + count);
-
-      const offsets = [];
-      const finder = new RegExp('\\b' + escaped + '\\b', 'gi');
-      let match;
-      while ((match = finder.exec(paper.text)) && offsets.length < 3) {
-        offsets.push(match.index);
-        finder.lastIndex = match.index + Math.max(1, word.length);
-      }
       groups.push({ paper, count, offsets });
     }
 
@@ -198,8 +231,8 @@
       const items = group.offsets.map((offset) => {
         if (shown >= limit) return '';
         shown += 1;
-        const where = localeOf(group.paper, offset);
-        const sentence = clipSentence(sentenceAt(group.paper.text, offset, word.length), word);
+        const where = localeOf(group.paper, offset.index);
+        const sentence = clipSentence(sentenceAt(group.paper.text, offset.index, offset.length), word);
         const id = 'occ-' + (++occurrenceSeq);
         occurrences.set(id, { sentence, word });
         return `
@@ -228,6 +261,9 @@
     }).join('');
 
     const remaining = total - shown;
+    const variantList = [...variants.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6);
+    const variantsHtml = variantList.map(([form, count]) =>
+      `<span class="exam-form"><b>${escapeHtml(form)}</b><i>×${count}</i></span>`).join('');
     results.innerHTML = `
       <div class="exam-summary">
         <p class="exam-summary-main"><b>${total}</b> 次 · <b>${papersHit}</b> 套卷 · ${yearRange}</p>
@@ -240,6 +276,8 @@
           <span class="exam-word-source">正在查词义…</span>
         </div>
         <p class="exam-word-meaning">…</p>
+        <p class="exam-word-base" hidden></p>
+        <p class="exam-forms">命中形式：${variantsHtml}</p>
       </div>
       <div class="exam-papers">${groupsHtml}</div>
       ${remaining > 0 ? `<p class="exam-note">页面只列出前 ${shown} 处，其余 ${remaining} 处只计入次数。</p>` : ''}`;
@@ -255,6 +293,7 @@
     const meaning = card.querySelector('.exam-word-meaning');
     const source = card.querySelector('.exam-word-source');
     const phonetic = card.querySelector('.exam-word-phonetic');
+    const baseNode = card.querySelector('.exam-word-base');
     if (!window.BlogTranslate) {
       meaning.textContent = '翻译脚本没有加载';
       source.textContent = '';
@@ -266,6 +305,13 @@
       meaning.textContent = info.meaning || '暂无释义';
       source.textContent = info.source || '';
       if (info.phonetic) phonetic.textContent = '/' + info.phonetic.replace(/^\/|\/$/g, '') + '/';
+      if (baseNode) {
+        const base = String(info.base || '').toLowerCase();
+        if (base && base !== String(word).toLowerCase()) {
+          baseNode.hidden = false;
+          baseNode.textContent = '原形：' + info.base;
+        }
+      }
     } catch (error) {
       if (!document.body.contains(card)) return;
       meaning.textContent = error.message || '释义获取失败';

@@ -242,6 +242,7 @@ export function renderPage({ site, page, content, stats }) {
   <script src="/assets/js/site.js" defer></script>
   <script src="/assets/js/edit-map.js" defer></script>
   <script src="/assets/js/words.js" defer></script>
+  <script src="/assets/js/word-forms.js" defer></script>
   <script src="/assets/js/translate.js" defer></script>
   <script src="/assets/js/exam-search.js" defer></script>
   <script src="/assets/js/papers.js" defer></script>
