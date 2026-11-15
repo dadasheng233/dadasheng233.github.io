@@ -7,3 +7,8 @@ node_modules/
 .DS_Store
 Thumbs.db
 *.log
+
+# Spring Boot backend build artifacts / local database
+server/target/
+server/data/
+server/.m2repo/

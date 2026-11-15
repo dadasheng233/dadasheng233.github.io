@@ -1,0 +1,290 @@
+{
+  "title": "408 基础自测（示例题库）",
+  "subject": "ds",
+  "year": 2024,
+  "source": "示例数据 · 可删除",
+  "description": "覆盖数据结构、计算机组成原理、操作系统、计算机网络四门课的基础自测题，用于验证练习、错题本和统计功能。正式刷题请导入你自己的题库。",
+  "published": true,
+  "questions": [
+    {
+      "type": "single",
+      "stem": "在长度为 n 的顺序表中删除第 i 个元素（1 ≤ i ≤ n），平均需要移动的元素个数是（ ）。",
+      "options": [
+        { "key": "A", "text": "(n-1)/2" },
+        { "key": "B", "text": "n/2" },
+        { "key": "C", "text": "(n+1)/2" },
+        { "key": "D", "text": "n" }
+      ],
+      "answer": "A",
+      "analysis": "删除第 i 个元素需要移动 n-i 个元素，i 从 1 到 n 等概率，平均移动 ((n-1)+(n-2)+…+0)/n = (n-1)/2。",
+      "difficulty": 1,
+      "knowledge": "顺序表"
+    },
+    {
+      "type": "single",
+      "stem": "入栈序列为 1, 2, 3, 4，下列出栈序列中不可能出现的是（ ）。",
+      "options": [
+        { "key": "A", "text": "1, 2, 3, 4" },
+        { "key": "B", "text": "4, 3, 2, 1" },
+        { "key": "C", "text": "3, 1, 2, 4" },
+        { "key": "D", "text": "2, 3, 4, 1" }
+      ],
+      "answer": "C",
+      "analysis": "3 出栈时 1、2 仍在栈中且 2 在 1 之上，1 不可能先于 2 出栈。",
+      "difficulty": 1,
+      "knowledge": "栈"
+    },
+    {
+      "type": "single",
+      "stem": "一棵有 1000 个结点的完全二叉树，叶子结点的个数是（ ）。",
+      "options": [
+        { "key": "A", "text": "499" },
+        { "key": "B", "text": "500" },
+        { "key": "C", "text": "501" },
+        { "key": "D", "text": "512" }
+      ],
+      "answer": "B",
+      "analysis": "完全二叉树中度为 1 的结点至多一个。设叶子数为 n0、度为 2 的结点数为 n2，则 n0 = n2 + 1。总结点数 n = n0 + n1 + n2，n 为偶数时 n1 = 1，代入得 n0 = 500。",
+      "difficulty": 2,
+      "knowledge": "二叉树"
+    },
+    {
+      "type": "single",
+      "stem": "快速排序在最坏情况下的时间复杂度是（ ）。",
+      "options": [
+        { "key": "A", "text": "O(n)" },
+        { "key": "B", "text": "O(n log n)" },
+        { "key": "C", "text": "O(n²)" },
+        { "key": "D", "text": "O(log n)" }
+      ],
+      "answer": "C",
+      "analysis": "当每次划分都极不平衡（例如序列已经有序且取端点作枢轴）时，递归深度为 n，比较次数约为 n²/2。",
+      "difficulty": 1,
+      "knowledge": "排序"
+    },
+    {
+      "type": "single",
+      "stem": "采用开放定址法处理冲突时，线性探测法的主要缺点是（ ）。",
+      "options": [
+        { "key": "A", "text": "需要额外的链表空间" },
+        { "key": "B", "text": "容易产生堆积（聚集）现象" },
+        { "key": "C", "text": "不能删除元素" },
+        { "key": "D", "text": "查找时间与装填因子无关" }
+      ],
+      "answer": "B",
+      "analysis": "线性探测在冲突时顺序向后寻找空位，连续被占用的单元会连成一片，使后续探测路径变长，形成一次聚集。",
+      "difficulty": 2,
+      "knowledge": "散列表"
+    },
+    {
+      "type": "single",
+      "stem": "8 位补码能表示的整数范围是（ ）。",
+      "options": [
+        { "key": "A", "text": "-127 ~ +127" },
+        { "key": "B", "text": "-128 ~ +127" },
+        { "key": "C", "text": "-128 ~ +128" },
+        { "key": "D", "text": "-127 ~ +128" }
+      ],
+      "answer": "B",
+      "analysis": "n 位补码的范围是 -2^(n-1) ~ 2^(n-1)-1，n = 8 时即 -128 ~ +127。",
+      "difficulty": 1,
+      "knowledge": "数据的表示"
+    },
+    {
+      "type": "single",
+      "stem": "某计算机 Cache 命中率为 95%，Cache 存取周期为 1ns，主存存取周期为 100ns。若未命中时先访问 Cache 再访问主存，则平均存取时间约为（ ）。",
+      "options": [
+        { "key": "A", "text": "1.05ns" },
+        { "key": "B", "text": "5ns" },
+        { "key": "C", "text": "6ns" },
+        { "key": "D", "text": "95ns" }
+      ],
+      "answer": "C",
+      "analysis": "T = 1ns + (1 − 0.95) × 100ns = 1 + 5 = 6ns。",
+      "difficulty": 2,
+      "knowledge": "Cache"
+    },
+    {
+      "type": "single",
+      "stem": "采用 5 段流水线且各段耗时相等，在理想情况下（指令足够多、无相关与冲突），相对于非流水线的加速比接近（ ）。",
+      "options": [
+        { "key": "A", "text": "2" },
+        { "key": "B", "text": "4" },
+        { "key": "C", "text": "5" },
+        { "key": "D", "text": "10" }
+      ],
+      "answer": "C",
+      "analysis": "k 段流水线的理想加速比趋近于 k，本题 k = 5。",
+      "difficulty": 1,
+      "knowledge": "指令流水线"
+    },
+    {
+      "type": "single",
+      "stem": "IEEE 754 单精度浮点数中，阶码字段占（ ）位。",
+      "options": [
+        { "key": "A", "text": "7" },
+        { "key": "B", "text": "8" },
+        { "key": "C", "text": "11" },
+        { "key": "D", "text": "23" }
+      ],
+      "answer": "B",
+      "analysis": "单精度为 1 位符号 + 8 位阶码 + 23 位尾数；双精度阶码为 11 位。",
+      "difficulty": 1,
+      "knowledge": "浮点数"
+    },
+    {
+      "type": "single",
+      "stem": "下列关于 Cache 写策略的说法中，正确的是（ ）。",
+      "options": [
+        { "key": "A", "text": "写直达法不需要写主存" },
+        { "key": "B", "text": "写回法在替换时才把脏块写回主存" },
+        { "key": "C", "text": "写回法每次写都写主存" },
+        { "key": "D", "text": "写直达法一定比写回法快" }
+      ],
+      "answer": "B",
+      "analysis": "写回法只修改 Cache 并置脏位，块被替换时才写回主存；写直达法每次写都同时写 Cache 和主存。",
+      "difficulty": 2,
+      "knowledge": "Cache"
+    },
+    {
+      "type": "single",
+      "stem": "进程从运行态转变为阻塞态的原因通常是（ ）。",
+      "options": [
+        { "key": "A", "text": "时间片用完" },
+        { "key": "B", "text": "等待 I/O 完成或等待某事件" },
+        { "key": "C", "text": "被更高优先级进程抢占" },
+        { "key": "D", "text": "进程调度程序选中了它" }
+      ],
+      "answer": "B",
+      "analysis": "运行→阻塞是进程主动等待资源或事件；时间片用完或被抢占是运行→就绪。",
+      "difficulty": 1,
+      "knowledge": "进程状态"
+    },
+    {
+      "type": "single",
+      "stem": "下列页面置换算法中，可能出现 Belady 异常的是（ ）。",
+      "options": [
+        { "key": "A", "text": "OPT" },
+        { "key": "B", "text": "LRU" },
+        { "key": "C", "text": "FIFO" },
+        { "key": "D", "text": "LFU" }
+      ],
+      "answer": "C",
+      "analysis": "FIFO 不满足栈式置换性质，增加物理块数时缺页次数反而可能增加。",
+      "difficulty": 2,
+      "knowledge": "页面置换"
+    },
+    {
+      "type": "single",
+      "stem": "产生死锁的四个必要条件不包括（ ）。",
+      "options": [
+        { "key": "A", "text": "互斥条件" },
+        { "key": "B", "text": "请求并保持条件" },
+        { "key": "C", "text": "不可剥夺条件" },
+        { "key": "D", "text": "资源可抢占条件" }
+      ],
+      "answer": "D",
+      "analysis": "四个条件是互斥、请求并保持、不可剥夺、循环等待。「资源可抢占」恰恰是破坏死锁的手段。",
+      "difficulty": 1,
+      "knowledge": "死锁"
+    },
+    {
+      "type": "single",
+      "stem": "虚拟存储器的最大容量主要取决于（ ）。",
+      "options": [
+        { "key": "A", "text": "内存容量" },
+        { "key": "B", "text": "外存容量" },
+        { "key": "C", "text": "计算机的地址结构" },
+        { "key": "D", "text": "页表大小" }
+      ],
+      "answer": "C",
+      "analysis": "虚拟地址位数决定虚拟地址空间的上限，因此虚拟存储器最大容量由地址结构决定。",
+      "difficulty": 2,
+      "knowledge": "虚拟内存"
+    },
+    {
+      "type": "single",
+      "stem": "在分页存储管理中，页表的作用是（ ）。",
+      "options": [
+        { "key": "A", "text": "记录进程优先级" },
+        { "key": "B", "text": "实现逻辑地址到物理地址的映射" },
+        { "key": "C", "text": "保存进程状态" },
+        { "key": "D", "text": "记录磁盘空闲块" }
+      ],
+      "answer": "B",
+      "analysis": "页表存放页号到物理块号的对应关系，用于地址变换。",
+      "difficulty": 1,
+      "knowledge": "分页管理"
+    },
+    {
+      "type": "single",
+      "stem": "TCP 建立连接的三次握手中，第二次握手报文段的标志位是（ ）。",
+      "options": [
+        { "key": "A", "text": "SYN=1, ACK=0" },
+        { "key": "B", "text": "SYN=0, ACK=1" },
+        { "key": "C", "text": "SYN=1, ACK=1" },
+        { "key": "D", "text": "SYN=0, ACK=0" }
+      ],
+      "answer": "C",
+      "analysis": "服务器收到 SYN 后回复 SYN=1、ACK=1，既确认客户端序号，又同步自己的序号。",
+      "difficulty": 1,
+      "knowledge": "TCP"
+    },
+    {
+      "type": "single",
+      "stem": "子网掩码为 255.255.255.192 时，每个子网可分配的主机地址数是（ ）。",
+      "options": [
+        { "key": "A", "text": "30" },
+        { "key": "B", "text": "62" },
+        { "key": "C", "text": "64" },
+        { "key": "D", "text": "126" }
+      ],
+      "answer": "B",
+      "analysis": "掩码最后 6 位为主机位，2^6 − 2 = 62（去掉网络地址和广播地址）。",
+      "difficulty": 2,
+      "knowledge": "子网划分"
+    },
+    {
+      "type": "single",
+      "stem": "以太网采用 CSMA/CD 协议，其最小帧长规定为（ ）字节。",
+      "options": [
+        { "key": "A", "text": "46" },
+        { "key": "B", "text": "64" },
+        { "key": "C", "text": "128" },
+        { "key": "D", "text": "1518" }
+      ],
+      "answer": "B",
+      "analysis": "为保证碰撞能被检测到，最小帧长为 64 字节（含 14 字节首部和 4 字节 FCS）。",
+      "difficulty": 1,
+      "knowledge": "以太网"
+    },
+    {
+      "type": "single",
+      "stem": "DNS 域名解析在通常情况下使用的传输层协议和端口是（ ）。",
+      "options": [
+        { "key": "A", "text": "TCP，53" },
+        { "key": "B", "text": "UDP，53" },
+        { "key": "C", "text": "TCP，80" },
+        { "key": "D", "text": "UDP，80" }
+      ],
+      "answer": "B",
+      "analysis": "普通查询使用 UDP 53；响应超过 512 字节或区域传送时才改用 TCP 53。",
+      "difficulty": 1,
+      "knowledge": "DNS"
+    },
+    {
+      "type": "single",
+      "stem": "某主机的 IP 地址为 192.168.1.130，子网掩码为 255.255.255.192，则该主机所在子网的网络地址是（ ）。",
+      "options": [
+        { "key": "A", "text": "192.168.1.0" },
+        { "key": "B", "text": "192.168.1.64" },
+        { "key": "C", "text": "192.168.1.128" },
+        { "key": "D", "text": "192.168.1.192" }
+      ],
+      "answer": "C",
+      "analysis": "掩码 255.255.255.192 的块大小为 64，130 落在 128~191 区间，网络地址为 192.168.1.128。",
+      "difficulty": 2,
+      "knowledge": "子网划分"
+    }
+  ]
+}

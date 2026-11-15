@@ -1,0 +1,12 @@
+# 可选：使用 MySQL 时通过 `--spring.profiles.active=mysql` 启动。
+# 先建库：CREATE DATABASE wanfeng_blog DEFAULT CHARACTER SET utf8mb4;
+spring:
+  datasource:
+    url: ${MYSQL_URL:jdbc:mysql://127.0.0.1:3306/wanfeng_blog?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai}
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema-mysql.sql

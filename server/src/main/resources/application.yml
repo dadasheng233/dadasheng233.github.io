@@ -1,0 +1,63 @@
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    session:
+      timeout: 7d
+      cookie:
+        name: BLOG_SESSION
+        http-only: true
+        same-site: lax
+        max-age: 7d
+  compression:
+    enabled: true
+    mime-types: text/html,text/css,application/javascript,application/json,image/svg+xml
+  error:
+    whitelabel:
+      enabled: false
+
+spring:
+  application:
+    name: wanfeng-blog
+  datasource:
+    url: jdbc:h2:file:./data/blog
+    username: sa
+    password: ""
+    driver-class-name: org.h2.Driver
+    hikari:
+      maximum-pool-size: 5
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema-h2.sql
+      continue-on-error: false
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+  servlet:
+    multipart:
+      max-file-size: 30MB
+      max-request-size: 30MB
+  web:
+    resources:
+      add-mappings: false
+
+app:
+  # 相对路径以启动目录为基准；找不到时会自动尝试 public/ 与 ../public/。
+  public-dir: ../public
+  content-dir: ../content
+  site-dir: ..
+  node-command: node
+  build-timeout-seconds: 180
+  admin:
+    username: ${BLOG_ADMIN_USERNAME:admin}
+    password: ${BLOG_ADMIN_PASSWORD:wanfeng-408}
+    display-name: 站长
+  cors:
+    allowed-origins: http://127.0.0.1:4200,http://localhost:4200,http://127.0.0.1:8080,http://localhost:8080
+
+logging:
+  level:
+    root: INFO
+    com.wanfeng.blog: INFO
+    org.springframework.jdbc.core: WARN
